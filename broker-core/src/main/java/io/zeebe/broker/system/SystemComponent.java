@@ -19,7 +19,7 @@ package io.zeebe.broker.system;
 
 import static io.zeebe.broker.system.SystemServiceNames.*;
 
-import io.zeebe.broker.clustering.ClusterServiceNames;
+import io.zeebe.broker.clustering2.ClusterServiceNames;
 import io.zeebe.broker.logstreams.LogStreamServiceNames;
 import io.zeebe.broker.system.deployment.service.DeploymentManager;
 import io.zeebe.broker.system.deployment.service.WorkflowRequestMessageHandlerService;

@@ -9,7 +9,7 @@ directory = "${brokerFolder}/persistent-broker/"
 
 [network]
 host = "0.0.0.0"
-sendBufferSize = 128
+sendBufferSize = 16
 
 [network.clientApi]
 host = "localhost"

@@ -122,12 +122,12 @@ public class SystemContext implements AutoCloseable
         Loggers.SYSTEM_LOGGER.info("Scheduler configuration: Threads{cpu-bound: {}, io-bound: {}}.", cpuBoundThreads, ioBoundThreads);
 
         return ActorScheduler.newActorScheduler()
-                             .setActorClock(clock)
-                             .setMetricsManager(metricsManager)
-                             .setCpuBoundActorThreadCount(cpuBoundThreads)
-                             .setIoBoundActorThreadCount(ioBoundThreads)
-                             .setSchedulerName(brokerId)
-                             .build();
+            .setActorClock(clock)
+            .setMetricsManager(metricsManager)
+            .setCpuBoundActorThreadCount(cpuBoundThreads)
+            .setIoBoundActorThreadCount(ioBoundThreads)
+            .setSchedulerName(brokerId)
+            .build();
     }
 
     protected static String readBrokerId(ConfigurationManager configurationManager)

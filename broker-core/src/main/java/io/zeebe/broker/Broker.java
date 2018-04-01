@@ -17,7 +17,7 @@
  */
 package io.zeebe.broker;
 
-import io.zeebe.broker.clustering.ClusterComponent;
+import io.zeebe.broker.clustering2.ClusterComponent;
 import io.zeebe.broker.logstreams.LogStreamsComponent;
 import io.zeebe.broker.system.ConfigurationManager;
 import io.zeebe.broker.system.SystemComponent;

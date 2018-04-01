@@ -15,19 +15,19 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package io.zeebe.broker.clustering;
+package io.zeebe.broker.clustering2;
 
 import io.zeebe.broker.clustering.management.ClusterManager;
 import io.zeebe.broker.clustering.management.ClusterManagerContext;
-import io.zeebe.broker.clustering.management.memberList.MemberListService;
+import io.zeebe.broker.clustering2.topology.TopologyManager;
 import io.zeebe.gossip.Gossip;
 import io.zeebe.raft.Raft;
 import io.zeebe.servicecontainer.ServiceName;
 
 public class ClusterServiceNames
 {
-    public static final ServiceName<MemberListService> MEMBER_LIST_SERVICE = ServiceName.newServiceName("cluster.member.list", MemberListService.class);
     public static final ServiceName<Gossip> GOSSIP_SERVICE = ServiceName.newServiceName("cluster.gossip", Gossip.class);
+    public static final ServiceName<TopologyManager> TOPOLOGY_MANAGER_SERVICE = ServiceName.newServiceName("cluster.topologyManager", TopologyManager.class);
     public static final ServiceName<Raft> RAFT_SERVICE_GROUP = ServiceName.newServiceName("cluster.raft.service", Raft.class);
     public static final ServiceName<ClusterManager> CLUSTER_MANAGER_SERVICE = ServiceName.newServiceName("cluster.manager", ClusterManager.class);
     public static final ServiceName<ClusterManagerContext> CLUSTER_MANAGER_CONTEXT_SERVICE = ServiceName.newServiceName("cluster.manager.context", ClusterManagerContext.class);

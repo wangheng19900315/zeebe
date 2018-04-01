@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package io.zeebe.broker.clustering.raft;
+package io.zeebe.broker.clustering2.raft;
 
 import io.zeebe.msgpack.UnpackedObject;
 import io.zeebe.msgpack.property.IntegerProperty;
@@ -29,8 +29,7 @@ public class RaftConfigurationMetadataMember extends UnpackedObject
 
     public RaftConfigurationMetadataMember()
     {
-        this
-            .declareProperty(hostProp)
+        this.declareProperty(hostProp)
             .declareProperty(portProp);
     }
 

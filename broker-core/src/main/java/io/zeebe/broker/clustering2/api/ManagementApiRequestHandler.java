@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package io.zeebe.broker.clustering.management.handler;
+package io.zeebe.broker.clustering2.api;
 
 import org.agrona.DirectBuffer;
 
@@ -32,14 +32,14 @@ import io.zeebe.transport.ServerMessageHandler;
 import io.zeebe.transport.ServerOutput;
 import io.zeebe.transport.ServerRequestHandler;
 
-public class ClusterManagerFragmentHandler implements ServerMessageHandler, ServerRequestHandler
+public class ManagementApiRequestHandler implements ServerMessageHandler, ServerRequestHandler
 {
     protected final MessageHeaderDecoder messageHeaderDecoder = new MessageHeaderDecoder();
 
     private final ClusterManager clusterManager;
     private final WorkflowRequestMessageHandler workflowRequestMessageHandler;
 
-    public ClusterManagerFragmentHandler(final ClusterManager clusterManager, final WorkflowRequestMessageHandler workflowRequestMessageHandler)
+    public ManagementApiRequestHandler(final ClusterManager clusterManager, final WorkflowRequestMessageHandler workflowRequestMessageHandler)
     {
         this.clusterManager = clusterManager;
         this.workflowRequestMessageHandler = workflowRequestMessageHandler;

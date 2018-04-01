@@ -17,7 +17,7 @@
  */
 package io.zeebe.broker.clustering.management.memberList;
 
-import static io.zeebe.broker.clustering.management.memberList.GossipEventCreationHelper.writeAPIAddressesIntoBuffer;
+import static io.zeebe.broker.clustering2.gossip.GossipCustomEventEncoding.writeSockedAddresses;
 
 import java.util.Iterator;
 
@@ -62,7 +62,7 @@ public final class APISyncHandler implements GossipSyncRequestHandler
 
                 if (next.hasApis())
                 {
-                    final DirectBuffer payload = writeAPIAddressesIntoBuffer(next.getManagementApi(),
+                    final DirectBuffer payload = writeSockedAddresses(next.getManagementApi(),
                                                                              next.getReplicationApi(),
                                                                              next.getClientApi(),
                                                                              apiAddressBuffer);

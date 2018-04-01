@@ -15,26 +15,15 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package io.zeebe.broker.clustering.handler;
+package io.zeebe.broker.clustering2;
 
-import io.zeebe.msgpack.UnpackedObject;
-import io.zeebe.msgpack.property.ArrayProperty;
+import io.zeebe.broker.system.DirectoryConfiguration;
 
-
-public class Topology extends UnpackedObject
+public class ClusterComponentConfiguration extends DirectoryConfiguration
 {
-    protected ArrayProperty<TopologyBroker> brokersProp = new ArrayProperty<>("brokers",
-                                                                              new TopologyBroker());
-
-    public Topology()
+    @Override
+    protected String componentDirectoryName()
     {
-        this
-            .declareProperty(brokersProp);
+        return "meta";
     }
-
-    public ArrayProperty<TopologyBroker> brokers()
-    {
-        return brokersProp;
-    }
-
 }

@@ -20,8 +20,8 @@ package io.zeebe.broker.system.log;
 import java.time.Duration;
 
 import io.zeebe.broker.Loggers;
-import io.zeebe.broker.clustering.handler.TopologyBroker;
 import io.zeebe.broker.clustering.management.PartitionManager;
+import io.zeebe.broker.clustering2.topology.dto.BrokerDto;
 import io.zeebe.broker.logstreams.processor.*;
 import io.zeebe.transport.*;
 import io.zeebe.util.sched.ActorControl;
@@ -69,7 +69,7 @@ public class CreatePartitionProcessor implements TypedEventProcessor<PartitionEv
     public boolean executeSideEffects(TypedEvent<PartitionEvent> event, TypedResponseWriter responseWriter)
     {
         final PartitionEvent value = event.getValue();
-        final TopologyBroker creator = value.getCreator();
+        final BrokerDto creator = value.getCreator();
         final DirectBuffer creatorHost = creator.getHost();
 
         creatorAddress.host(creatorHost, 0, creatorHost.capacity());

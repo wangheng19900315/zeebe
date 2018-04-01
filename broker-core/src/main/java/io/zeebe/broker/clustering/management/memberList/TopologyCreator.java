@@ -18,9 +18,9 @@
 package io.zeebe.broker.clustering.management.memberList;
 
 import io.zeebe.broker.Loggers;
-import io.zeebe.broker.clustering.handler.Topology;
-import io.zeebe.broker.clustering.handler.TopologyBroker;
 import io.zeebe.broker.clustering.management.ClusterManagerContext;
+import io.zeebe.broker.clustering2.handler.Topology;
+import io.zeebe.broker.clustering2.topology.dto.BrokerDto;
 import io.zeebe.msgpack.value.ValueArray;
 import io.zeebe.transport.SocketAddress;
 import io.zeebe.util.buffer.BufferUtil;
@@ -51,13 +51,13 @@ public class TopologyCreator
         {
             final MemberRaftComposite next = iterator.next();
 
-            final ValueArray<TopologyBroker> brokers = topology.brokers();
+            final ValueArray<BrokerDto> brokers = topology.brokers();
 
             final SocketAddress clientApi = next.getClientApi();
 
             if (clientApi != null)
             {
-                final TopologyBroker nextTopologyBroker = brokers.add();
+                final BrokerDto nextTopologyBroker = brokers.add();
                 nextTopologyBroker.setHost(clientApi.getHostBuffer(), 0, clientApi.hostLength())
                                   .setPort(clientApi.port());
 

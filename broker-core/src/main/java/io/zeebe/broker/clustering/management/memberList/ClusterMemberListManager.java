@@ -18,9 +18,9 @@
 package io.zeebe.broker.clustering.management.memberList;
 
 import io.zeebe.broker.Loggers;
-import io.zeebe.broker.clustering.handler.Topology;
 import io.zeebe.broker.clustering.management.ClusterManagerContext;
 import io.zeebe.broker.clustering.management.OnOpenLogStreamListener;
+import io.zeebe.broker.clustering2.handler.Topology;
 import io.zeebe.broker.transport.cfg.TransportComponentCfg;
 import io.zeebe.gossip.Gossip;
 import io.zeebe.gossip.GossipCustomEventListener;
@@ -43,7 +43,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-import static io.zeebe.broker.clustering.management.memberList.GossipEventCreationHelper.*;
+import static io.zeebe.broker.clustering2.gossip.GossipCustomEventEncoding.*;
 import static io.zeebe.raft.state.RaftState.LEADER;
 
 public class ClusterMemberListManager implements RaftStateListener, OnOpenLogStreamListener
@@ -104,7 +104,7 @@ public class ClusterMemberListManager implements RaftStateListener, OnOpenLogStr
     {
         final Gossip gossip = context.getGossip();
         final String defaultHost = transportComponentCfg.host;
-        final DirectBuffer payload = writeAPIAddressesIntoBuffer(transportComponentCfg.managementApi.toSocketAddress(defaultHost),
+        final DirectBuffer payload = writeSockedAddresses(transportComponentCfg.managementApi.toSocketAddress(defaultHost),
                                                                  transportComponentCfg.replicationApi.toSocketAddress(defaultHost),
                                                                  transportComponentCfg.clientApi.toSocketAddress(defaultHost),
                                                                  apiAddressBuffer);

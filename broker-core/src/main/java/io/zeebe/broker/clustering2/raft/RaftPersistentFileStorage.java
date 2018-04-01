@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package io.zeebe.broker.clustering.raft;
+package io.zeebe.broker.clustering2.raft;
 
 import static java.nio.file.StandardCopyOption.ATOMIC_MOVE;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
@@ -34,9 +34,7 @@ import org.agrona.concurrent.UnsafeBuffer;
 
 public class RaftPersistentFileStorage implements RaftPersistentStorage
 {
-
     private final RaftConfigurationMetadata configuration = new RaftConfigurationMetadata();
-
 
     private final File file;
     private final File tmpFile;

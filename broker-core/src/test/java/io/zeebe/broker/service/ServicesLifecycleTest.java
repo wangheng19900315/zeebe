@@ -26,7 +26,7 @@ import org.junit.Test;
 import org.junit.rules.RuleChain;
 
 import io.zeebe.broker.Broker;
-import io.zeebe.broker.clustering.ClusterServiceNames;
+import io.zeebe.broker.clustering2.ClusterServiceNames;
 import io.zeebe.broker.test.EmbeddedBrokerRule;
 import io.zeebe.broker.workflow.WorkflowQueueServiceNames;
 import io.zeebe.logstreams.processor.StreamProcessorController;

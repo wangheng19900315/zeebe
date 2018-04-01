@@ -30,13 +30,12 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import io.zeebe.broker.clustering.member.Member;
+import io.zeebe.broker.clustering2.topology.dto.BrokerDto;
 import io.zeebe.util.collection.IntIterator;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
-
-import io.zeebe.broker.clustering.handler.TopologyBroker;
 import io.zeebe.broker.logstreams.processor.TypedEvent;
 import io.zeebe.broker.logstreams.processor.TypedStreamEnvironment;
 import io.zeebe.broker.logstreams.processor.TypedStreamProcessor;
@@ -289,7 +288,7 @@ public class CreateTopicStreamProcessorTest
 
         // then
         final PartitionEvent partitionEvent = partitionEventsInState(PartitionState.CREATE).findFirst().get().getValue();
-        final TopologyBroker creator = partitionEvent.getCreator();
+        final BrokerDto creator = partitionEvent.getCreator();
         assertThat(creator.getHost()).isEqualTo(SOCKET_ADDRESS1.getHostBuffer());
         assertThat(creator.getPort()).isEqualTo(SOCKET_ADDRESS1.port());
     }

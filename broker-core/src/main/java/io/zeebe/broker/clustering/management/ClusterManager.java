@@ -17,8 +17,8 @@
  */
 package io.zeebe.broker.clustering.management;
 
-import static io.zeebe.broker.clustering.ClusterServiceNames.RAFT_SERVICE_GROUP;
-import static io.zeebe.broker.clustering.ClusterServiceNames.raftServiceName;
+import static io.zeebe.broker.clustering2.ClusterServiceNames.RAFT_SERVICE_GROUP;
+import static io.zeebe.broker.clustering2.ClusterServiceNames.raftServiceName;
 
 import java.io.File;
 import java.io.IOException;
@@ -28,13 +28,13 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 
 import io.zeebe.broker.Loggers;
-import io.zeebe.broker.clustering.handler.Topology;
-import io.zeebe.broker.clustering.management.handler.ClusterManagerFragmentHandler;
 import io.zeebe.broker.clustering.management.memberList.ClusterMemberListManager;
 import io.zeebe.broker.clustering.management.memberList.MemberRaftComposite;
 import io.zeebe.broker.clustering.management.message.*;
-import io.zeebe.broker.clustering.raft.RaftPersistentFileStorage;
-import io.zeebe.broker.clustering.raft.RaftService;
+import io.zeebe.broker.clustering2.api.ManagementApiRequestHandler;
+import io.zeebe.broker.clustering2.handler.Topology;
+import io.zeebe.broker.clustering2.raft.RaftPersistentFileStorage;
+import io.zeebe.broker.clustering2.raft.RaftService;
 import io.zeebe.broker.logstreams.LogStreamsManager;
 import io.zeebe.broker.transport.TransportServiceNames;
 import io.zeebe.broker.transport.cfg.SocketBindingCfg;
@@ -171,7 +171,7 @@ public class ClusterManager extends Actor
     @Override
     protected void onActorStarted()
     {
-        final ClusterManagerFragmentHandler fragmentHandler = new ClusterManagerFragmentHandler(this, context.getWorkflowRequestMessageHandler());
+        final ManagementApiRequestHandler fragmentHandler = new ManagementApiRequestHandler(this, context.getWorkflowRequestMessageHandler());
 
         final ActorFuture<ServerInputSubscription> serverInputSubscriptionActorFuture = context.getServerTransport()
             .openSubscription("cluster-management", fragmentHandler, fragmentHandler);

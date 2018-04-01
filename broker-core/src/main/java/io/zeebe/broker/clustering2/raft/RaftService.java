@@ -15,9 +15,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package io.zeebe.broker.clustering.raft;
+package io.zeebe.broker.clustering2.raft;
 
-import static io.zeebe.broker.clustering.ClusterServiceNames.CLUSTER_MANAGER_SERVICE;
+import static io.zeebe.broker.clustering2.ClusterServiceNames.CLUSTER_MANAGER_SERVICE;
 import static io.zeebe.broker.logstreams.LogStreamServiceNames.logStreamServiceName;
 
 import java.util.List;
@@ -94,16 +94,15 @@ public class RaftService extends Actor implements Service<Raft>, RaftStateListen
 
                 final OneToOneRingBufferChannel messageBuffer = new OneToOneRingBufferChannel(new UnsafeBuffer(new byte[(MemberReplicateLogController.REMOTE_BUFFER_SIZE) + RingBufferDescriptor.TRAILER_LENGTH]));
 
-                raft = new Raft(
-                                actorScheduler,
-                                configuration,
-                                socketAddress,
-                                logStream,
-                                clientTransport,
-                                persistentStorage,
-                                messageBuffer,
-                                raftStateListener,
-                                RaftService.this);
+                raft = new Raft(actorScheduler,
+                    configuration,
+                    socketAddress,
+                    logStream,
+                    clientTransport,
+                    persistentStorage,
+                    messageBuffer,
+                    raftStateListener,
+                    RaftService.this);
 
                 raft.addMembers(members);
                 actorScheduler.submitActor(raft);

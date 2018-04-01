@@ -26,10 +26,10 @@ import io.zeebe.util.sched.future.ActorFuture;
 import org.agrona.ExpandableArrayBuffer;
 import org.slf4j.Logger;
 
+import static io.zeebe.broker.clustering2.gossip.GossipCustomEventEncoding.writeRaftsIntoBuffer;
+
 import java.util.Iterator;
 import java.util.List;
-
-import static io.zeebe.broker.clustering.management.memberList.GossipEventCreationHelper.writeRaftsIntoBuffer;
 
 public final class MemberRaftStatesSyncHandler implements GossipSyncRequestHandler
 {
@@ -61,7 +61,7 @@ public final class MemberRaftStatesSyncHandler implements GossipSyncRequestHandl
                 final List<RaftStateComposite> rafts = next.getRafts();
                 if (!rafts.isEmpty())
                 {
-                    final int length = writeRaftsIntoBuffer(rafts, memberRaftStatesBuffer);
+                    final int length = w(rafts, memberRaftStatesBuffer);
 
                     request.addPayload(next.getMember(), memberRaftStatesBuffer, 0, length);
                 }

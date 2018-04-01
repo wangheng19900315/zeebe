@@ -15,24 +15,29 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package io.zeebe.broker.clustering.gossip.service;
+package io.zeebe.broker.clustering2.gossip;
 
+import static io.zeebe.util.LogUtil.*;
+
+import java.util.concurrent.TimeUnit;
+
+import io.zeebe.broker.Loggers;
+import io.zeebe.broker.transport.cfg.SocketBindingCfg;
 import io.zeebe.broker.transport.cfg.TransportComponentCfg;
 import io.zeebe.gossip.Gossip;
 import io.zeebe.servicecontainer.*;
 import io.zeebe.transport.*;
-import io.zeebe.util.sched.Actor;
-import io.zeebe.util.sched.ActorScheduler;
-import io.zeebe.util.sched.future.ActorFuture;
+import org.slf4j.Logger;
 
 public class GossipService implements Service<Gossip>
 {
+    private static final Logger LOG = Loggers.CLUSTERING_LOGGER;
+
     private final Injector<ClientTransport> clientTransportInjector = new Injector<>();
     private final Injector<BufferingServerTransport> bufferingServerTransportInjector = new Injector<>();
     private final TransportComponentCfg transportComponentCfg;
 
     private Gossip gossip;
-    private ActorScheduler actorScheduler;
 
     public GossipService(TransportComponentCfg transportComponentCfg)
     {
@@ -42,34 +47,28 @@ public class GossipService implements Service<Gossip>
     @Override
     public void start(ServiceStartContext startContext)
     {
-        actorScheduler = startContext.getScheduler();
-        final SocketAddress host = new SocketAddress(transportComponentCfg.managementApi.getHost(transportComponentCfg.host), transportComponentCfg.managementApi.port);
+        final BrokerGossipConfiguration configuration = transportComponentCfg.gossip;
+        final BufferingServerTransport serverTransport = bufferingServerTransportInjector.getValue();
+        final ClientTransport clientTransport = clientTransportInjector.getValue();
 
-        this.gossip = new Gossip(host, bufferingServerTransportInjector.getValue(),
-                                 clientTransportInjector.getValue(), transportComponentCfg.gossip);
+        final SocketBindingCfg managementApiConfig = transportComponentCfg.managementApi;
+        final String bindHostname = managementApiConfig.getHost(transportComponentCfg.host);
+        final int bindPort = managementApiConfig.port;
+        final SocketAddress bindHost = new SocketAddress(bindHostname, bindPort);
 
-        actorScheduler.submitActor(gossip);
+        gossip = new Gossip(bindHost, serverTransport, clientTransport, configuration);
+
+        startContext.async(startContext.getScheduler().submitActor(gossip));
     }
 
     @Override
     public void stop(ServiceStopContext stopContext)
     {
-        stopContext.async(actorScheduler.submitActor(new Actor()
+        stopContext.run(() ->
         {
-            @Override
-            protected void onActorStarting()
-            {
-                final ActorFuture<Void> leaveFuture = gossip.leave();
-                actor.runOnCompletion(leaveFuture, ((aVoid, throwable) ->
-                {
-                    final ActorFuture<Void> closeFuture = gossip.close();
-                    actor.runOnCompletion(closeFuture, ((aVoid1, throwable1) ->
-                    {
-                        // closed
-                    }));
-                }));
-            }
-        }));
+            catchAndLog(LOG, () -> gossip.leave().get(5, TimeUnit.SECONDS));
+            catchAndLog(LOG, () -> gossip.close().get(5, TimeUnit.SECONDS));
+        });
     }
 
     @Override

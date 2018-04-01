@@ -15,26 +15,24 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package io.zeebe.broker.clustering.handler;
+package io.zeebe.broker.clustering2.topology;
 
 import io.zeebe.broker.Loggers;
-import io.zeebe.broker.clustering.management.ClusterManager;
 import io.zeebe.broker.transport.controlmessage.AbstractControlMessageHandler;
 import io.zeebe.protocol.clientapi.ControlMessageType;
 import io.zeebe.protocol.impl.BrokerEventMetadata;
 import io.zeebe.transport.ServerOutput;
 import io.zeebe.util.sched.ActorControl;
-import io.zeebe.util.sched.future.ActorFuture;
 import org.agrona.DirectBuffer;
 
 public class RequestTopologyHandler extends AbstractControlMessageHandler
 {
-    protected final ClusterManager clusterManager;
+    protected final TopologyManager topologyManager;
 
-    public RequestTopologyHandler(final ServerOutput output, final ClusterManager clusterManager)
+    public RequestTopologyHandler(final ServerOutput output, final TopologyManager topologyManager)
     {
         super(output);
-        this.clusterManager = clusterManager;
+        this.topologyManager = topologyManager;
     }
 
     @Override
@@ -49,8 +47,7 @@ public class RequestTopologyHandler extends AbstractControlMessageHandler
         final int requestStreamId = metadata.getRequestStreamId();
         final long requestId = metadata.getRequestId();
 
-        final ActorFuture<Topology> topologyActorFuture = clusterManager.requestTopology();
-        actor.runOnCompletion(topologyActorFuture, ((topology, throwable) ->
+        actor.runOnCompletion(topologyManager.getTopologyDto(), ((topology, throwable) ->
         {
             if (throwable == null)
             {
@@ -63,5 +60,4 @@ public class RequestTopologyHandler extends AbstractControlMessageHandler
             }
         }));
     }
-
 }
