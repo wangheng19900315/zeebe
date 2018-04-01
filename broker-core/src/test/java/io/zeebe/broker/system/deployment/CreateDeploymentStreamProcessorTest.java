@@ -151,7 +151,7 @@ public class CreateDeploymentStreamProcessorTest
         final PartitionEvent event = new PartitionEvent();
         event.setState(PartitionState.CREATED);
         event.setTopicName(BufferUtil.wrapString(topicName));
-        event.setId(partitionId);
+        event.setParitionId(partitionId);
         event.setCreator(BufferUtil.wrapString("host"), 1234);
 
         return event;

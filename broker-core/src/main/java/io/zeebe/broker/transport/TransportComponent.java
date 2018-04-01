@@ -17,10 +17,9 @@
  */
 package io.zeebe.broker.transport;
 
-import io.zeebe.broker.clustering.ClusterServiceNames;
-import io.zeebe.broker.clustering.raft.RaftApiMessageHandlerService;
+import io.zeebe.broker.clustering.base.ClusterBaseLayerServiceNames;
+import io.zeebe.broker.clustering.base.raft.RaftApiMessageHandlerService;
 import io.zeebe.broker.event.TopicSubscriptionServiceNames;
-import io.zeebe.broker.logstreams.LogStreamServiceNames;
 import io.zeebe.broker.services.DispatcherService;
 import io.zeebe.broker.system.Component;
 import io.zeebe.broker.system.SystemContext;
@@ -43,7 +42,10 @@ import java.net.InetSocketAddress;
 import java.util.Collection;
 import java.util.Collections;
 
+import static io.zeebe.broker.clustering.base.ClusterBaseLayerServiceNames.LEADER_PARTITION_GROUP_NAME;
+import static io.zeebe.broker.clustering.base.ClusterBaseLayerServiceNames.LEADER_PARTITION_SYSTEM_GROUP_NAME;
 import static io.zeebe.broker.transport.TransportServiceNames.*;
+
 
 public class TransportComponent implements Component
 {
@@ -101,26 +103,26 @@ public class TransportComponent implements Component
         final ClientApiMessageHandlerService messageHandlerService = new ClientApiMessageHandlerService();
         serviceContainer.createService(CLIENT_API_MESSAGE_HANDLER, messageHandlerService)
             .dependency(controlMessageBufferService, messageHandlerService.getControlMessageBufferInjector())
-            .groupReference(LogStreamServiceNames.WORKFLOW_STREAM_GROUP, messageHandlerService.getLogStreamsGroupReference())
-            .groupReference(LogStreamServiceNames.SYSTEM_STREAM_GROUP, messageHandlerService.getLogStreamsGroupReference())
+            .groupReference(LEADER_PARTITION_GROUP_NAME, messageHandlerService.getLeaderParitionsGroupReference())
+            .groupReference(LEADER_PARTITION_SYSTEM_GROUP_NAME, messageHandlerService.getLeaderParitionsGroupReference())
             .install();
 
         final RaftApiMessageHandlerService raftApiMessageHandlerService = new RaftApiMessageHandlerService();
         serviceContainer.createService(REPLICATION_API_MESSAGE_HANDLER, raftApiMessageHandlerService)
-                        .groupReference(ClusterServiceNames.RAFT_SERVICE_GROUP, raftApiMessageHandlerService.getRaftGroupReference())
+                        .groupReference(ClusterBaseLayerServiceNames.RAFT_SERVICE_GROUP, raftApiMessageHandlerService.getRaftGroupReference())
                         .install();
 
         final long controlMessageRequestTimeoutInMillis = transportComponentCfg.clientApi.getControlMessageRequestTimeoutInMillis(Long.MAX_VALUE);
 
         final ControlMessageHandlerManagerService controlMessageHandlerManagerService = new ControlMessageHandlerManagerService(controlMessageRequestTimeoutInMillis);
         final ActorFuture<ControlMessageHandlerManager> controlMessageServiceFuture = serviceContainer.createService(TransportServiceNames.CONTROL_MESSAGE_HANDLER_MANAGER, controlMessageHandlerManagerService)
-                                                                              .dependency(controlMessageBufferService, controlMessageHandlerManagerService.getControlMessageBufferInjector())
-                                                                              .dependency(TransportServiceNames.serverTransport(CLIENT_API_SERVER_NAME), controlMessageHandlerManagerService.getTransportInjector())
-                                                                              .dependency(TaskQueueServiceNames.TASK_QUEUE_SUBSCRIPTION_MANAGER, controlMessageHandlerManagerService.getTaskSubscriptionManagerInjector())
-                                                                              .dependency(TopicSubscriptionServiceNames.TOPIC_SUBSCRIPTION_SERVICE, controlMessageHandlerManagerService.getTopicSubscriptionServiceInjector())
-                                                                              .dependency(SystemServiceNames.SYSTEM_LOG_MANAGER, controlMessageHandlerManagerService.getSystemPartitionManagerInjector())
-                                                                              .dependency(ClusterServiceNames.CLUSTER_MANAGER_SERVICE, controlMessageHandlerManagerService.getClusterManagerInjector())
-                                                                              .install();
+            .dependency(controlMessageBufferService, controlMessageHandlerManagerService.getControlMessageBufferInjector())
+            .dependency(TransportServiceNames.serverTransport(CLIENT_API_SERVER_NAME), controlMessageHandlerManagerService.getTransportInjector())
+            .dependency(TaskQueueServiceNames.TASK_QUEUE_SUBSCRIPTION_MANAGER, controlMessageHandlerManagerService.getTaskSubscriptionManagerInjector())
+            .dependency(TopicSubscriptionServiceNames.TOPIC_SUBSCRIPTION_SERVICE, controlMessageHandlerManagerService.getTopicSubscriptionServiceInjector())
+            .dependency(SystemServiceNames.SYSTEM_LOG_MANAGER, controlMessageHandlerManagerService.getSystemPartitionManagerInjector())
+            .dependency(ClusterBaseLayerServiceNames.TOPOLOGY_MANAGER_SERVICE, controlMessageHandlerManagerService.getTopologyManagerInjector())
+            .install();
 
         context.addRequiredStartAction(replactionApiFuture);
         context.addRequiredStartAction(managementApiFuture);

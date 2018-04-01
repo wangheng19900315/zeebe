@@ -17,6 +17,10 @@
  */
 package io.zeebe.broker.transport.clientapi;
 
+import java.util.EnumMap;
+import java.util.function.Consumer;
+
+import io.zeebe.broker.clustering.base.partitions.Partition;
 import io.zeebe.broker.event.processor.TopicSubscriberEvent;
 import io.zeebe.broker.event.processor.TopicSubscriptionEvent;
 import io.zeebe.broker.system.log.TopicEvent;
@@ -26,29 +30,19 @@ import io.zeebe.broker.workflow.data.DeploymentEvent;
 import io.zeebe.broker.workflow.data.WorkflowInstanceEvent;
 import io.zeebe.dispatcher.ClaimedFragment;
 import io.zeebe.dispatcher.Dispatcher;
-import io.zeebe.logstreams.log.LogStream;
-import io.zeebe.logstreams.log.LogStreamWriter;
-import io.zeebe.logstreams.log.LogStreamWriterImpl;
+import io.zeebe.logstreams.log.*;
 import io.zeebe.msgpack.UnpackedObject;
 import io.zeebe.protocol.Protocol;
 import io.zeebe.protocol.clientapi.*;
 import io.zeebe.protocol.impl.BrokerEventMetadata;
-import io.zeebe.transport.RemoteAddress;
-import io.zeebe.transport.ServerMessageHandler;
-import io.zeebe.transport.ServerOutput;
-import io.zeebe.transport.ServerRequestHandler;
+import io.zeebe.transport.*;
 import org.agrona.DirectBuffer;
 import org.agrona.MutableDirectBuffer;
 import org.agrona.collections.Int2ObjectHashMap;
 import org.agrona.concurrent.ManyToOneConcurrentArrayQueue;
 
-import java.util.EnumMap;
-import java.util.function.Consumer;
-
-
 public class ClientApiMessageHandler implements ServerMessageHandler, ServerRequestHandler
 {
-
     protected final MessageHeaderDecoder messageHeaderDecoder = new MessageHeaderDecoder();
     protected final ExecuteCommandRequestDecoder executeCommandRequestDecoder = new ExecuteCommandRequestDecoder();
     protected final ControlMessageRequestHeaderDescriptor controlMessageRequestHeaderDescriptor = new ControlMessageRequestHeaderDescriptor();
@@ -56,7 +50,7 @@ public class ClientApiMessageHandler implements ServerMessageHandler, ServerRequ
     protected final ManyToOneConcurrentArrayQueue<Runnable> cmdQueue = new ManyToOneConcurrentArrayQueue<>(100);
     protected final Consumer<Runnable> cmdConsumer = (c) -> c.run();
 
-    protected final Int2ObjectHashMap<LogStream> logStreams = new Int2ObjectHashMap<>();
+    protected final Int2ObjectHashMap<Partition> leaderPartitions = new Int2ObjectHashMap<>();
     protected final BrokerEventMetadata eventMetadata = new BrokerEventMetadata();
     protected final LogStreamWriter logStreamWriter = new LogStreamWriterImpl();
 
@@ -97,9 +91,9 @@ public class ClientApiMessageHandler implements ServerMessageHandler, ServerRequ
         final int partitionId = executeCommandRequestDecoder.partitionId();
         final long key = executeCommandRequestDecoder.key();
 
-        final LogStream logStream = logStreams.get(partitionId);
+        final Partition partition = leaderPartitions.get(partitionId);
 
-        if (logStream == null)
+        if (partition == null)
         {
             return errorResponseWriter
                 .errorCode(ErrorCode.PARTITION_NOT_FOUND)
@@ -138,7 +132,7 @@ public class ClientApiMessageHandler implements ServerMessageHandler, ServerRequ
 
         eventMetadata.eventType(eventType);
 
-        logStreamWriter.wrap(logStream);
+        logStreamWriter.wrap(partition.getLogStream());
 
         if (key != ExecuteCommandRequestDecoder.keyNullValue())
         {
@@ -211,14 +205,14 @@ public class ClientApiMessageHandler implements ServerMessageHandler, ServerRequ
         return isHandled;
     }
 
-    public void addStream(final LogStream logStream)
+    public void addPartition(final Partition partition)
     {
-        cmdQueue.add(() -> logStreams.put(logStream.getPartitionId(), logStream));
+        cmdQueue.add(() -> leaderPartitions.put(partition.getInfo().getPartitionId(), partition));
     }
 
-    public void removeStream(final LogStream logStream)
+    public void removePartition(final Partition partition)
     {
-        cmdQueue.add(() -> logStreams.remove(logStream.getPartitionId()));
+        cmdQueue.add(() -> leaderPartitions.remove(partition.getInfo().getPartitionId()));
     }
 
     @Override

@@ -17,17 +17,16 @@
  */
 package io.zeebe.broker.system.deployment.handler;
 
-import java.util.Iterator;
+import java.util.*;
 import java.util.function.IntConsumer;
 import java.util.function.Predicate;
 
 import org.agrona.DirectBuffer;
 import org.agrona.collections.IntArrayList;
 import org.slf4j.Logger;
-
 import io.zeebe.broker.Loggers;
-import io.zeebe.broker.clustering.management.PartitionManager;
-import io.zeebe.broker.clustering.member.Member;
+import io.zeebe.broker.clustering.base.topology.TopologyManager;
+import io.zeebe.broker.clustering.base.topology.Topology.NodeInfo;
 import io.zeebe.broker.logstreams.processor.StreamProcessorLifecycleAware;
 import io.zeebe.broker.logstreams.processor.TypedStreamProcessor;
 import io.zeebe.broker.system.deployment.data.PendingDeployments;
@@ -47,7 +46,6 @@ import io.zeebe.transport.RemoteAddress;
 import io.zeebe.transport.SocketAddress;
 import io.zeebe.transport.TransportMessage;
 import io.zeebe.util.buffer.BufferWriter;
-import io.zeebe.util.collection.IntIterator;
 import io.zeebe.util.sched.ActorControl;
 import io.zeebe.util.sched.future.ActorFuture;
 
@@ -62,7 +60,7 @@ public class RemoteWorkflowsManager implements StreamProcessorLifecycleAware
 
     private final TransportMessage transportMessage = new TransportMessage();
 
-    private final PartitionManager partitionManager;
+    private final TopologyManager topologyManager;
     private final ClientTransport managementClient;
     private final ClientOutput output;
 
@@ -75,13 +73,13 @@ public class RemoteWorkflowsManager implements StreamProcessorLifecycleAware
     public RemoteWorkflowsManager(
             PendingDeployments pendingDeployments,
             PendingWorkflows pendingWorkflows,
-            PartitionManager partitionManager,
+            TopologyManager topologyManager,
             DeploymentEventWriter writer,
             ClientTransport managementClient)
     {
         this.pendingDeployments = pendingDeployments;
         this.pendingWorkflows = pendingWorkflows;
-        this.partitionManager = partitionManager;
+        this.topologyManager = topologyManager;
         this.managementClient = managementClient;
         this.writer = writer;
         this.output = managementClient.getOutput();
@@ -139,27 +137,22 @@ public class RemoteWorkflowsManager implements StreamProcessorLifecycleAware
 
     private boolean forEachPartition(IntArrayList partitionIds, IntConsumer partitionIdConsumer, Predicate<SocketAddress> action)
     {
-        boolean success = true;
-
-        final Iterator<Member> members = partitionManager.getKnownMembers();
-
-        while (members.hasNext() && success)
+        final ActorFuture<Map<Integer, NodeInfo>> partitionLeaders = topologyManager.query((toplogy) ->
         {
-            final Member member = members.next();
+            final Map<Integer, NodeInfo> leaders = new HashMap<>();
+            partitionIds.forEach((partitionId) -> leaders.put(partitionId, toplogy.getLeader(partitionId)));
+            return leaders;
+        });
 
-            final IntIterator leadingPartitions = member.getLeadingPartitions();
-            while (leadingPartitions.hasNext() && success)
+        actor.runOnCompletion(partitionLeaders, (leaders, throwable) ->
+        {
+            partitionIds.forEach((partitionId) ->
             {
-                final int partitionId = leadingPartitions.nextInt();
-
-                if (partitionIds.containsInt(partitionId))
-                {
-                    partitionIdConsumer.accept(partitionId);
-
-                    success = action.test(member.getManagementAddress());
-                }
-            }
-        }
+                final NodeInfo leader = leaders.get(partitionId);
+                partitionIdConsumer.accept(partitionId);
+                action.test(leader.getManagementPort());
+            });
+        });
 
         return true;
     }
