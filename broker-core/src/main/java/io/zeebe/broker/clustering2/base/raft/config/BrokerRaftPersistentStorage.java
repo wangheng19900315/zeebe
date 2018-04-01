@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package io.zeebe.broker.clustering2.raft;
+package io.zeebe.broker.clustering2.base.raft.config;
 
 import static java.nio.file.StandardCopyOption.ATOMIC_MOVE;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
@@ -32,7 +32,7 @@ import org.agrona.DirectBuffer;
 import org.agrona.MutableDirectBuffer;
 import org.agrona.concurrent.UnsafeBuffer;
 
-public class RaftPersistentFileStorage implements RaftPersistentStorage
+public class BrokerRaftPersistentStorage implements RaftPersistentStorage
 {
     private final RaftConfigurationMetadata configuration = new RaftConfigurationMetadata();
 
@@ -46,7 +46,7 @@ public class RaftPersistentFileStorage implements RaftPersistentStorage
     private final SocketAddress votedFor = new SocketAddress();
     private LogStream logStream;
 
-    public RaftPersistentFileStorage(final String filename)
+    public BrokerRaftPersistentStorage(final String filename)
     {
         file = new File(filename);
         tmpFile = new File(filename + ".tmp");
@@ -56,6 +56,12 @@ public class RaftPersistentFileStorage implements RaftPersistentStorage
         load();
     }
 
+    public void delete()
+    {
+        file.delete();
+        tmpFile.delete();
+    }
+
     @Override
     public int getTerm()
     {
@@ -63,7 +69,7 @@ public class RaftPersistentFileStorage implements RaftPersistentStorage
     }
 
     @Override
-    public RaftPersistentFileStorage setTerm(final int term)
+    public BrokerRaftPersistentStorage setTerm(final int term)
     {
         logStream.setTerm(term);
 
@@ -86,7 +92,7 @@ public class RaftPersistentFileStorage implements RaftPersistentStorage
     }
 
     @Override
-    public RaftPersistentFileStorage setVotedFor(final SocketAddress votedFor)
+    public BrokerRaftPersistentStorage setVotedFor(final SocketAddress votedFor)
     {
         configuration.setVotedFor(votedFor);
 
@@ -123,7 +129,7 @@ public class RaftPersistentFileStorage implements RaftPersistentStorage
     }
 
     @Override
-    public RaftPersistentFileStorage addMember(final SocketAddress member)
+    public BrokerRaftPersistentStorage addMember(final SocketAddress member)
     {
         configuration.addMember(member);
 
@@ -131,7 +137,7 @@ public class RaftPersistentFileStorage implements RaftPersistentStorage
     }
 
     @Override
-    public RaftPersistentFileStorage clearMembers()
+    public BrokerRaftPersistentStorage clearMembers()
     {
         configuration.membersProp.reset();
 
@@ -163,7 +169,7 @@ public class RaftPersistentFileStorage implements RaftPersistentStorage
     }
 
     @Override
-    public RaftPersistentFileStorage save()
+    public BrokerRaftPersistentStorage save()
     {
         final int length = configuration.getEncodedLength();
 
@@ -224,22 +230,21 @@ public class RaftPersistentFileStorage implements RaftPersistentStorage
         return configuration.getLogDirectory();
     }
 
-    public RaftPersistentFileStorage setLogStream(final LogStream logStream)
+    public BrokerRaftPersistentStorage setTopicName(DirectBuffer topicName)
     {
-        this.logStream = logStream;
-
-        configuration.setTopicName(logStream.getTopicName());
-        configuration.setPartitionId(logStream.getPartitionId());
-
-        logStream.setTerm(configuration.getTerm());
-
+        configuration.setTopicName(topicName);
         return this;
     }
 
-    public RaftPersistentFileStorage setLogDirectory(final String logDirectory)
+    public BrokerRaftPersistentStorage setPartitionId(int partitionId)
+    {
+        configuration.setPartitionId(partitionId);
+        return this;
+    }
+
+    public BrokerRaftPersistentStorage setLogDirectory(final String logDirectory)
     {
         configuration.setLogDirectory(logDirectory);
-
         return this;
     }
 }

@@ -1,4 +1,4 @@
-package io.zeebe.broker.clustering2.gossip;
+package io.zeebe.broker.clustering2.base.gossip;
 
 import java.util.Arrays;
 import java.util.List;
