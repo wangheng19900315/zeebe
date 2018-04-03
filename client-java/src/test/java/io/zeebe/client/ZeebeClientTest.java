@@ -20,8 +20,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.fail;
 
-import java.util.*;
-import java.util.concurrent.*;
+import java.time.Duration;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Properties;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 import org.junit.After;
 import org.junit.Before;
@@ -410,9 +416,8 @@ public class ZeebeClientTest
         });
 
         // +2 (one for the extra request when client is started)
-        final long requestTimeout = Long.parseLong(client.getInitializationProperties()
-                                            .getProperty(ClientProperties.CLIENT_REQUEST_TIMEOUT_SEC));
-        final long requestTimeoutMs = TimeUnit.SECONDS.toMillis(requestTimeout);
+        final Duration requestTimeout = client.getConfiguration().getRequestTimeout();
+        final long requestTimeoutMs = requestTimeout.toMillis();
         final long expectedMaximumTopologyRequests =
                 (requestTimeoutMs / ClientTopologyManager.MIN_REFRESH_INTERVAL_MILLIS.toMillis()) + 2;
         final long actualTopologyRequests = broker
@@ -439,9 +444,8 @@ public class ZeebeClientTest
         });
 
         // +2 (one for the extra request when client is started)
-        final long requestTimeout = Long.parseLong(client.getInitializationProperties()
-                                                         .getProperty(ClientProperties.CLIENT_REQUEST_TIMEOUT_SEC));
-        final long requestTimeoutMs = TimeUnit.SECONDS.toMillis(requestTimeout);
+        final Duration requestTimeout = client.getConfiguration().getRequestTimeout();
+        final long requestTimeoutMs = requestTimeout.toMillis();
         final long expectedMaximumTopologyRequests = (requestTimeoutMs / ClientTopologyManager.MIN_REFRESH_INTERVAL_MILLIS.toMillis()) + 2;
         final long actualTopologyRequests = broker
             .getReceivedControlMessageRequests()
