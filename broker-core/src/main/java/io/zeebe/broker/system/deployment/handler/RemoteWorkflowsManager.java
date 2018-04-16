@@ -17,16 +17,14 @@
  */
 package io.zeebe.broker.system.deployment.handler;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.IntConsumer;
 import java.util.function.Predicate;
 
-import org.agrona.DirectBuffer;
-import org.agrona.collections.IntArrayList;
-import org.slf4j.Logger;
 import io.zeebe.broker.Loggers;
-import io.zeebe.broker.clustering.base.topology.TopologyManager;
 import io.zeebe.broker.clustering.base.topology.Topology.NodeInfo;
+import io.zeebe.broker.clustering.base.topology.TopologyManager;
 import io.zeebe.broker.logstreams.processor.StreamProcessorLifecycleAware;
 import io.zeebe.broker.logstreams.processor.TypedStreamProcessor;
 import io.zeebe.broker.system.deployment.data.PendingDeployments;
@@ -34,27 +32,20 @@ import io.zeebe.broker.system.deployment.data.PendingDeployments.PendingDeployme
 import io.zeebe.broker.system.deployment.data.PendingWorkflows;
 import io.zeebe.broker.system.deployment.data.PendingWorkflows.PendingWorkflow;
 import io.zeebe.broker.system.deployment.data.PendingWorkflows.PendingWorkflowIterator;
-import io.zeebe.broker.system.deployment.message.CreateWorkflowRequest;
-import io.zeebe.broker.system.deployment.message.CreateWorkflowResponse;
-import io.zeebe.broker.system.deployment.message.DeleteWorkflowMessage;
+import io.zeebe.broker.system.deployment.message.*;
 import io.zeebe.broker.workflow.data.DeploymentState;
 import io.zeebe.broker.workflow.data.WorkflowEvent;
-import io.zeebe.transport.ClientOutput;
-import io.zeebe.transport.ClientResponse;
-import io.zeebe.transport.ClientTransport;
-import io.zeebe.transport.RemoteAddress;
-import io.zeebe.transport.SocketAddress;
-import io.zeebe.transport.TransportMessage;
+import io.zeebe.transport.*;
 import io.zeebe.util.buffer.BufferWriter;
 import io.zeebe.util.sched.ActorControl;
 import io.zeebe.util.sched.future.ActorFuture;
+import org.agrona.DirectBuffer;
+import org.agrona.collections.IntArrayList;
+import org.slf4j.Logger;
 
 public class RemoteWorkflowsManager implements StreamProcessorLifecycleAware
 {
     private static final Logger LOG = Loggers.SYSTEM_LOGGER;
-
-    private final CreateWorkflowRequest createRequest = new CreateWorkflowRequest();
-    private final CreateWorkflowResponse createResponse = new CreateWorkflowResponse();
 
     private final DeleteWorkflowMessage deleteMessage = new DeleteWorkflowMessage();
 
@@ -96,7 +87,7 @@ public class RemoteWorkflowsManager implements StreamProcessorLifecycleAware
             long workflowKey,
             WorkflowEvent event)
     {
-        createRequest
+        final CreateWorkflowRequest createRequest = new CreateWorkflowRequest()
             .workflowKey(workflowKey)
             .deploymentKey(event.getDeploymentKey())
             .version(event.getVersion())
@@ -184,6 +175,8 @@ public class RemoteWorkflowsManager implements StreamProcessorLifecycleAware
     {
         try
         {
+            final CreateWorkflowResponse createResponse = new CreateWorkflowResponse();
+
             final DirectBuffer responseBuffer = request.getResponseBuffer();
             createResponse.wrap(responseBuffer, 0, responseBuffer.capacity());
 
