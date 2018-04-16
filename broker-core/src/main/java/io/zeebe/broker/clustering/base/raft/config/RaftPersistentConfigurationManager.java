@@ -18,8 +18,7 @@
 package io.zeebe.broker.clustering.base.raft.config;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 import io.zeebe.broker.Loggers;
@@ -28,6 +27,7 @@ import io.zeebe.transport.SocketAddress;
 import io.zeebe.util.buffer.BufferUtil;
 import io.zeebe.util.sched.Actor;
 import io.zeebe.util.sched.future.ActorFuture;
+import io.zeebe.util.sched.future.CompletableActorFuture;
 import org.agrona.DirectBuffer;
 import org.slf4j.Logger;
 
@@ -84,26 +84,40 @@ public class RaftPersistentConfigurationManager extends Actor
         int replicationFactor,
         List<SocketAddress> members)
     {
-        return actor.call(() ->
+        final ActorFuture<RaftPersistentConfiguration> future = new CompletableActorFuture<>();
+        actor.run(() ->
         {
-            final String logName = String.format("%s-%d", BufferUtil.bufferAsString(topicName), partitionId);
-            final String filename = String.format("%s%s.meta", configurationStoreDirectory, logName);
-            final RaftPersistentConfiguration storage = new RaftPersistentConfiguration(filename);
+            final boolean partitionExists = configurations.stream()
+                    .anyMatch((config) -> config.getPartitionId() == partitionId);
 
-            final String[] logDirectories = logStreamsCfg.directories;
-            final int assignedLogDirectory = ThreadLocalRandom.current().nextInt(logDirectories.length);
+            if (partitionExists)
+            {
+                future.completeExceptionally(new RuntimeException(String.format("Partition with with %d already exists", partitionId)));
+            }
+            else
+            {
 
-            storage.setLogDirectory(logDirectories[assignedLogDirectory].concat(logName))
-                .setTopicName(topicName)
-                .setPartitionId(partitionId)
-                .setReplicationFactor(replicationFactor)
-                .setMembers(members)
-                .save();
+                final String logName = String.format("%s-%d", BufferUtil.bufferAsString(topicName), partitionId);
+                final String filename = String.format("%s%s.meta", configurationStoreDirectory, logName);
+                final RaftPersistentConfiguration storage = new RaftPersistentConfiguration(filename);
 
-            configurations.add(storage);
+                final String[] logDirectories = logStreamsCfg.directories;
+                final int assignedLogDirectory = ThreadLocalRandom.current().nextInt(logDirectories.length);
 
-            return storage;
+                storage.setLogDirectory(logDirectories[assignedLogDirectory].concat(logName))
+                    .setTopicName(topicName)
+                    .setPartitionId(partitionId)
+                    .setReplicationFactor(replicationFactor)
+                    .setMembers(members)
+                    .save();
+
+                configurations.add(storage);
+
+                future.complete(storage);
+            }
         });
+
+        return future;
     }
 
     public ActorFuture<Void> deleteConfiguration(RaftPersistentConfiguration configuration)

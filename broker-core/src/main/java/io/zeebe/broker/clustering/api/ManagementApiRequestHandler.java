@@ -150,6 +150,7 @@ public class ManagementApiRequestHandler implements ServerMessageHandler, Server
             if (throwable != null)
             {
                 LOG.error("Exception while creating partition", throwable);
+                sendEmptyRespone(output, remoteAddress, requestId);
             }
             else
             {
