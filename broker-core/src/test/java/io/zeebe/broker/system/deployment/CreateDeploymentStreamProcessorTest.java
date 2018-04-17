@@ -151,6 +151,7 @@ public class CreateDeploymentStreamProcessorTest
         event.setTopicName(BufferUtil.wrapString(topicName));
         event.setParitionId(partitionId);
         event.setCreator(BufferUtil.wrapString("host"), 1234);
+        event.setReplicationFactor(1);
 
         return event;
     }
