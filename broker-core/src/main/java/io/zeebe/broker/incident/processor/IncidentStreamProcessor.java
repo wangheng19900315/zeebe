@@ -541,6 +541,12 @@ public class IncidentStreamProcessor
         }
 
         @Override
+        public void onClose()
+        {
+            reader.close();
+        }
+
+        @Override
         public void processEvent(TypedEvent<TaskEvent> event)
         {
             isResolved = false;
