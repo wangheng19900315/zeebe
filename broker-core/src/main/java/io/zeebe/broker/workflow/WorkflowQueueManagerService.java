@@ -47,6 +47,8 @@ public class WorkflowQueueManagerService extends Actor implements Service<Workfl
     private WorkflowCfg workflowCfg;
     private StreamProcessorServiceFactory streamProcessorServiceFactory;
 
+    private ServerTransport transport;
+
     public WorkflowQueueManagerService(final ConfigurationManager configurationManager)
     {
         workflowCfg = configurationManager.readEntry("workflow", WorkflowCfg.class);
@@ -81,7 +83,6 @@ public class WorkflowQueueManagerService extends Actor implements Service<Workfl
 
     private void installIncidentStreamProcessor(Partition partition, ServiceName<Partition> partitionServiceName)
     {
-        final ServerTransport transport = clientApiTransportInjector.getValue();
         final TypedStreamEnvironment env = new TypedStreamEnvironment(partition.getLogStream(), transport.getOutput());
         final IncidentStreamProcessor incidentProcessorFactory = new IncidentStreamProcessor();
 
@@ -95,15 +96,16 @@ public class WorkflowQueueManagerService extends Actor implements Service<Workfl
     @Override
     public void start(ServiceStartContext serviceContext)
     {
+        this.transport = clientApiTransportInjector.getValue();
         this.streamProcessorServiceFactory =  streamProcessorServiceFactoryInjector.getValue();
 
-        serviceContext.getScheduler().submitActor(this);
+        serviceContext.async(serviceContext.getScheduler().submitActor(this));
     }
 
     @Override
     public void stop(ServiceStopContext stopContext)
     {
-        actor.close();
+        stopContext.async(actor.close());
     }
 
     @Override
@@ -129,10 +131,7 @@ public class WorkflowQueueManagerService extends Actor implements Service<Workfl
 
     public void addPartition(Partition partition, ServiceName<Partition> partitionServiceName)
     {
-        actor.call(() ->
-        {
-            startWorkflowQueue(partition, partitionServiceName);
-        });
+        actor.call(() -> startWorkflowQueue(partition, partitionServiceName));
     }
 
     @Override

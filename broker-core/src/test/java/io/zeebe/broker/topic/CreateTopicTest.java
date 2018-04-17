@@ -76,6 +76,25 @@ public class CreateTopicTest
     }
 
     @Test
+    public void shouldCreateTopicWith64Partitions()
+    {
+        // given
+        final String topicName = "newTopic";
+
+        // when
+        final ExecuteCommandResponse response = apiRule.createTopic(topicName, 64);
+
+        // then
+        assertThat(response.getEvent())
+            .containsExactly(
+                entry("state", "CREATED"),
+                entry("name", topicName),
+                entry("partitions", 64),
+                entry("replicationFactor", 1)
+            );
+    }
+
+    @Test
     public void shouldNotCreateSystemTopic()
     {
         // when

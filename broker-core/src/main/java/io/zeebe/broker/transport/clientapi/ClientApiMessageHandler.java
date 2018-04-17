@@ -39,7 +39,7 @@ import io.zeebe.transport.*;
 import org.agrona.DirectBuffer;
 import org.agrona.MutableDirectBuffer;
 import org.agrona.collections.Int2ObjectHashMap;
-import org.agrona.concurrent.ManyToOneConcurrentArrayQueue;
+import org.agrona.concurrent.*;
 
 public class ClientApiMessageHandler implements ServerMessageHandler, ServerRequestHandler
 {
@@ -47,7 +47,7 @@ public class ClientApiMessageHandler implements ServerMessageHandler, ServerRequ
     protected final ExecuteCommandRequestDecoder executeCommandRequestDecoder = new ExecuteCommandRequestDecoder();
     protected final ControlMessageRequestHeaderDescriptor controlMessageRequestHeaderDescriptor = new ControlMessageRequestHeaderDescriptor();
 
-    protected final ManyToOneConcurrentArrayQueue<Runnable> cmdQueue = new ManyToOneConcurrentArrayQueue<>(100);
+    protected final ManyToOneConcurrentLinkedQueue<Runnable> cmdQueue = new ManyToOneConcurrentLinkedQueue<>();
     protected final Consumer<Runnable> cmdConsumer = (c) -> c.run();
 
     protected final Int2ObjectHashMap<Partition> leaderPartitions = new Int2ObjectHashMap<>();
@@ -280,7 +280,14 @@ public class ClientApiMessageHandler implements ServerMessageHandler, ServerRequ
 
     private void drainCommandQueue()
     {
-        cmdQueue.drain(cmdConsumer);
+        while (!cmdQueue.isEmpty())
+        {
+            final Runnable runnable = cmdQueue.poll();
+            if (runnable != null)
+            {
+                cmdConsumer.accept(runnable);
+            }
+        }
     }
 
 }
