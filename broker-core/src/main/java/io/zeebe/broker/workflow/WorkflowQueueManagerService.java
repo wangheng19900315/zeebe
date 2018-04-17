@@ -131,8 +131,13 @@ public class WorkflowQueueManagerService extends Actor implements Service<Workfl
 
     public void addPartition(Partition partition, ServiceName<Partition> partitionServiceName)
     {
-        actor.call(() -> startWorkflowQueue(partition, partitionServiceName));
+        actor.run(() ->
+        {
+            startWorkflowQueue(partition, partitionServiceName);
+        });
     }
+
+
 
     @Override
     public String getName()

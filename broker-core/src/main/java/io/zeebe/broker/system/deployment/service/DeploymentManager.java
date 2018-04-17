@@ -76,9 +76,12 @@ public class DeploymentManager implements Service<DeploymentManager>
 
         final Duration deploymentRequestTimeout = Duration.ofSeconds(systemConfiguration.getDeploymentCreationTimeoutSeconds());
 
+
+
+
         final TypedStreamEnvironment streamEnvironment = new TypedStreamEnvironment(partition.getLogStream(), clientApiTransport.getOutput());
 
-        final DeploymentEventWriter deploymentEventWriter = new DeploymentEventWriter(streamEnvironment.buildStreamWriter(), streamEnvironment.buildStreamReader());
+        final DeploymentEventWriter deploymentEventWriter = new DeploymentEventWriter(streamEnvironment);
 
         final RemoteWorkflowsManager remoteManager = new RemoteWorkflowsManager(pendingDeployments,
             pendingWorkflows,

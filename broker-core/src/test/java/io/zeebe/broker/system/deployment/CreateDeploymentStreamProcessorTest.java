@@ -73,9 +73,7 @@ public class CreateDeploymentStreamProcessorTest
         final PendingDeployments pendingDeployments = new PendingDeployments();
 
         final DeploymentEventWriter writer =
-                new DeploymentEventWriter(
-                        env.buildStreamWriter(),
-                        env.buildStreamReader());
+                new DeploymentEventWriter(env);
 
         final RemoteWorkflowsManager remoteManager = mock(RemoteWorkflowsManager.class);
         when(remoteManager.distributeWorkflow(any(), anyLong(), any())).thenReturn(true);
