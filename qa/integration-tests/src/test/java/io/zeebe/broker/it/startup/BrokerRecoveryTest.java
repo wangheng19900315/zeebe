@@ -477,10 +477,10 @@ public class BrokerRecoveryTest
         waitUntil(() -> raftAfterRestart.getState() == RaftState.LEADER);
 
         // then
-        assertThat(raft.getState()).isEqualTo(RaftState.LEADER);
-        assertThat(raft.getTerm()).isEqualTo(testTerm + 1);
-        assertThat(raft.getMemberSize()).isEqualTo(0);
-        assertThat(raft.getVotedFor()).isEqualTo(new SocketAddress("localhost", 51017));
+        assertThat(raftAfterRestart.getState()).isEqualTo(RaftState.LEADER);
+        assertThat(raftAfterRestart.getTerm()).isGreaterThanOrEqualTo(9);
+        assertThat(raftAfterRestart.getMemberSize()).isEqualTo(0);
+        assertThat(raftAfterRestart.getVotedFor()).isEqualTo(new SocketAddress("localhost", 51017));
     }
 
     @Test
