@@ -68,6 +68,8 @@ public class ClusterComponent implements Component
         baseLayerInstall.createService(TOPOLOGY_MANAGER_SERVICE, topologyManagerService)
             .dependency(GOSSIP_SERVICE, topologyManagerService.getGossipInjector())
             .groupReference(LEADER_PARTITION_GROUP_NAME, topologyManagerService.getPartitionsReference())
+            .groupReference(LEADER_PARTITION_SYSTEM_GROUP_NAME, topologyManagerService.getPartitionsReference())
+            .groupReference(FOLLOWER_PARTITION_SYSTEM_GROUP_NAME, topologyManagerService.getPartitionsReference())
             .groupReference(FOLLOWER_PARTITION_GROUP_NAME, topologyManagerService.getPartitionsReference())
             .install();
 
