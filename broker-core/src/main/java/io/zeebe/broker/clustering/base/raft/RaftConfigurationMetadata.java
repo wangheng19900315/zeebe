@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package io.zeebe.broker.clustering.base.raft.config;
+package io.zeebe.broker.clustering.base.raft;
 
 import static io.zeebe.util.EnsureUtil.ensureGreaterThan;
 import static io.zeebe.util.EnsureUtil.ensureNotNull;
@@ -29,10 +29,10 @@ import org.agrona.DirectBuffer;
 import org.agrona.concurrent.UnsafeBuffer;
 
 import io.zeebe.msgpack.UnpackedObject;
-import io.zeebe.msgpack.property.ArrayProperty;
-import io.zeebe.msgpack.property.IntegerProperty;
-import io.zeebe.msgpack.property.StringProperty;
+import io.zeebe.msgpack.property.*;
 import io.zeebe.transport.SocketAddress;
+import io.zeebe.util.ByteUnit;
+import io.zeebe.util.ByteValue;
 
 public class RaftConfigurationMetadata extends UnpackedObject
 {
@@ -42,6 +42,7 @@ public class RaftConfigurationMetadata extends UnpackedObject
     protected IntegerProperty partitionIdProp = new IntegerProperty("partitionId", -1);
     protected IntegerProperty replicationFactorProp = new IntegerProperty("replicationFactor", -1);
     protected StringProperty logDirectoryProp = new StringProperty("logDirectory", "");
+    protected LongProperty logSegmentSizeProp = new LongProperty("segmentSize", new ByteValue(512, ByteUnit.MEGABYTES).toBytes().getValue());
     protected IntegerProperty termProp = new IntegerProperty("term", 0);
     protected StringProperty votedForHostProp = new StringProperty("votedForHost", "");
     protected IntegerProperty votedForPortProp = new IntegerProperty("votedForPort", 0);
@@ -56,6 +57,7 @@ public class RaftConfigurationMetadata extends UnpackedObject
         declareProperty(replicationFactorProp);
         declareProperty(topicNameProp);
         declareProperty(logDirectoryProp);
+        declareProperty(logSegmentSizeProp);
         declareProperty(termProp);
         declareProperty(votedForHostProp);
         declareProperty(votedForPortProp);
@@ -197,5 +199,15 @@ public class RaftConfigurationMetadata extends UnpackedObject
                 iterator.remove();
             }
         }
+    }
+
+    public long getLogSegmentSize()
+    {
+        return logSegmentSizeProp.getValue();
+    }
+
+    public void setLogSegmentSize(long value)
+    {
+        logSegmentSizeProp.setValue(value);
     }
 }

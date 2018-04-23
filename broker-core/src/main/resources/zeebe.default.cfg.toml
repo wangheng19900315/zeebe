@@ -1,22 +1,22 @@
 # Default Zeebe Config File. Used if no config file is provided to the broker.
 
+standalone = true
+
 # Global configuration --------------------------------
 
 [global]
 useTempDirectory = true
-standalone = true
 
 # Networking configuration ----------------------------
 
 [network]
 host = "0.0.0.0"
-sendBufferSize = 128
+sendBufferSize = "16MB"
 
 [network.clientApi]
 host = "localhost"
 port = 51015
-receiveBufferSize = 16
-controlMessageRequestTimeoutInMillis = 10000
+receiveBufferSize = "16MB"
 
 [network.managementApi]
 host = "localhost"

@@ -25,9 +25,7 @@ import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Collection;
 
-import io.zeebe.broker.system.ConfigurationManager;
-import io.zeebe.broker.system.ConfigurationManagerImpl;
-import io.zeebe.broker.system.GlobalConfiguration;
+import io.zeebe.broker.system.configuration.*;
 import io.zeebe.util.FileUtil;
 import org.junit.After;
 import org.junit.Before;
@@ -42,7 +40,7 @@ public class ConfigurationDirectoryTest
 {
     private static final String GLOBAL_DIRECTORY = String.format("%szeebe-testing%sglobal-data-path", File.separator, File.separator);
     private static final String GLOBAL_DIRECTORY_DEFAULT = String.format("%sdata", File.separator);
-    private static final String GLOBAL_DIRECTORY_TEMP = String.format("%s%s", File.separator, GlobalConfiguration.GLOBAL_DIRECTORY_TEMP);
+    private static final String GLOBAL_DIRECTORY_TEMP = String.format("%s%s", File.separator, GlobalCfg.GLOBAL_DIRECTORY_TEMP);
     private static final String LOCAL_DIRECTORY = String.format("%smy-local-path", File.separator);
 
     @Parameters(name = "Scenario {index}")
@@ -103,13 +101,13 @@ public class ConfigurationDirectoryTest
                 .getClassLoader()
                 .getResourceAsStream(configuration);
 
-        configurationManager = new ConfigurationManagerImpl(is);
+        configurationManager = new TomlConfigurationReader(is);
     }
 
     @After
     public void after() throws IOException
     {
-        final GlobalConfiguration globalConfiguration = configurationManager.getGlobalConfiguration();
+        final GlobalCfg globalConfiguration = configurationManager.getGlobalConfiguration();
         final String globalDirectory = globalConfiguration.getDirectory();
         final File tempDirectory = new File(globalDirectory);
 

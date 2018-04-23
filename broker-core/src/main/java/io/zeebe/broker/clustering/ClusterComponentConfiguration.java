@@ -17,9 +17,9 @@
  */
 package io.zeebe.broker.clustering;
 
-import io.zeebe.broker.system.DirectoryConfiguration;
+import io.zeebe.broker.system.configuration.DirectoryCfg;
 
-public class ClusterComponentConfiguration extends DirectoryConfiguration
+public class ClusterComponentConfiguration extends DirectoryCfg
 {
     @Override
     protected String componentDirectoryName()

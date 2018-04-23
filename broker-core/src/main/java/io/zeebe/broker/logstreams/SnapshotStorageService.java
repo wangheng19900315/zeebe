@@ -17,20 +17,19 @@
  */
 package io.zeebe.broker.logstreams;
 
-import io.zeebe.broker.logstreams.cfg.SnapshotStorageCfg;
-import io.zeebe.broker.system.ConfigurationManager;
+import io.zeebe.broker.system.configuration.*;
 import io.zeebe.logstreams.LogStreams;
 import io.zeebe.logstreams.spi.SnapshotStorage;
 import io.zeebe.servicecontainer.*;
 
 public class SnapshotStorageService implements Service<SnapshotStorage>
 {
-    protected SnapshotStorageCfg config;
     private SnapshotStorage snapshotStorage;
+    private BrokerCfg configuration;
 
-    public SnapshotStorageService(ConfigurationManager configurationManager)
+    public SnapshotStorageService(BrokerCfg configuration)
     {
-        config = configurationManager.readEntry("snapshot", SnapshotStorageCfg.class);
+        this.configuration = configuration;
     }
 
     @Override
@@ -38,7 +37,9 @@ public class SnapshotStorageService implements Service<SnapshotStorage>
     {
         serviceContext.run(() ->
         {
-            final String snapshotDirectory = config.directory;
+            final String snapshotDirectory = configuration.getLogs()
+                .getSnapshots()
+                .getDirectory();
 
             snapshotStorage = LogStreams.createFsSnapshotStore(snapshotDirectory)
                 .build();

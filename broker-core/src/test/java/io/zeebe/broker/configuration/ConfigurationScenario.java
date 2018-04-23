@@ -24,14 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.zeebe.broker.clustering.ClusterComponentConfiguration;
-import io.zeebe.broker.clustering.base.gossip.BrokerGossipConfiguration;
-import io.zeebe.broker.event.processor.SubscriptionCfg;
-import io.zeebe.broker.logstreams.cfg.LogStreamsCfg;
-import io.zeebe.broker.logstreams.cfg.SnapshotStorageCfg;
-import io.zeebe.broker.logstreams.cfg.StreamProcessorCfg;
-import io.zeebe.broker.system.ConfigurationManager;
-import io.zeebe.broker.system.DirectoryConfiguration;
-import io.zeebe.broker.system.metrics.cfg.MetricsCfg;
+import io.zeebe.broker.system.configuration.*;
 
 public class ConfigurationScenario
 {
@@ -59,7 +52,7 @@ public class ConfigurationScenario
 
     public ConfigurationScenario gossip(String parent, String child)
     {
-        withConfiguration("network.gossip", BrokerGossipConfiguration.class, parent, child);
+        withConfiguration("network.gossip", ClusterCfg.class, parent, child);
         return this;
     }
 
@@ -126,7 +119,7 @@ public class ConfigurationScenario
             final String parent = fileSpecification.getParent();
             final String child = fileSpecification.getChild();
 
-            final DirectoryConfiguration configuration = (DirectoryConfiguration) configurationManager.readEntry(key, type);
+            final DirectoryCfg configuration = (DirectoryCfg) configurationManager.readEntry(key, type);
             final String configurationDirectory = configuration.getDirectory();
 
             assertThat(configurationDirectory)
@@ -137,7 +130,7 @@ public class ConfigurationScenario
 
     public void assertLogDirectories(ConfigurationManager configurationManager)
     {
-        final LogStreamsCfg configuration = configurationManager.readEntry("logs", LogStreamsCfg.class);
+        final LogsCfg configuration = configurationManager.readEntry("logs", LogsCfg.class);
         final String[] logDirectories = configuration.directories;
         final LogDirectoriesSpecification logDirectoriesSpecification = getLogDirectoriesSpecification();
         final List<FileSpecification> fileSpecifications = logDirectoriesSpecification.getFileSpecifications();
@@ -199,9 +192,9 @@ public class ConfigurationScenario
             return "logs";
         }
 
-        public Class<LogStreamsCfg> getType()
+        public Class<LogsCfg> getType()
         {
-            return LogStreamsCfg.class;
+            return LogsCfg.class;
         }
 
         public List<FileSpecification> getFileSpecifications()

@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package io.zeebe.broker.system;
+package io.zeebe.broker.system.configuration;
 
 import static io.zeebe.util.FileUtil.createTempDirectory;
 import static io.zeebe.util.FileUtil.getCanonicalPath;
@@ -25,15 +25,14 @@ import java.io.File;
 import io.zeebe.broker.Loggers;
 import org.slf4j.Logger;
 
-public class GlobalConfiguration extends DirectoryConfiguration
+public class GlobalCfg extends DirectoryCfg
 {
     public static final Logger LOG = Loggers.SYSTEM_LOGGER;
 
     public static final String GLOBAL_DIRECTORY_DEFAULT = "./data";
     public static final String GLOBAL_DIRECTORY_TEMP = "zeebe-data-";
 
-    public boolean useTempDirectory;
-    public boolean standalone;
+    public boolean useTempDirectory = true;
 
     public void init()
     {

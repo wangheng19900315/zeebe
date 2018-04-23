@@ -17,7 +17,7 @@
  */
 package io.zeebe.broker.clustering.api;
 
-import io.zeebe.broker.clustering.base.raft.config.RaftPersistentConfigurationManager;
+import io.zeebe.broker.clustering.base.raft.RaftPersistentConfigurationManager;
 import io.zeebe.broker.system.deployment.handler.WorkflowRequestMessageHandler;
 import io.zeebe.servicecontainer.*;
 import io.zeebe.transport.BufferingServerTransport;

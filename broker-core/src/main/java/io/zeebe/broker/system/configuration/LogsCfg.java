@@ -15,21 +15,23 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package io.zeebe.broker.logstreams.cfg;
+package io.zeebe.broker.system.configuration;
 
-import io.zeebe.broker.system.DirectoryConfiguration;
-import io.zeebe.broker.system.GlobalConfiguration;
 import io.zeebe.util.FileUtil;
 
-public class LogStreamsCfg extends DirectoryConfiguration
+public class LogsCfg extends DirectoryCfg
 {
-    public int defaultLogSegmentSize = 512;
+    private String[] directories = null;
 
-    public String[] directories = null;
+    private String defaultLogSegmentSize = "512MB";
+
+    private SnapshotStorageCfg snapshots = new SnapshotStorageCfg();
 
     @Override
-    public void applyGlobalConfiguration(GlobalConfiguration globalConfig)
+    public void applyGlobalConfiguration(GlobalCfg globalConfig)
     {
+        snapshots.applyGlobalConfiguration(globalConfig);
+
         if (directories == null || directories.length == 0)
         {
             super.applyGlobalConfiguration(globalConfig);
@@ -46,7 +48,36 @@ public class LogStreamsCfg extends DirectoryConfiguration
     @Override
     protected String componentDirectoryName()
     {
-        return "logs";
+        return "directories";
     }
 
+    public String[] getDirectories()
+    {
+        return directories;
+    }
+
+    public void setDirectories(String[] directories)
+    {
+        this.directories = directories;
+    }
+
+    public String getDefaultLogSegmentSize()
+    {
+        return defaultLogSegmentSize;
+    }
+
+    public void setDefaultLogSegmentSize(String defaultLogSegmentSize)
+    {
+        this.defaultLogSegmentSize = defaultLogSegmentSize;
+    }
+
+    public SnapshotStorageCfg getSnapshots()
+    {
+        return snapshots;
+    }
+
+    public void setSnapshots(SnapshotStorageCfg snapshots)
+    {
+        this.snapshots = snapshots;
+    }
 }

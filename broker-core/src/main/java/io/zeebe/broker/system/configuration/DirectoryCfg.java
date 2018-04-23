@@ -15,26 +15,26 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package io.zeebe.broker.system;
+package io.zeebe.broker.system.configuration;
 
 import java.io.File;
 
 import io.zeebe.util.FileUtil;
 
-public abstract class DirectoryConfiguration extends ComponentConfiguration
+public abstract class DirectoryCfg extends GlobalCfgSupport
 {
     private static final String SUB_DIRECTORY_NAME_PATTERN = "%s" + File.separator + "%s";
 
-    public String directory;
+    protected String directory;
 
     @Override
-    public void applyGlobalConfiguration(GlobalConfiguration globalConfiguration)
+    public void applyGlobalConfiguration(GlobalCfg globalConfiguration)
     {
         String localDirectory = directory;
 
         if (localDirectory == null || localDirectory.isEmpty())
         {
-            final String globalDirectory = globalConfiguration.directory;
+            final String globalDirectory = globalConfiguration.getDirectory();
             final String subDirectory = componentDirectoryName();
 
             if (subDirectory != null && !subDirectory.isEmpty())
@@ -60,5 +60,8 @@ public abstract class DirectoryConfiguration extends ComponentConfiguration
         return directory;
     }
 
-
+    public void setDirectory(String directory)
+    {
+        this.directory = directory;
+    }
 }

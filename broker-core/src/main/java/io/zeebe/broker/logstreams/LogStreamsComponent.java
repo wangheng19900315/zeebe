@@ -36,11 +36,11 @@ public class LogStreamsComponent implements Component
     {
         final ServiceContainer serviceContainer = context.getServiceContainer();
 
-        final SnapshotStorageService snapshotStorageService = new SnapshotStorageService(context.getConfigurationManager());
+        final SnapshotStorageService snapshotStorageService = new SnapshotStorageService(context.getBrokerConfiguration());
         serviceContainer.createService(SNAPSHOT_STORAGE_SERVICE, snapshotStorageService)
             .install();
 
-        final TopicSubscriptionService topicSubscriptionService = new TopicSubscriptionService(context.getConfigurationManager(), serviceContainer);
+        final TopicSubscriptionService topicSubscriptionService = new TopicSubscriptionService(serviceContainer);
         serviceContainer
             .createService(TopicSubscriptionServiceNames.TOPIC_SUBSCRIPTION_SERVICE, topicSubscriptionService)
             .dependency(TransportServiceNames.serverTransport(TransportServiceNames.CLIENT_API_SERVER_NAME), topicSubscriptionService.getClientApiTransportInjector())

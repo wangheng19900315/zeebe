@@ -15,11 +15,13 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package io.zeebe.broker.system.threads.cfg;
+package io.zeebe.broker.system.configuration;
 
-import io.zeebe.broker.system.ComponentConfiguration;
-
-public class ThreadingCfg extends ComponentConfiguration
+public class SnapshotStorageCfg extends DirectoryCfg
 {
-    public int numberOfThreads = -1;
+    @Override
+    protected String componentDirectoryName()
+    {
+        return "directory";
+    }
 }

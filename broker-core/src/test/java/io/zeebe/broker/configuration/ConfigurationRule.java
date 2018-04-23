@@ -19,14 +19,14 @@ package io.zeebe.broker.configuration;
 
 import java.io.InputStream;
 
-import io.zeebe.broker.system.ConfigurationManagerImpl;
+import io.zeebe.broker.system.configuration.TomlConfigurationReader;
 import org.junit.rules.TestWatcher;
 import org.junit.runner.Description;
 
 public class ConfigurationRule extends TestWatcher
 {
 
-    private ConfigurationManagerImpl configurationManager;
+    private TomlConfigurationReader configurationManager;
 
     @Override
     protected void starting(final Description description)
@@ -37,7 +37,7 @@ public class ConfigurationRule extends TestWatcher
         {
             final String fileName = annotation.value();
             final InputStream configurationStream = description.getTestClass().getClassLoader().getResourceAsStream(fileName);
-            configurationManager = new ConfigurationManagerImpl(configurationStream);
+            configurationManager = new TomlConfigurationReader(configurationStream);
         }
     }
 
@@ -48,7 +48,7 @@ public class ConfigurationRule extends TestWatcher
         configurationManager = null;
     }
 
-    public ConfigurationManagerImpl getConfigurationManager()
+    public TomlConfigurationReader getConfigurationManager()
     {
         return configurationManager;
     }

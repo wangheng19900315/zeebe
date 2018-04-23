@@ -15,15 +15,24 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package io.zeebe.broker.logstreams.cfg;
+package io.zeebe.broker.system.configuration;
 
-import io.zeebe.broker.system.DirectoryConfiguration;
-
-public class SnapshotStorageCfg extends DirectoryConfiguration
+public class GlobalCfgSupport
 {
-    @Override
-    protected String componentDirectoryName()
+    public void applyGlobalConfiguration(GlobalCfg globalConfig)
     {
-        return "snapshot";
+        // noop;
+    }
+
+    protected String getOrDefault(String configuredValue, String defaultValue)
+    {
+        if (configuredValue == null || configuredValue.isEmpty())
+        {
+            return defaultValue;
+        }
+        else
+        {
+            return configuredValue;
+        }
     }
 }

@@ -15,15 +15,16 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package io.zeebe.broker.system;
+package io.zeebe.broker.system.configuration;
 
-import java.util.List;
-
-public interface ConfigurationManager
+public class MetricsCfg extends DirectoryCfg
 {
-    <T> T readEntry(String componentName, Class<T> configObjectType);
+    public int reportingInterval = 5;
+    public String metricsFile = "zeebe.prom";
 
-    <T> List<T> readList(String string, Class<T> class1);
-
-    GlobalConfiguration getGlobalConfiguration();
+    @Override
+    protected String componentDirectoryName()
+    {
+        return "metrics";
+    }
 }

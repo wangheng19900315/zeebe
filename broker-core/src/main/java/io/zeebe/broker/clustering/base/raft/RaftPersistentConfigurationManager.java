@@ -15,15 +15,16 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package io.zeebe.broker.clustering.base.raft.config;
+package io.zeebe.broker.clustering.base.raft;
 
 import java.io.File;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 import io.zeebe.broker.Loggers;
-import io.zeebe.broker.logstreams.cfg.LogStreamsCfg;
+import io.zeebe.broker.system.configuration.LogsCfg;
 import io.zeebe.transport.SocketAddress;
+import io.zeebe.util.ByteValue;
 import io.zeebe.util.buffer.BufferUtil;
 import io.zeebe.util.sched.Actor;
 import io.zeebe.util.sched.future.ActorFuture;
@@ -42,12 +43,12 @@ public class RaftPersistentConfigurationManager extends Actor
 
     private final List<RaftPersistentConfiguration> configurations = new ArrayList<>();
     private final String configurationStoreDirectory;
-    private final LogStreamsCfg logStreamsCfg;
+    private final LogsCfg logsCfg;
 
-    public RaftPersistentConfigurationManager(String configurationStoreDirectory, LogStreamsCfg logStreamsCfg)
+    public RaftPersistentConfigurationManager(String configurationStoreDirectory, LogsCfg logStreamsCfg)
     {
         this.configurationStoreDirectory = configurationStoreDirectory;
-        this.logStreamsCfg = logStreamsCfg;
+        this.logsCfg = logStreamsCfg;
     }
 
     @Override
@@ -101,7 +102,7 @@ public class RaftPersistentConfigurationManager extends Actor
                 final String filename = String.format("%s%s.meta", configurationStoreDirectory, logName);
                 final RaftPersistentConfiguration storage = new RaftPersistentConfiguration(filename);
 
-                final String[] logDirectories = logStreamsCfg.directories;
+                final String[] logDirectories = logsCfg.getDirectories();
                 final int assignedLogDirectory = ThreadLocalRandom.current().nextInt(logDirectories.length);
 
                 storage.setLogDirectory(logDirectories[assignedLogDirectory].concat(logName))
@@ -109,6 +110,7 @@ public class RaftPersistentConfigurationManager extends Actor
                     .setPartitionId(partitionId)
                     .setReplicationFactor(replicationFactor)
                     .setMembers(members)
+                    .setLogSegmentSize(new ByteValue(logsCfg.getDefaultLogSegmentSize()).toBytes().getValue())
                     .save();
 
                 configurations.add(storage);

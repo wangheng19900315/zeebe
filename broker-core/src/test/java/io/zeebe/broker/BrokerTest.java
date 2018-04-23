@@ -26,8 +26,8 @@ import io.zeebe.util.sched.future.ActorFuture;
 import org.junit.After;
 import org.junit.Test;
 import io.zeebe.broker.clustering.base.ClusterBaseLayerServiceNames;
-import io.zeebe.broker.system.ConfigurationManager;
-import io.zeebe.broker.system.ConfigurationManagerImpl;
+import io.zeebe.broker.system.configuration.ConfigurationManager;
+import io.zeebe.broker.system.configuration.TomlConfigurationReader;
 import io.zeebe.servicecontainer.Service;
 import io.zeebe.servicecontainer.ServiceName;
 
@@ -53,7 +53,7 @@ public class BrokerTest
     public void shouldCreateBrokerWithConfigurationManager()
     {
         final InputStream configStream = BrokerTest.class.getClassLoader().getResourceAsStream("zeebe.unit-test.cfg.toml");
-        final ConfigurationManager configurationManager = new ConfigurationManagerImpl(configStream);
+        final ConfigurationManager configurationManager = new TomlConfigurationReader(configStream);
 
         // when
         broker = new Broker(configurationManager);

@@ -19,8 +19,8 @@ package io.zeebe.broker.clustering.base.bootstrap;
 
 import io.zeebe.broker.Loggers;
 import io.zeebe.broker.clustering.base.partitions.PartitionInstallService;
-import io.zeebe.broker.clustering.base.raft.config.RaftPersistentConfiguration;
-import io.zeebe.broker.clustering.base.raft.config.RaftPersistentConfigurationManager;
+import io.zeebe.broker.clustering.base.raft.RaftPersistentConfiguration;
+import io.zeebe.broker.clustering.base.raft.RaftPersistentConfigurationManager;
 import io.zeebe.protocol.Protocol;
 import io.zeebe.servicecontainer.*;
 import io.zeebe.util.sched.Actor;

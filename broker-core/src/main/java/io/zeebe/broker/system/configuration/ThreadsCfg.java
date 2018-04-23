@@ -15,24 +15,30 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package io.zeebe.broker.system;
+package io.zeebe.broker.system.configuration;
 
-public class ComponentConfiguration
+public class ThreadsCfg extends GlobalCfgSupport
 {
-    public void applyGlobalConfiguration(GlobalConfiguration globalConfig)
+    private int cpuThreads = 1;
+    private int ioThreads = 2;
+
+    public int getCpuThreads()
     {
-        // noop;
+        return cpuThreads;
     }
 
-    protected String getOrDefault(String configuredValue, String defaultValue)
+    public void setCpuThreads(int cpuThreads)
     {
-        if (configuredValue == null || configuredValue.isEmpty())
-        {
-            return defaultValue;
-        }
-        else
-        {
-            return configuredValue;
-        }
+        this.cpuThreads = cpuThreads;
+    }
+
+    public int getIoThreads()
+    {
+        return ioThreads;
+    }
+
+    public void setIoThreads(int ioThreads)
+    {
+        this.ioThreads = ioThreads;
     }
 }

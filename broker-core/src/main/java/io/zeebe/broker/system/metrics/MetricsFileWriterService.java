@@ -20,7 +20,7 @@ package io.zeebe.broker.system.metrics;
 import java.io.File;
 import java.time.Duration;
 
-import io.zeebe.broker.system.metrics.cfg.MetricsCfg;
+import io.zeebe.broker.system.configuration.MetricsCfg;
 import io.zeebe.servicecontainer.*;
 import io.zeebe.util.metrics.MetricsManager;
 import io.zeebe.util.sched.ActorScheduler;

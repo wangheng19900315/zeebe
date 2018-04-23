@@ -15,32 +15,33 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package io.zeebe.broker.clustering.base.raft.config;
+package io.zeebe.broker.clustering.base.raft;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 
-import io.zeebe.broker.logstreams.cfg.LogStreamsCfg;
-import io.zeebe.broker.transport.cfg.TransportComponentCfg;
+import io.zeebe.broker.system.configuration.*;
 import io.zeebe.servicecontainer.*;
 
 public class RaftPersistentConfigurationManagerService implements Service<RaftPersistentConfigurationManager>
 {
-    private final TransportComponentCfg config;
-    private final LogStreamsCfg logStreamsCfg;
     private RaftPersistentConfigurationManager service;
+    private BrokerCfg configuration;
 
-    public RaftPersistentConfigurationManagerService(TransportComponentCfg config, LogStreamsCfg logStreamsCfg)
+    public RaftPersistentConfigurationManagerService(BrokerCfg configuration)
     {
-        this.config = config;
-        this.logStreamsCfg = logStreamsCfg;
+        this.configuration = configuration;
     }
 
     @Override
     public void start(ServiceStartContext startContext)
     {
-        final File configDirectory = new File(config.management.getDirectory());
+        final String partitionMetadataDirectory = configuration.getCluster()
+            .getPartitionMetadata()
+            .getDirectory();
+
+        final File configDirectory = new File(partitionMetadataDirectory);
 
         if (!configDirectory.exists())
         {
@@ -55,7 +56,7 @@ public class RaftPersistentConfigurationManagerService implements Service<RaftPe
             }
         }
 
-        service = new RaftPersistentConfigurationManager(config.management.getDirectory(), logStreamsCfg);
+        service = new RaftPersistentConfigurationManager(partitionMetadataDirectory, configuration.getLogs());
 
         startContext.async(startContext.getScheduler().submitActor(service));
     }

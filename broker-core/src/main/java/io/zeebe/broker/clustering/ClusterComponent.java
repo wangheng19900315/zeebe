@@ -25,16 +25,15 @@ import io.zeebe.broker.clustering.base.bootstrap.*;
 import io.zeebe.broker.clustering.base.connections.RemoteAddressManager;
 import io.zeebe.broker.clustering.base.gossip.GossipJoinService;
 import io.zeebe.broker.clustering.base.gossip.GossipService;
-import io.zeebe.broker.clustering.base.raft.config.RaftPersistentConfigurationManagerService;
+import io.zeebe.broker.clustering.base.raft.RaftPersistentConfigurationManagerService;
 import io.zeebe.broker.clustering.base.topology.TopologyManagerService;
-import io.zeebe.broker.logstreams.cfg.LogStreamsCfg;
 
 import static io.zeebe.broker.clustering.base.ClusterBaseLayerServiceNames.*;
 import static io.zeebe.broker.system.SystemServiceNames.*;
 
 import io.zeebe.broker.system.*;
+import io.zeebe.broker.system.configuration.*;
 import io.zeebe.broker.transport.TransportServiceNames;
-import io.zeebe.broker.transport.cfg.TransportComponentCfg;
 import io.zeebe.broker.util.BrokerArguments;
 import io.zeebe.servicecontainer.CompositeServiceBuilder;
 import io.zeebe.servicecontainer.ServiceContainer;
@@ -51,20 +50,16 @@ public class ClusterComponent implements Component
     public void init(final SystemContext context)
     {
         final ServiceContainer serviceContainer = context.getServiceContainer();
-        final ConfigurationManager configurationManager = context.getConfigurationManager();
-        final TransportComponentCfg transportCfg = configurationManager.readEntry("network", TransportComponentCfg.class);
-        final GlobalConfiguration globalCfg = configurationManager.readEntry("global", GlobalConfiguration.class);
-        final LogStreamsCfg logsCfg = configurationManager.readEntry("logs", LogStreamsCfg.class);
 
-        initClusteringBaseLayer(context, serviceContainer, transportCfg, logsCfg);
-        initBootstrapSystemPartition(context, serviceContainer, globalCfg);
+        initClusteringBaseLayer(context, serviceContainer);
+        initBootstrapSystemPartition(context, serviceContainer);
     }
 
-    private void initClusteringBaseLayer(final SystemContext context, final ServiceContainer serviceContainer, final TransportComponentCfg config, LogStreamsCfg logsCfg)
+    private void initClusteringBaseLayer(final SystemContext context, final ServiceContainer serviceContainer)
     {
         final CompositeServiceBuilder baseLayerInstall = serviceContainer.createComposite(CLUSTERING_BASE_LAYER);
 
-        final TopologyManagerService topologyManagerService = new TopologyManagerService(config);
+        final TopologyManagerService topologyManagerService = new TopologyManagerService(context.getBrokerConfiguration().getNetwork());
         baseLayerInstall.createService(TOPOLOGY_MANAGER_SERVICE, topologyManagerService)
             .dependency(GOSSIP_SERVICE, topologyManagerService.getGossipInjector())
             .groupReference(LEADER_PARTITION_GROUP_NAME, topologyManagerService.getPartitionsReference())
@@ -85,30 +80,30 @@ public class ClusterComponent implements Component
             .dependency(WORKFLOW_REQUEST_MESSAGE_HANDLER_SERVICE, managementApiRequestHandlerService.getWorkflowRequestMessageHandlerInjector())
             .install();
 
-        initGossip(baseLayerInstall, config);
-        initRaft(baseLayerInstall, config, logsCfg);
+        initGossip(baseLayerInstall, context);
+        initRaft(baseLayerInstall, context);
 
         context.addRequiredStartAction(baseLayerInstall.install());
     }
 
-    private void initGossip(CompositeServiceBuilder baseLayerInstall, final TransportComponentCfg config)
+    private void initGossip(final CompositeServiceBuilder baseLayerInstall, final SystemContext context)
     {
-        final GossipService gossipService = new GossipService(config);
+        final GossipService gossipService = new GossipService(context.getBrokerConfiguration());
         baseLayerInstall.createService(GOSSIP_SERVICE, gossipService)
             .dependency(TransportServiceNames.clientTransport(TransportServiceNames.MANAGEMENT_API_CLIENT_NAME), gossipService.getClientTransportInjector())
             .dependency(TransportServiceNames.bufferingServerTransport(TransportServiceNames.MANAGEMENT_API_SERVER_NAME), gossipService.getBufferingServerTransportInjector())
             .install();
 
         // TODO: decide whether failure to join gossip cluster should result in broker startup fail
-        final GossipJoinService gossipJoinService = new GossipJoinService(config);
+        final GossipJoinService gossipJoinService = new GossipJoinService(context.getBrokerConfiguration().getCluster());
         baseLayerInstall.createService(GOSSIP_JOIN_SERVICE, gossipJoinService)
             .dependency(GOSSIP_SERVICE, gossipJoinService.getGossipInjector())
             .install();
     }
 
-    private void initRaft(CompositeServiceBuilder baseLayerInstall, final TransportComponentCfg transportCfg, LogStreamsCfg logsCfg)
+    private void initRaft(final CompositeServiceBuilder baseLayerInstall, final SystemContext context)
     {
-        final RaftPersistentConfigurationManagerService raftConfigurationManagerService = new RaftPersistentConfigurationManagerService(transportCfg, logsCfg);
+        final RaftPersistentConfigurationManagerService raftConfigurationManagerService = new RaftPersistentConfigurationManagerService(context.getBrokerConfiguration());
         baseLayerInstall.createService(RAFT_CONFIGURATION_MANAGER, raftConfigurationManagerService)
             .install();
 
@@ -118,9 +113,12 @@ public class ClusterComponent implements Component
             .install();
     }
 
-    private void initBootstrapSystemPartition(SystemContext context, ServiceContainer serviceContainer, GlobalConfiguration configuration)
+    private void initBootstrapSystemPartition(final SystemContext context, final ServiceContainer serviceContainer)
     {
-        if (configuration.standalone)
+        final BrokerCfg brokerConfiguration = context.getBrokerConfiguration();
+        final BrokerArguments brokerArguments = context.getBrokerArguments();
+
+        if (brokerConfiguration.isStandalone())
         {
             LOG.info("Starting standalone broker.");
 
@@ -135,7 +133,6 @@ public class ClusterComponent implements Component
         {
             LOG.info("Starting clustered broker.");
 
-            final BrokerArguments brokerArguments = context.getBrokerArguments();
             final Integer expectedNodeCount = brokerArguments.getBoostrapExpectCount();
 
             if (expectedNodeCount != null)

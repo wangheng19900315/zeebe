@@ -18,7 +18,7 @@
 package io.zeebe.broker.clustering.base.partitions;
 
 import io.zeebe.broker.Loggers;
-import io.zeebe.broker.clustering.base.raft.config.RaftPersistentConfiguration;
+import io.zeebe.broker.clustering.base.raft.RaftPersistentConfiguration;
 import io.zeebe.broker.clustering.base.topology.Topology.NodeInfo;
 import io.zeebe.broker.clustering.base.topology.Topology.PartitionInfo;
 import io.zeebe.logstreams.LogStreams;
@@ -95,6 +95,7 @@ public class PartitionInstallService implements Service<Void>, RaftStateListener
 
         logStreamServiceName = LogStreams.createFsLogStream(topicName, partitionId)
             .logDirectory(configuration.getLogDirectory())
+            .logSegmentSize((int) configuration.getLogSegmentSize())
             .logName(logName)
             .buildWith(partitionInstall);
 

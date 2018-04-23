@@ -24,9 +24,7 @@ import java.util.concurrent.*;
 
 import io.zeebe.broker.Broker;
 import io.zeebe.broker.Loggers;
-import io.zeebe.broker.system.threads.cfg.ThreadingCfg;
-import io.zeebe.broker.transport.cfg.SocketBindingCfg;
-import io.zeebe.broker.transport.cfg.TransportComponentCfg;
+import io.zeebe.broker.system.configuration.*;
 import io.zeebe.broker.util.BrokerArguments;
 import io.zeebe.servicecontainer.ServiceContainer;
 import io.zeebe.servicecontainer.impl.ServiceContainerImpl;
@@ -49,7 +47,7 @@ public class SystemContext implements AutoCloseable
 
     protected final List<Component> components = new ArrayList<>();
 
-    protected final ConfigurationManager configurationManager;
+    protected final BrokerCfg brokerCfg;
 
     protected final List<ActorFuture<?>> requiredStartActions = new ArrayList<>();
 
@@ -62,8 +60,15 @@ public class SystemContext implements AutoCloseable
     public SystemContext(String[] commandLineArgs, ActorClock clock)
     {
         this.brokerArguments = new BrokerArguments(commandLineArgs);
-        this.configurationManager =
-            new ConfigurationManagerImpl(brokerArguments.getConfigFile());
+
+        if (brokerArguments.getConfigFile() != null)
+        {
+            this.brokerCfg = new TomlConfigurationReader().read(brokerArguments.getConfigFile());
+        }
+        else
+        {
+            this.brokerCfg = new BrokerCfg(); // use defaults
+        }
 
         initSystemContext(clock);
     }
@@ -75,19 +80,27 @@ public class SystemContext implements AutoCloseable
 
     public SystemContext(InputStream configStream, ActorClock clock)
     {
-        this(new ConfigurationManagerImpl(configStream), clock);
+        this.brokerArguments = new BrokerArguments(new String[0]);
+        this.brokerCfg = new TomlConfigurationReader().read(configStream);
+
+        initSystemContext(clock);
     }
 
-    public SystemContext(ConfigurationManager configurationManager, ActorClock clock)
+    public SystemContext(BrokerCfg brokerCfg, ActorClock clock)
     {
-        this.configurationManager = configurationManager;
         this.brokerArguments = new BrokerArguments(new String[0]);
+        this.brokerCfg = brokerCfg;
+
         initSystemContext(clock);
     }
 
     private void initSystemContext(ActorClock clock)
     {
-        final String brokerId = readBrokerId(configurationManager);
+        brokerCfg.init();
+
+        final SocketBindingCfg clientApiCfg = brokerCfg.getNetwork().getClientApi();
+        final String brokerId = String.format("%s:%d", clientApiCfg.getHost(), clientApiCfg.getPort());
+
         this.diagnosticContext = Collections.singletonMap(BROKER_ID_LOG_PROPERTY, brokerId);
 
         // TODO: submit diagnosticContext to actor scheduler once supported
@@ -95,6 +108,7 @@ public class SystemContext implements AutoCloseable
         this.scheduler = initScheduler(clock, brokerId);
         this.serviceContainer = new ServiceContainerImpl(this.scheduler);
         this.scheduler.start();
+
         initBrokerInfoMetric();
     }
 
@@ -118,41 +132,30 @@ public class SystemContext implements AutoCloseable
 
     private ActorScheduler initScheduler(ActorClock clock, String brokerId)
     {
-        final ThreadingCfg cfg = configurationManager.readEntry("threading", ThreadingCfg.class);
-        int numberOfThreads = cfg.numberOfThreads;
+        final ThreadsCfg cfg = brokerCfg.getThreads();
 
-        if (numberOfThreads > MAX_THREAD_COUNT)
+        int cpuThreads = cfg.getCpuThreads();
+        int ioThreads = cfg.getIoThreads();
+
+        final int totalThreadCount = cpuThreads + ioThreads;
+
+        if (totalThreadCount > MAX_THREAD_COUNT)
         {
-            LOG.warn("Configured thread count {} is larger than MAX_THREAD_COUNT {}. Falling back max thread count.", numberOfThreads, MAX_THREAD_COUNT);
-            numberOfThreads = MAX_THREAD_COUNT;
-        }
-        else if (numberOfThreads < 1)
-        {
-            // use max threads by default
-            numberOfThreads = MAX_THREAD_COUNT;
+            LOG.warn("Configured thread count {} is larger than MAX_THREAD_COUNT {}. Falling back max thread count.", totalThreadCount, MAX_THREAD_COUNT);
+            ioThreads = 2;
+            cpuThreads = Math.max(1, MAX_THREAD_COUNT - ioThreads);
         }
 
-        final int ioBoundThreads = 2;
-        final int cpuBoundThreads = Math.max(1, numberOfThreads - ioBoundThreads);
-
-        Loggers.SYSTEM_LOGGER.info("Scheduler configuration: Threads{cpu-bound: {}, io-bound: {}}.", cpuBoundThreads, ioBoundThreads);
+        Loggers.SYSTEM_LOGGER.info("Scheduler configuration: Threads{cpu-bound: {}, io-bound: {}}.", cpuThreads, ioThreads);
 
         return ActorScheduler.newActorScheduler()
             .setActorClock(clock)
             .setMetricsManager(metricsManager)
-            .setCpuBoundActorThreadCount(cpuBoundThreads)
-            .setIoBoundActorThreadCount(ioBoundThreads)
+            .setCpuBoundActorThreadCount(cpuThreads)
+            .setIoBoundActorThreadCount(ioThreads)
             .setSchedulerName(brokerId)
             .build();
     }
-
-    protected static String readBrokerId(ConfigurationManager configurationManager)
-    {
-        final TransportComponentCfg transportComponentCfg = configurationManager.readEntry("network", TransportComponentCfg.class);
-        final SocketBindingCfg clientApiCfg = transportComponentCfg.clientApi;
-        return clientApiCfg.getHost(transportComponentCfg.host) + ":" + clientApiCfg.getPort();
-    }
-
 
     public ActorScheduler getScheduler()
     {
@@ -240,7 +243,7 @@ public class SystemContext implements AutoCloseable
             }
             finally
             {
-                final GlobalConfiguration config = configurationManager.getGlobalConfiguration();
+                final GlobalCfg config = brokerCfg.getGlobal();
                 final String directory = config.getDirectory();
                 if (config.isTempDirectory())
                 {
@@ -259,10 +262,11 @@ public class SystemContext implements AutoCloseable
         }
     }
 
-    public ConfigurationManager getConfigurationManager()
+    public BrokerCfg getBrokerConfiguration()
     {
-        return configurationManager;
+        return brokerCfg;
     }
+
 
     public void addRequiredStartAction(ActorFuture<?> future)
     {

@@ -25,8 +25,8 @@ import static io.zeebe.broker.transport.TransportServiceNames.clientTransport;
 import java.util.List;
 
 import io.zeebe.broker.clustering.base.partitions.PartitionInstallService;
-import io.zeebe.broker.clustering.base.raft.config.RaftPersistentConfiguration;
-import io.zeebe.broker.clustering.base.raft.config.RaftPersistentConfigurationManager;
+import io.zeebe.broker.clustering.base.raft.RaftPersistentConfiguration;
+import io.zeebe.broker.clustering.base.raft.RaftPersistentConfigurationManager;
 import io.zeebe.protocol.Protocol;
 import io.zeebe.servicecontainer.*;
 import io.zeebe.util.buffer.BufferUtil;

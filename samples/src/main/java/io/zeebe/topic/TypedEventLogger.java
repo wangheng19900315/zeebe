@@ -42,7 +42,8 @@ public class TypedEventLogger
 
         System.out.println(String.format("> Open event subscription from topic '%s'", topicName));
 
-        final Consumer<Event> logger = e -> {
+        final Consumer<Event> logger = e ->
+        {
             System.out.println(e.getMetadata());
             System.out.println(e);
             System.out.println();

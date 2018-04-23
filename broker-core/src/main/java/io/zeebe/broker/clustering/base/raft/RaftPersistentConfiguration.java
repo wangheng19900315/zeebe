@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package io.zeebe.broker.clustering.base.raft.config;
+package io.zeebe.broker.clustering.base.raft;
 
 import static java.nio.file.StandardCopyOption.ATOMIC_MOVE;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
@@ -279,5 +279,17 @@ public class RaftPersistentConfiguration implements RaftPersistentStorage
     {
         configuration.setLogDirectory(logDirectory);
         return this;
+    }
+
+    public RaftPersistentConfiguration setLogSegmentSize(long value)
+    {
+        configuration.setLogSegmentSize(value);
+        return this;
+    }
+
+
+    public long getLogSegmentSize()
+    {
+        return configuration.getLogSegmentSize();
     }
 }

@@ -19,7 +19,7 @@ package io.zeebe.broker.configuration;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-import io.zeebe.broker.transport.cfg.TransportComponentCfg;
+import io.zeebe.broker.system.configuration.NetworkCfg;
 import io.zeebe.raft.RaftConfiguration;
 import org.junit.Rule;
 import org.junit.Test;
@@ -34,7 +34,7 @@ public class ConfigurationTest
     @ConfigurationFile("zeebe.test.raft.cfg.toml")
     public void shouldSetRaftConfiguration()
     {
-        final RaftConfiguration config = configurationRule.getComponent("network", TransportComponentCfg.class).raft;
+        final RaftConfiguration config = configurationRule.getComponent("network", NetworkCfg.class).raft;
 
         assertThat(config.getHeartbeatIntervalMs()).isEqualTo(1234);
         assertThat(config.getElectionIntervalMs()).isEqualTo(2345);
