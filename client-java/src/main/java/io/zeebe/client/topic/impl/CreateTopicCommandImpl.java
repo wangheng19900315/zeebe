@@ -16,7 +16,7 @@
 package io.zeebe.client.topic.impl;
 
 import io.zeebe.client.event.Event;
-import io.zeebe.client.event.impl.EventImpl;
+import io.zeebe.client.event.impl.RecordImpl;
 import io.zeebe.client.impl.RequestManager;
 import io.zeebe.client.impl.cmd.CommandImpl;
 import io.zeebe.protocol.Protocol;
@@ -39,7 +39,7 @@ public class CreateTopicCommandImpl extends CommandImpl<Event>
 
 
     @Override
-    public EventImpl getEvent()
+    public RecordImpl getCommand()
     {
         return event;
     }

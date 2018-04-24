@@ -54,7 +54,7 @@ public class CreateTopicSubscriptionCommandImpl extends CommandImpl<TopicSubscri
     }
 
     @Override
-    public EventImpl getEvent()
+    public RecordImpl getCommand()
     {
         return subscription;
     }

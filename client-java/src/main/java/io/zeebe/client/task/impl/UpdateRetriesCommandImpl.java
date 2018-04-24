@@ -16,7 +16,7 @@
 package io.zeebe.client.task.impl;
 
 import io.zeebe.client.event.TaskEvent;
-import io.zeebe.client.event.impl.EventImpl;
+import io.zeebe.client.event.impl.RecordImpl;
 import io.zeebe.client.event.impl.TaskEventImpl;
 import io.zeebe.client.impl.RequestManager;
 import io.zeebe.client.impl.cmd.CommandImpl;
@@ -43,7 +43,7 @@ public class UpdateRetriesCommandImpl extends CommandImpl<TaskEvent> implements 
     }
 
     @Override
-    public EventImpl getEvent()
+    public RecordImpl getCommand()
     {
         return taskEvent;
     }

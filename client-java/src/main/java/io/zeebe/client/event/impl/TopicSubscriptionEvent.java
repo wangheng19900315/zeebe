@@ -20,7 +20,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.zeebe.client.event.TopicEventType;
 
-public class TopicSubscriptionEvent extends EventImpl
+public class TopicSubscriptionEvent extends RecordImpl
 {
     protected String name;
     protected long ackPosition = -1L;

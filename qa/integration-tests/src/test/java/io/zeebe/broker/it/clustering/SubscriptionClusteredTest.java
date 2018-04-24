@@ -110,7 +110,7 @@ public class SubscriptionClusteredTest
     protected void createTaskOnPartition(String topic, int partition)
     {
         final CreateTaskCommandImpl createTaskCommand = (CreateTaskCommandImpl) client.tasks().create(topic, "baz");
-        createTaskCommand.getEvent().setPartitionId(partition);
+        createTaskCommand.getCommand().setPartitionId(partition);
         createTaskCommand.execute();
     }
 }

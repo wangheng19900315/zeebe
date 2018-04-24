@@ -15,14 +15,18 @@
  */
 package io.zeebe.client.impl;
 
+import java.time.Duration;
+import java.util.concurrent.*;
+import java.util.function.Function;
+import java.util.function.Supplier;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.zeebe.client.api.ZeebeFuture;
+import io.zeebe.client.api.record.Record;
 import io.zeebe.client.clustering.Topology;
 import io.zeebe.client.clustering.impl.ClientTopologyManager;
 import io.zeebe.client.clustering.impl.TopologyImpl;
-import io.zeebe.client.cmd.BrokerErrorException;
-import io.zeebe.client.cmd.ClientCommandRejectedException;
-import io.zeebe.client.cmd.ClientException;
-import io.zeebe.client.event.Event;
+import io.zeebe.client.cmd.*;
 import io.zeebe.client.impl.cmd.CommandImpl;
 import io.zeebe.client.impl.cmd.ReceiverAwareResponseResult;
 import io.zeebe.client.task.impl.ControlMessageRequest;
@@ -31,17 +35,12 @@ import io.zeebe.protocol.clientapi.ErrorCode;
 import io.zeebe.protocol.clientapi.MessageHeaderDecoder;
 import io.zeebe.transport.*;
 import io.zeebe.util.buffer.BufferUtil;
-import io.zeebe.util.sched.ActorTask;
 import io.zeebe.util.sched.Actor;
+import io.zeebe.util.sched.ActorTask;
 import io.zeebe.util.sched.clock.ActorClock;
 import io.zeebe.util.sched.future.ActorFuture;
 import io.zeebe.util.sched.future.CompletableActorFuture;
 import org.agrona.DirectBuffer;
-
-import java.time.Duration;
-import java.util.concurrent.*;
-import java.util.function.Function;
-import java.util.function.Supplier;
 
 public class RequestManager extends Actor
 {
@@ -75,9 +74,9 @@ public class RequestManager extends Actor
         return actor.close();
     }
 
-    public <E extends Event> E execute(final CommandImpl<E> command)
+    public <R extends Record> R execute(final CommandImpl<R> command)
     {
-        return waitAndResolve(executeAsync(command));
+        return waitAndResolve(send(command));
     }
 
     public <E> E execute(ControlMessageRequest<E> controlMessage)
@@ -85,7 +84,7 @@ public class RequestManager extends Actor
         return waitAndResolve(executeAsync(controlMessage));
     }
 
-    private <E> ActorFuture<E> executeAsync(final RequestResponseHandler requestHandler)
+    private <R> ResponseFuture<R> executeAsync(final RequestResponseHandler requestHandler)
     {
         try
         {
@@ -220,7 +219,7 @@ public class RequestManager extends Actor
         return executeAsync(requestHandler);
     }
 
-    public <E extends Event> ActorFuture<E> executeAsync(final CommandImpl<E> command)
+    public <R extends Record> ZeebeFuture<R> send(final CommandImpl<R> command)
     {
         final CommandRequestHandler requestHandler = new CommandRequestHandler(msgPackMapper, command);
         return executeAsync(requestHandler);
@@ -298,7 +297,7 @@ public class RequestManager extends Actor
         }
     }
 
-    protected static class ResponseFuture<E> implements ActorFuture<E>
+    protected static class ResponseFuture<E> implements ActorFuture<E>, ZeebeFuture<E>
     {
         protected final ActorFuture<ClientResponse> transportFuture;
         protected final RequestResponseHandler responseHandler;
@@ -519,6 +518,19 @@ public class RequestManager extends Actor
                 return get();
             }
             catch (InterruptedException | ExecutionException e)
+            {
+                throw new RuntimeException(e);
+            }
+        }
+
+        @Override
+        public E join(long timeout, TimeUnit unit)
+        {
+            try
+            {
+                return get(timeout, unit);
+            }
+            catch (InterruptedException | ExecutionException | TimeoutException e)
             {
                 throw new RuntimeException(e);
             }

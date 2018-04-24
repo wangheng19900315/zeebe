@@ -23,7 +23,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.zeebe.client.event.TopicEventType;
 import io.zeebe.client.event.WorkflowEvent;
 
-public class WorkflowEventImpl extends EventImpl implements WorkflowEvent
+public class WorkflowEventImpl extends RecordImpl implements WorkflowEvent
 {
 
     private String bpmnProcessId;

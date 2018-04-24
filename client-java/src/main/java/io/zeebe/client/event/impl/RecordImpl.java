@@ -16,31 +16,31 @@
 package io.zeebe.client.event.impl;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.zeebe.client.api.record.*;
 
-import io.zeebe.client.event.Event;
-import io.zeebe.client.event.EventMetadata;
-import io.zeebe.client.event.TopicEventType;
-
-public abstract class EventImpl implements Event
+public abstract class RecordImpl implements Record
 {
-    protected final EventMetadataImpl metadata = new EventMetadataImpl();
-    protected final String state;
+    private final RecordMetadataImpl metadata = new RecordMetadataImpl();
+    private final ZeebeObjectMapper objectMapper;
 
-    public EventImpl(TopicEventType type, String state)
+    public RecordImpl(ZeebeObjectMapper objectMapper, RecordMetadata.RecordType recordType, RecordMetadata.ValueType valueType, String intent)
     {
-        this.metadata.setEventType(type);
-        this.state = state;
+        this.metadata.setIntent(intent);
+        this.metadata.setRecordType(recordType);
+        this.metadata.setValueType(valueType);
+        this.objectMapper = objectMapper;
     }
 
-    public EventImpl(EventImpl baseEvent, String state)
+    public RecordImpl(ZeebeObjectMapper objectMapper, RecordImpl baseEvent, String intent)
     {
         updateMetadata(baseEvent.metadata);
-        this.state = state;
+        this.metadata.setIntent(intent);
+        this.objectMapper = objectMapper;
     }
 
     @Override
     @JsonIgnore
-    public EventMetadata getMetadata()
+    public RecordMetadataImpl getMetadata()
     {
         return metadata;
     }
@@ -57,12 +57,12 @@ public abstract class EventImpl implements Event
 
     public void setKey(long key)
     {
-        this.metadata.setEventKey(key);
+        this.metadata.setKey(key);
     }
 
     public void setEventPosition(long position)
     {
-        this.metadata.setEventPosition(position);
+        this.metadata.setPosition(position);
     }
 
     public boolean hasValidPartitionId()
@@ -70,19 +70,21 @@ public abstract class EventImpl implements Event
         return this.metadata.hasPartitionId();
     }
 
-    public void updateMetadata(EventMetadata other)
+    public void updateMetadata(RecordMetadata other)
     {
-        this.metadata.setEventKey(other.getKey());
-        this.metadata.setEventPosition(other.getPosition());
-        this.metadata.setEventType(other.getType());
-        this.metadata.setPartitionId(other.getPartitionId());
+        this.metadata.setKey(other.getKey());
+        this.metadata.setPosition(other.getPosition());
         this.metadata.setTopicName(other.getTopicName());
+        this.metadata.setPartitionId(other.getPartitionId());
+        this.metadata.setRecordType(other.getRecordType());
+        this.metadata.setValueType(other.getValueType());
+        this.metadata.setIntent(other.getIntent());
     }
 
     @Override
-    public String getState()
+    public String toJson()
     {
-        return state;
+        return objectMapper.toJson(this);
     }
 
 }

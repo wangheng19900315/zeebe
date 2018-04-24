@@ -20,7 +20,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.zeebe.client.event.IncidentEvent;
 import io.zeebe.client.event.TopicEventType;
 
-public class IncidentEventImpl extends EventImpl implements IncidentEvent
+public class IncidentEventImpl extends RecordImpl implements IncidentEvent
 {
 
     private String errorType;

@@ -18,7 +18,7 @@ package io.zeebe.client.workflow.impl;
 import java.io.InputStream;
 
 import io.zeebe.client.event.WorkflowInstanceEvent;
-import io.zeebe.client.event.impl.EventImpl;
+import io.zeebe.client.event.impl.RecordImpl;
 import io.zeebe.client.impl.RequestManager;
 import io.zeebe.client.impl.cmd.CommandImpl;
 import io.zeebe.client.workflow.cmd.UpdatePayloadCommand;
@@ -51,7 +51,7 @@ public class UpdatePayloadCommandImpl extends CommandImpl<WorkflowInstanceEvent>
     }
 
     @Override
-    public EventImpl getEvent()
+    public RecordImpl getCommand()
     {
         return workflowInstanceEvent;
     }

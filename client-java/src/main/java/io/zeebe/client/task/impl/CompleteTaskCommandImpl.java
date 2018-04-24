@@ -18,7 +18,7 @@ package io.zeebe.client.task.impl;
 import java.io.InputStream;
 
 import io.zeebe.client.event.TaskEvent;
-import io.zeebe.client.event.impl.EventImpl;
+import io.zeebe.client.event.impl.RecordImpl;
 import io.zeebe.client.event.impl.TaskEventImpl;
 import io.zeebe.client.impl.RequestManager;
 import io.zeebe.client.impl.cmd.CommandImpl;
@@ -37,7 +37,7 @@ public class CompleteTaskCommandImpl extends CommandImpl<TaskEvent> implements C
     }
 
     @Override
-    public EventImpl getEvent()
+    public RecordImpl getCommand()
     {
         return taskEvent;
     }

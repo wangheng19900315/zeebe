@@ -15,32 +15,22 @@
  */
 package io.zeebe.client.impl;
 
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
+import java.util.concurrent.*;
 
-import org.slf4j.Logger;
-
-import io.zeebe.client.WorkflowsClient;
 import io.zeebe.client.ZeebeClient;
 import io.zeebe.client.ZeebeClientConfiguration;
+import io.zeebe.client.api.clients.TopicClient;
+import io.zeebe.client.api.commands.*;
 import io.zeebe.client.clustering.impl.ClientTopologyManager;
-import io.zeebe.client.clustering.impl.RequestTopologyCmdImpl;
-import io.zeebe.client.clustering.impl.TopologyResponse;
-import io.zeebe.client.cmd.Request;
-import io.zeebe.client.event.impl.TopicClientImpl;
 import io.zeebe.client.impl.data.MsgPackConverter;
 import io.zeebe.client.impl.data.MsgPackMapper;
 import io.zeebe.client.task.impl.subscription.SubscriptionManager;
 import io.zeebe.dispatcher.Dispatcher;
 import io.zeebe.dispatcher.Dispatchers;
-import io.zeebe.transport.ClientTransport;
-import io.zeebe.transport.ClientTransportBuilder;
-import io.zeebe.transport.RemoteAddress;
-import io.zeebe.transport.SocketAddress;
-import io.zeebe.transport.Transports;
+import io.zeebe.transport.*;
 import io.zeebe.util.sched.ActorScheduler;
 import io.zeebe.util.sched.clock.ActorClock;
+import org.slf4j.Logger;
 
 public class ZeebeClientImpl implements ZeebeClient
 {
@@ -193,29 +183,6 @@ public class ZeebeClientImpl implements ZeebeClient
         }
     }
 
-    @Override
-    public Request<TopologyResponse> requestTopology()
-    {
-        return new RequestTopologyCmdImpl(apiCommandManager, topologyManager);
-    }
-
-    @Override
-    public TasksClientImpl tasks()
-    {
-        return new TasksClientImpl(this);
-    }
-
-    @Override
-    public WorkflowsClient workflows()
-    {
-        return new WorkflowsClientImpl(this);
-    }
-
-    @Override
-    public TopicClientImpl topics()
-    {
-        return new TopicClientImpl(this);
-    }
 
     public RequestManager getCommandManager()
     {
@@ -266,5 +233,46 @@ public class ZeebeClientImpl implements ZeebeClient
     public int getSubscriptionPrefetchCapacity()
     {
         return subscriptionPrefetchCapacity;
+    }
+
+    @Override
+    public TopicClient topicClient(String topicName)
+    {
+        return new io.zeebe.client.impl.TopicClientImpl(this, topicName);
+    }
+
+    @Override
+    public TopicClient topicClient()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public io.zeebe.client.api.record.ZeebeObjectMapper objectMapper()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public CreateTopicCommandStep1 newCreateTopicCommand()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public TopicsRequestStep1 newTopicsRequest()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public TopologyRequestStep1 newTopologyRequest()
+    {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

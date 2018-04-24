@@ -85,5 +85,5 @@ public interface ZeebeClientBuilder
     /**
      * @return a new {@link ZeebeClient} with the provided configuration options.
      */
-    ZeebeClient create();
+    io.zeebe.client.ZeebeClient create();
 }

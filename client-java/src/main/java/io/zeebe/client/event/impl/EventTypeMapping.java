@@ -15,32 +15,32 @@
  */
 package io.zeebe.client.event.impl;
 
-import io.zeebe.client.event.TopicEventType;
-import io.zeebe.protocol.clientapi.EventType;
+import io.zeebe.client.api.record.RecordMetadata;
+import io.zeebe.protocol.clientapi.ValueType;
 
 public class EventTypeMapping
 {
-    protected static final TopicEventType[] MAPPING;
-    protected static final EventType[] REVERSE_MAPPING;
+    protected static final RecordMetadata.ValueType[] MAPPING;
+    protected static final ValueType[] REVERSE_MAPPING;
 
     static
     {
-        MAPPING = new TopicEventType[EventType.values().length];
-        MAPPING[EventType.TASK_EVENT.ordinal()] = TopicEventType.TASK;
-        MAPPING[EventType.WORKFLOW_EVENT.ordinal()] = TopicEventType.WORKFLOW;
-        MAPPING[EventType.WORKFLOW_INSTANCE_EVENT.ordinal()] = TopicEventType.WORKFLOW_INSTANCE;
-        MAPPING[EventType.INCIDENT_EVENT.ordinal()] = TopicEventType.INCIDENT;
-        MAPPING[EventType.RAFT_EVENT.ordinal()] = TopicEventType.RAFT;
-        MAPPING[EventType.SUBSCRIBER_EVENT.ordinal()] = TopicEventType.SUBSCRIBER;
-        MAPPING[EventType.SUBSCRIPTION_EVENT.ordinal()] = TopicEventType.SUBSCRIPTION;
-        MAPPING[EventType.DEPLOYMENT_EVENT.ordinal()] = TopicEventType.DEPLOYMENT;
-        MAPPING[EventType.TOPIC_EVENT.ordinal()] = TopicEventType.TOPIC;
+        MAPPING = new RecordMetadata.ValueType[RecordMetadata.ValueType.values().length];
+        MAPPING[ValueType.TASK.ordinal()] = RecordMetadata.ValueType.TASK;
+        MAPPING[ValueType.WORKFLOW.ordinal()] = RecordMetadata.ValueType.WORKFLOW;
+        MAPPING[ValueType.WORKFLOW_INSTANCE.ordinal()] = RecordMetadata.ValueType.WORKFLOW_INSTANCE;
+        MAPPING[ValueType.INCIDENT.ordinal()] = RecordMetadata.ValueType.INCIDENT;
+        MAPPING[ValueType.RAFT.ordinal()] = RecordMetadata.ValueType.RAFT;
+        MAPPING[ValueType.SUBSCRIBER.ordinal()] = RecordMetadata.ValueType.SUBSCRIBER;
+        MAPPING[ValueType.SUBSCRIPTION.ordinal()] = RecordMetadata.ValueType.SUBSCRIPTION;
+        MAPPING[ValueType.DEPLOYMENT.ordinal()] = RecordMetadata.ValueType.DEPLOYMENT;
+        MAPPING[ValueType.TOPIC.ordinal()] = RecordMetadata.ValueType.TOPIC;
 
-        REVERSE_MAPPING = new EventType[MAPPING.length];
+        REVERSE_MAPPING = new ValueType[MAPPING.length];
 
-        for (EventType type : EventType.values())
+        for (ValueType type : ValueType.values())
         {
-            final TopicEventType mappedType = MAPPING[type.ordinal()];
+            final RecordMetadata.ValueType mappedType = MAPPING[type.ordinal()];
             if (mappedType != null)
             {
                 final int targetIndex = mappedType.ordinal();
@@ -49,15 +49,15 @@ public class EventTypeMapping
         }
     }
 
-    public static TopicEventType mapEventType(EventType protocolType)
+    public static RecordMetadata.ValueType mapEventType(ValueType protocolType)
     {
         if (protocolType.value() < MAPPING.length)
         {
             return MAPPING[protocolType.ordinal()];
         }
-        else if (protocolType != io.zeebe.protocol.clientapi.EventType.NULL_VAL)
+        else if (protocolType != ValueType.NULL_VAL)
         {
-            return TopicEventType.UNKNOWN;
+            return RecordMetadata.ValueType.UNKNOWN;
         }
         else
         {
@@ -65,7 +65,7 @@ public class EventTypeMapping
         }
     }
 
-    public static EventType mapEventType(TopicEventType apiType)
+    public static ValueType mapEventType(RecordMetadata.ValueType apiType)
     {
         if (apiType.ordinal() < MAPPING.length)
         {

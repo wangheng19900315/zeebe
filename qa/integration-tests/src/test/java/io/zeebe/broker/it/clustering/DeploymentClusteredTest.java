@@ -183,7 +183,7 @@ public class DeploymentClusteredTest
     {
         final CreateWorkflowInstanceCommandImpl createTaskCommand =
             (CreateWorkflowInstanceCommandImpl) client.workflows().create(topic).bpmnProcessId(processId);
-        createTaskCommand.getEvent().setPartitionId(partition);
+        createTaskCommand.getCommand().setPartitionId(partition);
         return createTaskCommand.execute();
     }
 

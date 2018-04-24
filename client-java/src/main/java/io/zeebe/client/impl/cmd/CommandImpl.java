@@ -15,13 +15,14 @@
  */
 package io.zeebe.client.impl.cmd;
 
+import io.zeebe.client.api.ZeebeFuture;
+import io.zeebe.client.api.record.Record;
 import io.zeebe.client.cmd.Request;
-import io.zeebe.client.event.Event;
-import io.zeebe.client.event.impl.EventImpl;
+import io.zeebe.client.event.impl.RecordImpl;
 import io.zeebe.client.impl.RequestManager;
 import io.zeebe.util.sched.future.ActorFuture;
 
-public abstract class CommandImpl<E extends Event> implements Request<E>
+public abstract class CommandImpl<R extends Record> implements Request<R>
 {
 
     protected final RequestManager client;
@@ -32,20 +33,27 @@ public abstract class CommandImpl<E extends Event> implements Request<E>
     }
 
     @Override
-    public E execute()
+    public R execute()
     {
+        // TODO remove execute
         return client.execute(this);
     }
 
     @Override
-    public ActorFuture<E> executeAsync()
+    public ActorFuture<R> executeAsync()
     {
-        return client.executeAsync(this);
+        // TODO remove executeAsync
+        return (ActorFuture<R>) client.send(this);
     }
 
-    public String generateError(E requestEvent, E responseEvent)
+    public ZeebeFuture<R> send()
     {
-        final long requestEventKey = requestEvent.getMetadata().getKey();
+        return client.send(this);
+    }
+
+    public String generateError(R command, String reason)
+    {
+        final long requestEventKey = command.getMetadata().getKey();
         final StringBuilder sb = new StringBuilder();
         sb.append("Command ");
 
@@ -57,13 +65,12 @@ public abstract class CommandImpl<E extends Event> implements Request<E>
         }
 
         sb.append("was rejected by broker (");
-        sb.append(responseEvent.getState());
+        sb.append(command.getMetadata().getIntent());
         sb.append(")");
 
         return sb.toString();
     }
 
-    public abstract EventImpl getEvent();
+    public abstract RecordImpl getCommand();
 
-    public abstract String getExpectedStatus();
 }

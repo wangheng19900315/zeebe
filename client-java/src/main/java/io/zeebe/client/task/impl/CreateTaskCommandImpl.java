@@ -81,7 +81,7 @@ public class CreateTaskCommandImpl extends CommandImpl<TaskEvent> implements Cre
     }
 
     @Override
-    public TaskEventImpl getEvent()
+    public TaskEventImpl getCommand()
     {
         return taskEvent;
     }

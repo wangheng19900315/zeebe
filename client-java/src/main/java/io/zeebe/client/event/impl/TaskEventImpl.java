@@ -27,7 +27,7 @@ import io.zeebe.client.impl.data.MsgPackConverter;
 import io.zeebe.client.task.impl.subscription.MsgPackField;
 import io.zeebe.protocol.Protocol;
 
-public class TaskEventImpl extends EventImpl implements TaskEvent
+public class TaskEventImpl extends RecordImpl implements TaskEvent
 {
 
     protected Map<String, Object> headers = new HashMap<>();

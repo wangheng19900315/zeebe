@@ -42,7 +42,7 @@ public class AcknowledgeSubscribedEventCommandImpl extends CommandImpl<TopicSubs
     }
 
     @Override
-    public EventImpl getEvent()
+    public RecordImpl getCommand()
     {
         return ack;
     }

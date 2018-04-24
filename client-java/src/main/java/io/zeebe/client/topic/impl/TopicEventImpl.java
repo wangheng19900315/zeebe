@@ -19,9 +19,9 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.zeebe.client.event.TopicEventType;
-import io.zeebe.client.event.impl.EventImpl;
+import io.zeebe.client.event.impl.RecordImpl;
 
-public class TopicEventImpl extends EventImpl
+public class TopicEventImpl extends RecordImpl
 {
     protected final String name;
     protected final int partitions;

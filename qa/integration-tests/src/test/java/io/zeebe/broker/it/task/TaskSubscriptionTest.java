@@ -526,7 +526,7 @@ public class TaskSubscriptionTest
     protected void createTaskOnPartition(ZeebeClient client, String topic, int partition, String type)
     {
         final CreateTaskCommandImpl createTaskCommand = (CreateTaskCommandImpl) client.tasks().create(topic, type);
-        createTaskCommand.getEvent().setPartitionId(partition);
+        createTaskCommand.getCommand().setPartitionId(partition);
         createTaskCommand.execute();
     }
 

@@ -13,12 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.zeebe.client.workflow.impl;
+package io.zeebe.client.api.commands;
 
-public enum DeploymentEventType
+public interface Partition
 {
-    CREATE,
-    CREATED,
+    /**
+     * @return the (unique) id of the partition
+     */
+    int getId();
 
-    REJECTED;
+    /**
+     * @return the name of the topic this partition belongs to
+     */
+    String getTopicName();
 }

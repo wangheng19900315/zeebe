@@ -36,7 +36,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.zeebe.client.ZeebeClient;
 import io.zeebe.client.event.TaskEvent;
 import io.zeebe.client.event.TopicEventType;
-import io.zeebe.client.event.impl.EventImpl;
+import io.zeebe.client.event.impl.RecordImpl;
 import io.zeebe.client.event.impl.TaskEventImpl;
 import io.zeebe.client.impl.RequestManager;
 import io.zeebe.client.impl.ZeebeClientImpl;
@@ -271,7 +271,7 @@ public class ClientCommandManagerTest
         });
     }
 
-    protected static class FailingCommand extends CommandImpl<EventImpl>
+    protected static class FailingCommand extends CommandImpl<RecordImpl>
     {
         public FailingCommand(RequestManager client)
         {
@@ -279,7 +279,7 @@ public class ClientCommandManagerTest
         }
 
         @Override
-        public EventImpl getEvent()
+        public RecordImpl getCommand()
         {
             return new FailingEvent("CREATE");
         }
@@ -291,7 +291,7 @@ public class ClientCommandManagerTest
         }
     }
 
-    protected static class FailingEvent extends EventImpl
+    protected static class FailingEvent extends RecordImpl
     {
 
         @JsonCreator

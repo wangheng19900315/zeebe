@@ -20,7 +20,7 @@ import io.zeebe.client.event.TopicEventType;
 import io.zeebe.client.impl.data.MsgPackConverter;
 import io.zeebe.client.task.impl.subscription.MsgPackField;
 
-public class GeneralEventImpl extends EventImpl implements GeneralEvent
+public class GeneralEventImpl extends RecordImpl implements GeneralEvent
 {
 
     protected final MsgPackField content;

@@ -13,68 +13,50 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.zeebe.client.workflow.impl;
+package io.zeebe.client.impl.event;
 
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import io.zeebe.client.event.DeploymentEvent;
+import io.zeebe.client.api.commands.Workflow;
+import io.zeebe.client.api.events.DeploymentEvent;
+import io.zeebe.client.api.record.RecordMetadata;
+import io.zeebe.client.api.record.ZeebeObjectMapper;
 import io.zeebe.client.event.DeploymentResource;
-import io.zeebe.client.event.TopicEventType;
-import io.zeebe.client.event.WorkflowDefinition;
-import io.zeebe.client.event.impl.EventImpl;
+import io.zeebe.client.event.impl.RecordImpl;
+import io.zeebe.client.workflow.impl.WorkflowDefinitionImpl;
 
-public class DeploymentEventImpl extends EventImpl implements DeploymentEvent
+public class DeploymentEventImpl extends RecordImpl implements DeploymentEvent
 {
     @JsonProperty("topicName")
     private String deploymentTopic;
 
     private List<DeploymentResource> resources;
 
-    private List<WorkflowDefinition> deployedWorkflows;
+    private List<Workflow> deployedWorkflows;
     private String errorMessage;
 
+    private DeploymentState state;
+
     @JsonCreator
-    public DeploymentEventImpl(@JsonProperty("state") String state)
+    public DeploymentEventImpl(@JacksonInject ZeebeObjectMapper objectMapper, @JsonProperty("state") String intent)
     {
-        super(TopicEventType.DEPLOYMENT, state);
-    }
+        super(objectMapper, RecordMetadata.RecordType.EVENT, RecordMetadata.ValueType.DEPLOYMENT, intent);
 
-    @Override
-    @JsonDeserialize(contentAs = DeploymentResourceImpl.class)
-    public List<DeploymentResource> getResources()
-    {
-        return resources;
-    }
-
-    public void setResources(List<DeploymentResource> resources)
-    {
-        this.resources = resources;
+        state = DeploymentState.valueOf(intent);
     }
 
     @Override
     @JsonDeserialize(contentAs = WorkflowDefinitionImpl.class)
-    public List<WorkflowDefinition> getDeployedWorkflows()
+    public List<Workflow> getDeployedWorkflows()
     {
         return deployedWorkflows;
     }
 
-    public void setDeployedWorkflows(List<WorkflowDefinition> deployedWorkflows)
+    public void setDeployedWorkflows(List<Workflow> deployedWorkflows)
     {
         this.deployedWorkflows = deployedWorkflows;
-    }
-
-    @Override
-    public String getErrorMessage()
-    {
-        return errorMessage;
-    }
-
-    public void setErrorMessage(String errorMessage)
-    {
-        this.errorMessage = errorMessage;
     }
 
     public String getDeploymentTopic()
@@ -85,6 +67,12 @@ public class DeploymentEventImpl extends EventImpl implements DeploymentEvent
     public void setDeploymentTopic(String deploymentTopic)
     {
         this.deploymentTopic = deploymentTopic;
+    }
+
+    @Override
+    public DeploymentState getState()
+    {
+        return state;
     }
 
     @Override

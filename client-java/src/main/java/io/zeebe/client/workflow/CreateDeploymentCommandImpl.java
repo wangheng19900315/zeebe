@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.zeebe.client.workflow.impl;
+package io.zeebe.client.workflow;
 
 import static io.zeebe.util.EnsureUtil.ensureNotNull;
 
@@ -23,35 +23,39 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.zeebe.client.api.commands.*;
+import io.zeebe.client.api.commands.DeployWorkflowCommandStep1.DeployWorkflowCommandBuilderStep2;
+import io.zeebe.client.api.events.DeploymentEvent;
 import io.zeebe.client.cmd.ClientException;
-import io.zeebe.client.event.*;
-import io.zeebe.client.event.impl.EventImpl;
+import io.zeebe.client.event.impl.RecordImpl;
 import io.zeebe.client.impl.RequestManager;
 import io.zeebe.client.impl.cmd.CommandImpl;
-import io.zeebe.client.workflow.cmd.CreateDeploymentCommand;
+import io.zeebe.client.impl.command.DeploymentCommandImpl;
+import io.zeebe.client.impl.command.DeploymentResourceImpl;
 import io.zeebe.model.bpmn.BpmnModelApi;
 import io.zeebe.model.bpmn.instance.WorkflowDefinition;
 import io.zeebe.protocol.Protocol;
 import io.zeebe.util.StreamUtil;
 
-public class CreateDeploymentCommandImpl extends CommandImpl<DeploymentEvent> implements CreateDeploymentCommand
+public class CreateDeploymentCommandImpl extends CommandImpl<DeploymentEvent> implements DeployWorkflowCommandStep1, DeployWorkflowCommandBuilderStep2
 {
-    private final DeploymentEventImpl deploymentEvent = new DeploymentEventImpl(DeploymentEventType.CREATE.name());
     private final List<DeploymentResource> resources = new ArrayList<>();
+    private final DeploymentCommandImpl command = new DeploymentCommandImpl(DeploymentCommand.DeploymentCommandName.CREATE);
 
     private final BpmnModelApi bpmn = new BpmnModelApi();
 
     public CreateDeploymentCommandImpl(final RequestManager commandManager, String topic)
     {
         super(commandManager);
+
         // send command always to the system topic
-        this.deploymentEvent.setTopicName(Protocol.SYSTEM_TOPIC);
+        this.command.setTopicName(Protocol.SYSTEM_TOPIC);
         // set the topic to deploy to
-        this.deploymentEvent.setDeploymentTopic(topic);
+        this.command.setDeploymentTopic(topic);
     }
 
     @Override
-    public CreateDeploymentCommand addResourceBytes(final byte[] resource, String resourceName)
+    public DeployWorkflowCommandBuilderStep2 addResourceBytes(final byte[] resource, String resourceName)
     {
         final DeploymentResourceImpl deploymentResource = new DeploymentResourceImpl();
 
@@ -65,19 +69,19 @@ public class CreateDeploymentCommandImpl extends CommandImpl<DeploymentEvent> im
     }
 
     @Override
-    public CreateDeploymentCommand addResourceString(final String resource, Charset charset, String resourceName)
+    public DeployWorkflowCommandBuilderStep2 addResourceString(final String resource, Charset charset, String resourceName)
     {
         return addResourceBytes(resource.getBytes(charset), resourceName);
     }
 
     @Override
-    public CreateDeploymentCommand addResourceStringUtf8(String resourceString, String resourceName)
+    public DeployWorkflowCommandBuilderStep2 addResourceStringUtf8(String resourceString, String resourceName)
     {
         return addResourceString(resourceString, StandardCharsets.UTF_8, resourceName);
     }
 
     @Override
-    public CreateDeploymentCommand addResourceStream(final InputStream resourceStream, String resourceName)
+    public DeployWorkflowCommandBuilderStep2 addResourceStream(final InputStream resourceStream, String resourceName)
     {
         ensureNotNull("resource stream", resourceStream);
 
@@ -95,7 +99,7 @@ public class CreateDeploymentCommandImpl extends CommandImpl<DeploymentEvent> im
     }
 
     @Override
-    public CreateDeploymentCommand addResourceFromClasspath(final String classpathResource)
+    public DeployWorkflowCommandBuilderStep2 addResourceFromClasspath(final String classpathResource)
     {
         ensureNotNull("classpath resource", classpathResource);
 
@@ -119,7 +123,7 @@ public class CreateDeploymentCommandImpl extends CommandImpl<DeploymentEvent> im
     }
 
     @Override
-    public CreateDeploymentCommand addResourceFile(final String filename)
+    public DeployWorkflowCommandBuilderStep2 addResourceFile(final String filename)
     {
         ensureNotNull("filename", filename);
 
@@ -135,7 +139,7 @@ public class CreateDeploymentCommandImpl extends CommandImpl<DeploymentEvent> im
     }
 
     @Override
-    public CreateDeploymentCommand addWorkflowModel(final WorkflowDefinition workflowDefinition, String resourceName)
+    public DeployWorkflowCommandBuilderStep2 addWorkflowModel(final WorkflowDefinition workflowDefinition, String resourceName)
     {
         ensureNotNull("workflow model", workflowDefinition);
 
@@ -144,22 +148,17 @@ public class CreateDeploymentCommandImpl extends CommandImpl<DeploymentEvent> im
     }
 
     @Override
-    public EventImpl getEvent()
+    public RecordImpl getCommand()
     {
-        deploymentEvent.setResources(resources);
-        return deploymentEvent;
+        command.setResources(resources);
+        return command;
     }
 
     @Override
-    public String getExpectedStatus()
+    public String generateError(DeploymentEvent request, String reason)
     {
-        return DeploymentEventType.CREATED.name();
-    }
-
-    @Override
-    public String generateError(DeploymentEvent request, DeploymentEvent responseEvent)
-    {
-        return "Deployment was rejected: " + responseEvent.getErrorMessage();
+        // TODO deployment error message
+        return "Deployment was rejected: ";
     }
 
     private ResourceType getResourceType(String resourceName)

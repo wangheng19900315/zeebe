@@ -24,7 +24,7 @@ import io.zeebe.client.impl.cmd.ReceiverAwareResponseResult;
 import io.zeebe.client.task.impl.subscription.EventSubscriptionCreationResult;
 import io.zeebe.transport.RemoteAddress;
 
-public class TopicSubscriberEvent extends EventImpl implements EventSubscriptionCreationResult, ReceiverAwareResponseResult
+public class TopicSubscriberEvent extends RecordImpl implements EventSubscriptionCreationResult, ReceiverAwareResponseResult
 {
 
     protected long startPosition = -1L;

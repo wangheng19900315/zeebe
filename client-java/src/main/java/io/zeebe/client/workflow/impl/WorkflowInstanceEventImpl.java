@@ -20,14 +20,14 @@ import java.io.InputStream;
 import com.fasterxml.jackson.annotation.*;
 import io.zeebe.client.event.TopicEventType;
 import io.zeebe.client.event.WorkflowInstanceEvent;
-import io.zeebe.client.event.impl.EventImpl;
+import io.zeebe.client.event.impl.RecordImpl;
 import io.zeebe.client.impl.data.MsgPackConverter;
 import io.zeebe.client.task.impl.subscription.MsgPackField;
 
 /**
  * Represents a event, which is used to create a workflow instance on the broker.
  */
-public class WorkflowInstanceEventImpl extends EventImpl implements WorkflowInstanceEvent
+public class WorkflowInstanceEventImpl extends RecordImpl implements WorkflowInstanceEvent
 {
 
     protected String bpmnProcessId;

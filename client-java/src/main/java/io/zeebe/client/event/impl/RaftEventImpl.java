@@ -23,7 +23,7 @@ import io.zeebe.client.event.RaftEvent;
 import io.zeebe.client.event.TopicEventType;
 import io.zeebe.transport.SocketAddress;
 
-public class RaftEventImpl extends EventImpl implements RaftEvent
+public class RaftEventImpl extends RecordImpl implements RaftEvent
 {
 
     @JsonCreator

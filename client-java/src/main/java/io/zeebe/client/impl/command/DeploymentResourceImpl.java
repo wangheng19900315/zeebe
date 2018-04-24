@@ -13,12 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.zeebe.client.workflow.impl;
+package io.zeebe.client.impl.command;
 
 import java.nio.charset.StandardCharsets;
 
-import io.zeebe.client.event.DeploymentResource;
-import io.zeebe.client.event.ResourceType;
+import io.zeebe.client.api.commands.DeploymentResource;
+import io.zeebe.client.api.commands.ResourceType;
+
 
 public class DeploymentResourceImpl implements DeploymentResource
 {

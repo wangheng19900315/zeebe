@@ -15,18 +15,18 @@
  */
 package io.zeebe.client.event.impl;
 
-import io.zeebe.client.event.EventMetadata;
-import io.zeebe.client.event.TopicEventType;
+import io.zeebe.client.api.record.RecordMetadata;
 import io.zeebe.protocol.clientapi.ExecuteCommandRequestEncoder;
 
-public class EventMetadataImpl implements EventMetadata
+public class RecordMetadataImpl implements RecordMetadata
 {
-
-    protected String topicName;
-    protected int partitionId = ExecuteCommandRequestEncoder.partitionIdNullValue();
-    protected long key = ExecuteCommandRequestEncoder.keyNullValue();
-    protected long position = ExecuteCommandRequestEncoder.positionNullValue();
-    protected TopicEventType eventType;
+    private String topicName;
+    private int partitionId = ExecuteCommandRequestEncoder.partitionIdNullValue();
+    private long key = ExecuteCommandRequestEncoder.keyNullValue();
+    private long position = ExecuteCommandRequestEncoder.positionNullValue();
+    private RecordType recordType;
+    private ValueType valueType;
+    private String intent;
 
     @Override
     public String getTopicName()
@@ -61,7 +61,7 @@ public class EventMetadataImpl implements EventMetadata
         return position;
     }
 
-    public void setEventPosition(long position)
+    public void setPosition(long position)
     {
         this.position = position;
     }
@@ -72,27 +72,49 @@ public class EventMetadataImpl implements EventMetadata
         return key;
     }
 
-    public void setEventKey(long key)
+    public void setKey(long key)
     {
         this.key = key;
     }
 
     @Override
-    public TopicEventType getType()
+    public RecordType getRecordType()
     {
-        return eventType;
+        return recordType;
     }
 
-    public void setEventType(TopicEventType eventType)
+    public void setRecordType(RecordType recordType)
     {
-        this.eventType = eventType;
+        this.recordType = recordType;
+    }
+
+    @Override
+    public ValueType getValueType()
+    {
+        return valueType;
+    }
+
+    public void setValueType(ValueType valueType)
+    {
+        this.valueType = valueType;
+    }
+
+    @Override
+    public String getIntent()
+    {
+        return intent;
+    }
+
+    public void setIntent(String intent)
+    {
+        this.intent = intent;
     }
 
     @Override
     public String toString()
     {
         return "EventMetadata [topicName=" + topicName + ", partitionId=" + partitionId + ", key=" +
-                key + ", position=" + position + ", eventType=" + eventType + "]";
+                key + ", position=" + position + ", eventType=" + recordType + "]";
     }
 
 }
