@@ -35,7 +35,6 @@ public class DeploymentEventImpl extends RecordImpl implements DeploymentEvent
     private List<DeploymentResource> resources;
 
     private List<Workflow> deployedWorkflows;
-    private String errorMessage;
 
     private DeploymentState state;
 
@@ -85,8 +84,6 @@ public class DeploymentEventImpl extends RecordImpl implements DeploymentEvent
         builder.append(resources);
         builder.append(", deployedWorkflows=");
         builder.append(deployedWorkflows);
-        builder.append(", errorMessage=");
-        builder.append(errorMessage);
         builder.append("]");
         return builder.toString();
     }

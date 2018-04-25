@@ -25,6 +25,7 @@ import java.util.List;
 
 import io.zeebe.client.api.commands.*;
 import io.zeebe.client.api.commands.DeployWorkflowCommandStep1.DeployWorkflowCommandBuilderStep2;
+import io.zeebe.client.api.commands.DeploymentCommand.DeploymentCommandName;
 import io.zeebe.client.api.events.DeploymentEvent;
 import io.zeebe.client.cmd.ClientException;
 import io.zeebe.client.event.impl.RecordImpl;
@@ -39,8 +40,9 @@ import io.zeebe.util.StreamUtil;
 
 public class CreateDeploymentCommandImpl extends CommandImpl<DeploymentEvent> implements DeployWorkflowCommandStep1, DeployWorkflowCommandBuilderStep2
 {
+    private final DeploymentCommandImpl command = new DeploymentCommandImpl(DeploymentCommandName.CREATE);
+
     private final List<DeploymentResource> resources = new ArrayList<>();
-    private final DeploymentCommandImpl command = new DeploymentCommandImpl(DeploymentCommand.DeploymentCommandName.CREATE);
 
     private final BpmnModelApi bpmn = new BpmnModelApi();
 
@@ -157,8 +159,7 @@ public class CreateDeploymentCommandImpl extends CommandImpl<DeploymentEvent> im
     @Override
     public String generateError(DeploymentEvent request, String reason)
     {
-        // TODO deployment error message
-        return "Deployment was rejected: ";
+        return "Deployment was rejected: " + reason;
     }
 
     private ResourceType getResourceType(String resourceName)
