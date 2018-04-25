@@ -43,9 +43,9 @@ public class Events
         return baseEvent;
     }
 
-    public static WorkflowInstanceEventImpl exampleWorfklowInstance()
+    public static WorkflowInstanceRecordImpl exampleWorfklowInstance()
     {
-        final WorkflowInstanceEventImpl baseEvent = new WorkflowInstanceEventImpl("CREATED", new MsgPackConverter());
+        final WorkflowInstanceRecordImpl baseEvent = new WorkflowInstanceRecordImpl("CREATED", new MsgPackConverter());
         baseEvent.setActivityId("some_activity");
         baseEvent.setBpmnProcessId("some_proceess");
         baseEvent.setKey(89);

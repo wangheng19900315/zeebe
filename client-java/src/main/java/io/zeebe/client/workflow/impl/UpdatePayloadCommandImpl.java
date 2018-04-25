@@ -26,13 +26,13 @@ import io.zeebe.util.EnsureUtil;
 
 public class UpdatePayloadCommandImpl extends CommandImpl<WorkflowInstanceEvent> implements UpdatePayloadCommand
 {
-    private final WorkflowInstanceEventImpl workflowInstanceEvent;
+    private final WorkflowInstanceRecordImpl workflowInstanceEvent;
 
     public UpdatePayloadCommandImpl(final RequestManager commandManager, WorkflowInstanceEvent baseEvent)
     {
         super(commandManager);
         EnsureUtil.ensureNotNull("base event", baseEvent);
-        this.workflowInstanceEvent = new WorkflowInstanceEventImpl((WorkflowInstanceEventImpl) baseEvent,
+        this.workflowInstanceEvent = new WorkflowInstanceRecordImpl((WorkflowInstanceRecordImpl) baseEvent,
                 WorkflowInstanceEventType.UPDATE_PAYLOAD.name());
     }
 

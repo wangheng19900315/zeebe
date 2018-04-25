@@ -23,13 +23,13 @@ import io.zeebe.util.EnsureUtil;
 
 public class CancelWorkflowInstanceCmdImpl extends CommandImpl<WorkflowInstanceEvent>
 {
-    private final WorkflowInstanceEventImpl workflowInstanceEvent;
+    private final WorkflowInstanceRecordImpl workflowInstanceEvent;
 
     public CancelWorkflowInstanceCmdImpl(final RequestManager commandManager, WorkflowInstanceEvent baseEvent)
     {
         super(commandManager);
         EnsureUtil.ensureNotNull("base event", baseEvent);
-        this.workflowInstanceEvent = new WorkflowInstanceEventImpl((WorkflowInstanceEventImpl) baseEvent,
+        this.workflowInstanceEvent = new WorkflowInstanceRecordImpl((WorkflowInstanceRecordImpl) baseEvent,
                 WorkflowInstanceEventType.CANCEL_WORKFLOW_INSTANCE.name());
     }
 

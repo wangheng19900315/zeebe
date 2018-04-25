@@ -63,7 +63,7 @@ public class UpdatePayloadTest
     public void shouldUpdatePayload()
     {
         // given
-        final WorkflowInstanceEventImpl event = Events.exampleWorfklowInstance();
+        final WorkflowInstanceRecordImpl event = Events.exampleWorfklowInstance();
         event.setKey(2L);
         event.setWorkflowInstanceKey(1L);
 
@@ -95,7 +95,7 @@ public class UpdatePayloadTest
     public void shouldRejectUpdatePayload()
     {
         // given
-        final WorkflowInstanceEventImpl event = Events.exampleWorfklowInstance();
+        final WorkflowInstanceRecordImpl event = Events.exampleWorfklowInstance();
         event.setKey(2L);
         event.setWorkflowInstanceKey(1L);
 

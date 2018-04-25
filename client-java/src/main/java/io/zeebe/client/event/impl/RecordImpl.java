@@ -23,9 +23,8 @@ public abstract class RecordImpl implements Record
     private final RecordMetadataImpl metadata = new RecordMetadataImpl();
     private final ZeebeObjectMapper objectMapper;
 
-    public RecordImpl(ZeebeObjectMapper objectMapper, RecordMetadata.RecordType recordType, RecordMetadata.ValueType valueType, String intent)
+    public RecordImpl(ZeebeObjectMapper objectMapper, RecordMetadata.RecordType recordType, RecordMetadata.ValueType valueType)
     {
-        this.metadata.setIntent(intent);
         this.metadata.setRecordType(recordType);
         this.metadata.setValueType(valueType);
         this.objectMapper = objectMapper;
@@ -34,7 +33,8 @@ public abstract class RecordImpl implements Record
     public RecordImpl(RecordImpl baseEvent, String intent)
     {
         updateMetadata(baseEvent.metadata);
-        this.metadata.setIntent(intent);
+        setIntent(intent);
+
         this.objectMapper = baseEvent.objectMapper;
     }
 
@@ -86,5 +86,14 @@ public abstract class RecordImpl implements Record
     {
         return objectMapper.toJson(this);
     }
+
+    public void setIntent(String intent)
+    {
+        this.metadata.setIntent(intent);
+
+        mapIntent(intent);
+    }
+
+    protected abstract void mapIntent(String intent);
 
 }

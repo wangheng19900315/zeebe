@@ -15,75 +15,52 @@
  */
 package io.zeebe.client.impl.command;
 
-import java.util.List;
-
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JacksonInject;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import io.zeebe.client.api.commands.DeploymentCommand;
-import io.zeebe.client.api.commands.DeploymentResource;
 import io.zeebe.client.api.record.RecordMetadata;
 import io.zeebe.client.api.record.ZeebeObjectMapper;
-import io.zeebe.client.event.impl.RecordImpl;
+import io.zeebe.client.impl.record.DeploymentRecordImpl;
 
-public class DeploymentCommandImpl extends RecordImpl implements DeploymentCommand
+public class DeploymentCommandImpl extends DeploymentRecordImpl implements DeploymentCommand
 {
-    @JsonProperty("topicName")
-    private String deploymentTopic;
-
-    private List<DeploymentResource> resources;
-
-    private DeploymentCommandName commandName;
+    private DeploymentCommandName name;
 
     @JsonCreator
-    public DeploymentCommandImpl(@JacksonInject ZeebeObjectMapper objectMapper, @JsonProperty("commandName") String commandName)
+    public DeploymentCommandImpl(@JacksonInject ZeebeObjectMapper objectMapper)
     {
-        super(objectMapper, RecordMetadata.RecordType.COMMAND, RecordMetadata.ValueType.DEPLOYMENT, commandName);
-
-        this.commandName = DeploymentCommandName.valueOf(commandName);
+        super(objectMapper, RecordMetadata.RecordType.COMMAND);
     }
 
-    public DeploymentCommandImpl(DeploymentCommandName commandName)
+    public DeploymentCommandImpl(DeploymentCommandName name)
     {
-        super(null, RecordMetadata.RecordType.COMMAND, RecordMetadata.ValueType.DEPLOYMENT, commandName.name());
+        super(null, RecordMetadata.RecordType.COMMAND);
 
-        this.commandName = commandName;
-    }
-
-    @Override
-    public String getDeploymentTopic()
-    {
-        return deploymentTopic;
-    }
-
-    public void setDeploymentTopic(String deploymentTopic)
-    {
-        this.deploymentTopic = deploymentTopic;
-    }
-
-    @Override
-    public List<DeploymentResource> getResources()
-    {
-        return resources;
-    }
-
-    public void setResources(List<DeploymentResource> resources)
-    {
-        this.resources = resources;
+        this.name = name;
     }
 
     @Override
     public DeploymentCommandName getName()
     {
-        return commandName;
+        return name;
+    }
+
+    @Override
+    protected void mapIntent(String intent)
+    {
+        this.name = DeploymentCommandName.valueOf(intent);
     }
 
     @Override
     public String toString()
     {
         final StringBuilder builder = new StringBuilder();
-        builder.append("DeploymentCommand [topic=");
-        builder.append(deploymentTopic);
+        builder.append("DeploymentCommand [command=");
+        builder.append(name);
+        builder.append(", topic=");
+        builder.append(getDeploymentTopic());
         builder.append(", resource=");
-        builder.append(resources);
+        builder.append(getResources());
         builder.append("]");
         return builder.toString();
     }

@@ -138,7 +138,7 @@ public class TopicSubscriptionBuilderImpl implements TopicSubscriptionBuilder
         }
         else if (TopicEventType.WORKFLOW_INSTANCE == eventType && wfInstanceEventHandler != null)
         {
-            final WorkflowInstanceEventImpl wfInstanceEvent = msgPackMapper.convert(event.getAsMsgPack(), WorkflowInstanceEventImpl.class);
+            final WorkflowInstanceRecordImpl wfInstanceEvent = msgPackMapper.convert(event.getAsMsgPack(), WorkflowInstanceRecordImpl.class);
             wfInstanceEvent.updateMetadata(event.getMetadata());
             wfInstanceEventHandler.handle(wfInstanceEvent);
         }

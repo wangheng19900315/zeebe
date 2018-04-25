@@ -17,32 +17,24 @@ package io.zeebe.client.impl.event;
 
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JacksonInject;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import io.zeebe.client.api.commands.Workflow;
 import io.zeebe.client.api.events.DeploymentEvent;
 import io.zeebe.client.api.record.RecordMetadata;
 import io.zeebe.client.api.record.ZeebeObjectMapper;
-import io.zeebe.client.event.DeploymentResource;
-import io.zeebe.client.event.impl.RecordImpl;
+import io.zeebe.client.impl.record.DeploymentRecordImpl;
 
-public class DeploymentEventImpl extends RecordImpl implements DeploymentEvent
+public class DeploymentEventImpl extends DeploymentRecordImpl implements DeploymentEvent
 {
-    @JsonProperty("topicName")
-    private String deploymentTopic;
-
-    private List<DeploymentResource> resources;
-
+    private DeploymentState state;
     private List<Workflow> deployedWorkflows;
 
-    private DeploymentState state;
-
     @JsonCreator
-    public DeploymentEventImpl(@JacksonInject ZeebeObjectMapper objectMapper, @JsonProperty("state") String intent)
+    public DeploymentEventImpl(@JacksonInject ZeebeObjectMapper objectMapper)
     {
-        super(objectMapper, RecordMetadata.RecordType.EVENT, RecordMetadata.ValueType.DEPLOYMENT, intent);
-
-        state = DeploymentState.valueOf(intent);
+        super(objectMapper, RecordMetadata.RecordType.EVENT);
     }
 
     @Override
@@ -57,20 +49,16 @@ public class DeploymentEventImpl extends RecordImpl implements DeploymentEvent
         this.deployedWorkflows = deployedWorkflows;
     }
 
-    public String getDeploymentTopic()
-    {
-        return deploymentTopic;
-    }
-
-    public void setDeploymentTopic(String deploymentTopic)
-    {
-        this.deploymentTopic = deploymentTopic;
-    }
-
     @Override
     public DeploymentState getState()
     {
         return state;
+    }
+
+    @Override
+    protected void mapIntent(String intent)
+    {
+        this.state = DeploymentState.valueOf(intent);
     }
 
     @Override
@@ -80,9 +68,9 @@ public class DeploymentEventImpl extends RecordImpl implements DeploymentEvent
         builder.append("DeploymentEvent [state=");
         builder.append(state);
         builder.append(", topic=");
-        builder.append(deploymentTopic);
+        builder.append(getDeploymentTopic());
         builder.append(", resource=");
-        builder.append(resources);
+        builder.append(getResources());
         builder.append(", deployedWorkflows=");
         builder.append(deployedWorkflows);
         builder.append("]");

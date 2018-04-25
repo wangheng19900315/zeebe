@@ -159,6 +159,8 @@ public class CommandRequestHandler implements RequestResponseHandler
             throw new ClientException("Cannot deserialize event in response", e);
         }
 
+        result.setIntent(intent);
+
         final RecordMetadataImpl metadata = result.getMetadata();
         metadata.setKey(key);
         metadata.setPartitionId(partitionId);
@@ -166,7 +168,6 @@ public class CommandRequestHandler implements RequestResponseHandler
         metadata.setPosition(position);
         metadata.setRecordType(getRecordType(recordType));
         metadata.setValueType(command.getMetadata().getValueType());
-        metadata.setIntent(intent);
 
         return result;
     }

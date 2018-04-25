@@ -54,7 +54,7 @@ public class CancelWorkflowInstanceTest
     public void shouldCancelWorkflowInstance()
     {
         // given
-        final WorkflowInstanceEventImpl event = Events.exampleWorfklowInstance();
+        final WorkflowInstanceRecordImpl event = Events.exampleWorfklowInstance();
         event.setKey(2L);
 
         brokerRule.onWorkflowRequestRespondWith(2L)
@@ -91,7 +91,7 @@ public class CancelWorkflowInstanceTest
     public void shouldRejectCancelWorkflowInstance()
     {
         // given
-        final WorkflowInstanceEventImpl event = Events.exampleWorfklowInstance();
+        final WorkflowInstanceRecordImpl event = Events.exampleWorfklowInstance();
         event.setKey(2L);
 
         brokerRule.onWorkflowRequestRespondWith(2L)
