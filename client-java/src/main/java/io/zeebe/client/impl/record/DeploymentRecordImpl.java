@@ -17,7 +17,7 @@ package io.zeebe.client.impl.record;
 
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import io.zeebe.client.api.commands.DeploymentResource;
 import io.zeebe.client.api.record.*;
@@ -30,8 +30,7 @@ public abstract class DeploymentRecordImpl extends RecordImpl implements Deploym
 
     private List<DeploymentResource> resources;
 
-    @JsonCreator
-    public DeploymentRecordImpl(@JacksonInject ZeebeObjectMapper objectMapper, RecordMetadata.RecordType recordType)
+    public DeploymentRecordImpl(ZeebeObjectMapper objectMapper, RecordMetadata.RecordType recordType)
     {
         super(objectMapper, recordType, RecordMetadata.ValueType.DEPLOYMENT);
     }

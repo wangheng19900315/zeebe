@@ -21,7 +21,7 @@ import io.zeebe.client.event.Event;
 import io.zeebe.client.event.PollableTopicSubscriptionBuilder;
 import io.zeebe.client.event.TopicSubscriptionBuilder;
 import io.zeebe.client.impl.ZeebeClientImpl;
-import io.zeebe.client.task.impl.ControlMessageRequest;
+import io.zeebe.client.job.impl.ControlMessageRequest;
 import io.zeebe.client.topic.Topics;
 import io.zeebe.client.topic.impl.CreateTopicCommandImpl;
 import io.zeebe.client.topic.impl.GetPartitionsRequestImpl;

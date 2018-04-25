@@ -17,11 +17,12 @@ package io.zeebe.client.impl.record;
 
 import java.io.InputStream;
 
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.zeebe.client.api.record.*;
 import io.zeebe.client.event.impl.RecordImpl;
 import io.zeebe.client.impl.data.MsgPackConverter;
-import io.zeebe.client.task.impl.subscription.MsgPackField;
+import io.zeebe.client.job.impl.subscription.MsgPackField;
 
 public abstract class WorkflowInstanceRecordImpl extends RecordImpl implements WorkflowInstanceRecord
 {
@@ -32,8 +33,7 @@ public abstract class WorkflowInstanceRecordImpl extends RecordImpl implements W
     private String activityId;
     private final MsgPackField payload;
 
-    @JsonCreator
-    public WorkflowInstanceRecordImpl(@JacksonInject ZeebeObjectMapper objectMapper, @JacksonInject MsgPackConverter converter, RecordMetadata.RecordType recordType)
+    public WorkflowInstanceRecordImpl(ZeebeObjectMapper objectMapper, MsgPackConverter converter, RecordMetadata.RecordType recordType)
     {
         super(objectMapper, recordType, RecordMetadata.ValueType.WORKFLOW_INSTANCE);
 

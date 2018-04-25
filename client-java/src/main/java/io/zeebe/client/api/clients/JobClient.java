@@ -26,7 +26,7 @@ public interface JobClient
      *
      * @return a builder for the command
      */
-    CreateJobCommandBuilderStep1 newCreateCommand();
+    CreateJobCommandStep1 newCreateCommand();
 
     /**
      * Command to complete a job.

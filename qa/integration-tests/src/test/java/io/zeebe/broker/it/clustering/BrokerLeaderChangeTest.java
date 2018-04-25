@@ -21,7 +21,7 @@ import io.zeebe.client.TopicsClient;
 import io.zeebe.client.clustering.impl.TopologyBroker;
 import io.zeebe.client.event.TaskEvent;
 import io.zeebe.client.event.TopicSubscription;
-import io.zeebe.client.task.TaskSubscription;
+import io.zeebe.client.job.TaskSubscription;
 import io.zeebe.test.util.AutoCloseableRule;
 import io.zeebe.transport.SocketAddress;
 import org.junit.Before;

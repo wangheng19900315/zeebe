@@ -18,7 +18,7 @@ package io.zeebe.broker.it.clustering;
 import io.zeebe.broker.it.ClientRule;
 import io.zeebe.broker.it.subscription.RecordingEventHandler;
 import io.zeebe.client.ZeebeClient;
-import io.zeebe.client.task.impl.CreateTaskCommandImpl;
+import io.zeebe.client.job.impl.CreateTaskCommandImpl;
 import io.zeebe.client.topic.Topic;
 import io.zeebe.test.util.AutoCloseableRule;
 import org.junit.Before;

@@ -26,7 +26,7 @@ public class EventTypeMapping
     static
     {
         MAPPING = new RecordMetadata.ValueType[RecordMetadata.ValueType.values().length];
-        MAPPING[ValueType.TASK.ordinal()] = RecordMetadata.ValueType.TASK;
+        MAPPING[ValueType.TASK.ordinal()] = RecordMetadata.ValueType.JOB;
         MAPPING[ValueType.WORKFLOW.ordinal()] = RecordMetadata.ValueType.WORKFLOW;
         MAPPING[ValueType.WORKFLOW_INSTANCE.ordinal()] = RecordMetadata.ValueType.WORKFLOW_INSTANCE;
         MAPPING[ValueType.INCIDENT.ordinal()] = RecordMetadata.ValueType.INCIDENT;

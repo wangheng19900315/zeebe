@@ -40,7 +40,7 @@ import io.zeebe.client.cmd.ClientCommandRejectedException;
 import io.zeebe.client.event.DeploymentEvent;
 import io.zeebe.client.event.TaskEvent;
 import io.zeebe.client.event.WorkflowInstanceEvent;
-import io.zeebe.client.task.TaskSubscription;
+import io.zeebe.client.job.TaskSubscription;
 import io.zeebe.model.bpmn.Bpmn;
 import io.zeebe.model.bpmn.instance.WorkflowDefinition;
 import io.zeebe.raft.Raft;

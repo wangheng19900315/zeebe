@@ -36,7 +36,7 @@ import io.zeebe.client.ZeebeClient;
 import io.zeebe.client.cmd.ClientException;
 import io.zeebe.client.event.impl.TopicSubscriberGroup;
 import io.zeebe.client.event.impl.TopicSubscriptionBuilderImpl;
-import io.zeebe.client.task.impl.subscription.SubscriberGroup;
+import io.zeebe.client.job.impl.subscription.SubscriberGroup;
 import io.zeebe.client.util.ClientRule;
 import io.zeebe.protocol.Protocol;
 import io.zeebe.protocol.clientapi.ControlMessageType;

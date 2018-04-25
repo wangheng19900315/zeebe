@@ -33,11 +33,6 @@ public class WorkflowInstanceEventImpl extends WorkflowInstanceRecordImpl implem
         super(objectMapper, converter, RecordMetadata.RecordType.EVENT);
     }
 
-    public WorkflowInstanceEventImpl(WorkflowInstanceEventImpl baseEvent, String state)
-    {
-        super(baseEvent, state);
-    }
-
     @Override
     public WorkflowInstanceState getState()
     {

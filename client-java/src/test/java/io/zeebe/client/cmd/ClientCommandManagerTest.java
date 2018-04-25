@@ -41,7 +41,7 @@ import io.zeebe.client.event.impl.TaskEventImpl;
 import io.zeebe.client.impl.RequestManager;
 import io.zeebe.client.impl.ZeebeClientImpl;
 import io.zeebe.client.impl.cmd.CommandImpl;
-import io.zeebe.client.task.cmd.CreateTaskCommand;
+import io.zeebe.client.job.cmd.CreateTaskCommand;
 import io.zeebe.client.util.ClientRule;
 import io.zeebe.client.util.Events;
 import io.zeebe.protocol.Protocol;

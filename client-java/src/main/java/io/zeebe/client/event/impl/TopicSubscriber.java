@@ -18,9 +18,7 @@ package io.zeebe.client.event.impl;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
 
-import io.zeebe.client.task.impl.subscription.Subscriber;
-import io.zeebe.client.task.impl.subscription.SubscriberGroup;
-import io.zeebe.client.task.impl.subscription.SubscriptionManager;
+import io.zeebe.client.job.impl.subscription.*;
 import io.zeebe.transport.RemoteAddress;
 import io.zeebe.util.CheckedConsumer;
 import io.zeebe.util.sched.future.ActorFuture;

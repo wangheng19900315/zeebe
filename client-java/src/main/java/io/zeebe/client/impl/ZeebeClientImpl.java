@@ -24,7 +24,7 @@ import io.zeebe.client.api.commands.*;
 import io.zeebe.client.clustering.impl.ClientTopologyManager;
 import io.zeebe.client.impl.data.MsgPackConverter;
 import io.zeebe.client.impl.data.MsgPackMapper;
-import io.zeebe.client.task.impl.subscription.SubscriptionManager;
+import io.zeebe.client.job.impl.subscription.SubscriptionManager;
 import io.zeebe.dispatcher.Dispatcher;
 import io.zeebe.dispatcher.Dispatchers;
 import io.zeebe.transport.*;

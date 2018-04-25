@@ -18,21 +18,12 @@ package io.zeebe.client.impl;
 import io.zeebe.client.TasksClient;
 import io.zeebe.client.event.TaskEvent;
 import io.zeebe.client.event.impl.TaskEventImpl;
-import io.zeebe.client.task.PollableTaskSubscriptionBuilder;
-import io.zeebe.client.task.TaskSubscriptionBuilder;
-import io.zeebe.client.task.cmd.CompleteTaskCommand;
-import io.zeebe.client.task.cmd.CreateTaskCommand;
-import io.zeebe.client.task.cmd.FailTaskCommand;
-import io.zeebe.client.task.cmd.UpdateTaskRetriesCommand;
-import io.zeebe.client.task.impl.CloseTaskSubscriptionCommandImpl;
-import io.zeebe.client.task.impl.CompleteTaskCommandImpl;
-import io.zeebe.client.task.impl.CreateTaskCommandImpl;
-import io.zeebe.client.task.impl.CreateTaskSubscriptionCommandImpl;
-import io.zeebe.client.task.impl.FailTaskCommandImpl;
-import io.zeebe.client.task.impl.IncreaseTaskSubscriptionCreditsCmdImpl;
-import io.zeebe.client.task.impl.UpdateRetriesCommandImpl;
-import io.zeebe.client.task.impl.subscription.PollableTaskSubscriptionBuilderImpl;
-import io.zeebe.client.task.impl.subscription.TaskSubscriptionBuilderImpl;
+import io.zeebe.client.job.PollableTaskSubscriptionBuilder;
+import io.zeebe.client.job.TaskSubscriptionBuilder;
+import io.zeebe.client.job.cmd.*;
+import io.zeebe.client.job.impl.*;
+import io.zeebe.client.job.impl.subscription.PollableTaskSubscriptionBuilderImpl;
+import io.zeebe.client.job.impl.subscription.TaskSubscriptionBuilderImpl;
 
 public class TasksClientImpl implements TasksClient
 {
@@ -46,7 +37,7 @@ public class TasksClientImpl implements TasksClient
     @Override
     public CreateTaskCommand create(String topic, String type)
     {
-        return new CreateTaskCommandImpl(client.getCommandManager(), client.getMsgPackConverter(), topic, type);
+        return new CreateJobCommandImpl(client.getCommandManager(), client.getMsgPackConverter(), topic, type);
     }
 
     @Override

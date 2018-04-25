@@ -21,7 +21,7 @@ import java.util.concurrent.Future;
 import io.zeebe.client.cmd.ClientException;
 import io.zeebe.client.event.PollableTopicSubscription;
 import io.zeebe.client.event.PollableTopicSubscriptionBuilder;
-import io.zeebe.client.task.impl.subscription.SubscriptionManager;
+import io.zeebe.client.job.impl.subscription.SubscriptionManager;
 import io.zeebe.util.EnsureUtil;
 
 public class PollableTopicSubscriptionBuilderImpl implements PollableTopicSubscriptionBuilder

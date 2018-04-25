@@ -29,7 +29,7 @@ import io.zeebe.client.TasksClient;
 import io.zeebe.client.ZeebeClient;
 import io.zeebe.client.cmd.ClientCommandRejectedException;
 import io.zeebe.client.event.TaskEvent;
-import io.zeebe.client.task.cmd.CreateTaskCommand;
+import io.zeebe.client.job.cmd.CreateTaskCommand;
 
 public class NonBlockingTaskCreator
 {

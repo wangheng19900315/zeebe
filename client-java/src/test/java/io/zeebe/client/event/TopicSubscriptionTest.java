@@ -31,7 +31,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import io.zeebe.client.task.impl.subscription.SubscriptionManager;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -42,6 +41,7 @@ import io.zeebe.client.ZeebeClient;
 import io.zeebe.client.event.impl.TopicSubscriberGroup;
 import io.zeebe.client.event.impl.TopicSubscriptionBuilderImpl;
 import io.zeebe.client.impl.ZeebeClientImpl;
+import io.zeebe.client.job.impl.subscription.SubscriptionManager;
 import io.zeebe.client.util.ClientRule;
 import io.zeebe.protocol.clientapi.ControlMessageType;
 import io.zeebe.protocol.clientapi.ErrorCode;

@@ -47,7 +47,7 @@ public interface RecordMetadata
 
     enum ValueType
     {
-        TASK,
+        JOB,
         WORKFLOW_INSTANCE,
         WORKFLOW,
         INCIDENT,
