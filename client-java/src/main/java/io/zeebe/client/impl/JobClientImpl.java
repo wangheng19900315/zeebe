@@ -2,6 +2,7 @@ package io.zeebe.client.impl;
 
 import io.zeebe.client.api.clients.JobClient;
 import io.zeebe.client.api.commands.*;
+import io.zeebe.client.api.events.JobEvent;
 import io.zeebe.client.job.CreateJobCommandImpl;
 
 public class JobClientImpl implements JobClient
@@ -20,21 +21,21 @@ public class JobClientImpl implements JobClient
     }
 
     @Override
-    public CompleteJobCommandStep1 newCompleteCommand()
+    public CompleteJobCommandStep1 newCompleteCommand(JobEvent event)
     {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public FailJobCommandStep1 newFailCommand()
+    public FailJobCommandStep1 newFailCommand(JobEvent event)
     {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public UpdateRetriesJobCommandBuilderStep1 newUpdateRetriesCommand()
+    public UpdateRetriesJobCommandBuilderStep1 newUpdateRetriesCommand(JobEvent event)
     {
         // TODO Auto-generated method stub
         return null;

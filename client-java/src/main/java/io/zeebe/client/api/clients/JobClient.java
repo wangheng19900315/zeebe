@@ -1,6 +1,7 @@
 package io.zeebe.client.api.clients;
 
 import io.zeebe.client.api.commands.*;
+import io.zeebe.client.api.events.JobEvent;
 
 /**
  * A client with access to all job-related operation:
@@ -33,8 +34,7 @@ public interface JobClient
      *
      * <pre>
      * jobClient
-     *  .newCompleteCommand()
-     *  .event(jobEvent)
+     *  .newCompleteCommand(jobEvent)
      *  .payload(json)
      *  .send();
      * </pre>
@@ -48,17 +48,19 @@ public interface JobClient
      * command will complete the related activity and continue
      * the flow.
      *
+     * @param event
+     *            the latest job event
+     *
      * @return a builder for the command
      */
-    CompleteJobCommandStep1 newCompleteCommand();
+    CompleteJobCommandStep1 newCompleteCommand(JobEvent event);
 
     /**
      * Command to mark a job as failed.
      *
      * <pre>
      * jobClient
-     *  .newFailCommand()
-     *  .event(jobEvent)
+     *  .newFailCommand(jobEvent)
      *  .retries(jobEvent.getRetries() - 1)
      *  .send();
      * </pre>
@@ -72,17 +74,19 @@ public interface JobClient
      * be picked up again by a job subscription. Otherwise, an incident
      * is created for this job.
      *
+     * @param event
+     *            the latest job event
+     *
      * @return a builder for the command
      */
-    FailJobCommandStep1 newFailCommand();
+    FailJobCommandStep1 newFailCommand(JobEvent event);
 
     /**
      * Command to update the retries of a job.
      *
      * <pre>
      * jobClient
-     *  .newUpdateRetriesCommand()
-     *  .event(jobEvent)
+     *  .newUpdateRetriesCommand(jobEvent)
      *  .retries(3)
      *  .send();
      * </pre>
@@ -96,8 +100,11 @@ public interface JobClient
      * be picked up again by a job subscription and a related
      * incident will be marked as resolved.
      *
+     * @param event
+     *            the latest job event
+     *
      * @return a builder for the command
      */
-    UpdateRetriesJobCommandBuilderStep1 newUpdateRetriesCommand();
+    UpdateRetriesJobCommandBuilderStep1 newUpdateRetriesCommand(JobEvent event);
 
 }
