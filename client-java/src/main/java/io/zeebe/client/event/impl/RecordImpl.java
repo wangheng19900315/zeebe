@@ -31,11 +31,11 @@ public abstract class RecordImpl implements Record
         this.objectMapper = objectMapper;
     }
 
-    public RecordImpl(ZeebeObjectMapper objectMapper, RecordImpl baseEvent, String intent)
+    public RecordImpl(RecordImpl baseEvent, String intent)
     {
         updateMetadata(baseEvent.metadata);
         this.metadata.setIntent(intent);
-        this.objectMapper = objectMapper;
+        this.objectMapper = baseEvent.objectMapper;
     }
 
     @Override

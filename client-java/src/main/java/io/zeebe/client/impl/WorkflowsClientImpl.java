@@ -13,11 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.zeebe.client.workflow;
+package io.zeebe.client.impl;
 
 import io.zeebe.client.api.clients.WorkflowClient;
 import io.zeebe.client.api.commands.*;
-import io.zeebe.client.impl.TopicClientImpl;
+import io.zeebe.client.workflow.CreateWorkflowInstanceCommandImpl;
+import io.zeebe.client.workflow.DeployWorkflowCommandImpl;
 
 public class WorkflowsClientImpl implements WorkflowClient
 {
@@ -31,14 +32,13 @@ public class WorkflowsClientImpl implements WorkflowClient
     @Override
     public DeployWorkflowCommandStep1 newDeployCommand()
     {
-        return new CreateDeploymentCommandImpl(client.getCommandManager(), client.getTopic());
+        return new DeployWorkflowCommandImpl(client.getCommandManager(), client.getTopic());
     }
 
     @Override
     public CreateWorkflowInstanceCommandStep1 newCreateInstanceCommand()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return new CreateWorkflowInstanceCommandImpl(client.getCommandManager(), client.getMsgPackConverter(), client.getTopic());
     }
 
     @Override
@@ -54,6 +54,5 @@ public class WorkflowsClientImpl implements WorkflowClient
         // TODO Auto-generated method stub
         return null;
     }
-
 
 }

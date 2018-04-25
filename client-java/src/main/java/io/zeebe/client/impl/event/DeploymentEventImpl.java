@@ -25,7 +25,6 @@ import io.zeebe.client.api.record.RecordMetadata;
 import io.zeebe.client.api.record.ZeebeObjectMapper;
 import io.zeebe.client.event.DeploymentResource;
 import io.zeebe.client.event.impl.RecordImpl;
-import io.zeebe.client.workflow.impl.WorkflowDefinitionImpl;
 
 public class DeploymentEventImpl extends RecordImpl implements DeploymentEvent
 {
@@ -47,7 +46,7 @@ public class DeploymentEventImpl extends RecordImpl implements DeploymentEvent
     }
 
     @Override
-    @JsonDeserialize(contentAs = WorkflowDefinitionImpl.class)
+    @JsonDeserialize(contentAs = WorkflowImpl.class)
     public List<Workflow> getDeployedWorkflows()
     {
         return deployedWorkflows;
@@ -78,7 +77,9 @@ public class DeploymentEventImpl extends RecordImpl implements DeploymentEvent
     public String toString()
     {
         final StringBuilder builder = new StringBuilder();
-        builder.append("DeploymentEvent [topic=");
+        builder.append("DeploymentEvent [state=");
+        builder.append(state);
+        builder.append(", topic=");
         builder.append(deploymentTopic);
         builder.append(", resource=");
         builder.append(resources);

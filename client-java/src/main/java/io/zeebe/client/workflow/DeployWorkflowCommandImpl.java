@@ -38,7 +38,7 @@ import io.zeebe.model.bpmn.instance.WorkflowDefinition;
 import io.zeebe.protocol.Protocol;
 import io.zeebe.util.StreamUtil;
 
-public class CreateDeploymentCommandImpl extends CommandImpl<DeploymentEvent> implements DeployWorkflowCommandStep1, DeployWorkflowCommandBuilderStep2
+public class DeployWorkflowCommandImpl extends CommandImpl<DeploymentEvent> implements DeployWorkflowCommandStep1, DeployWorkflowCommandBuilderStep2
 {
     private final DeploymentCommandImpl command = new DeploymentCommandImpl(DeploymentCommandName.CREATE);
 
@@ -46,7 +46,7 @@ public class CreateDeploymentCommandImpl extends CommandImpl<DeploymentEvent> im
 
     private final BpmnModelApi bpmn = new BpmnModelApi();
 
-    public CreateDeploymentCommandImpl(final RequestManager commandManager, String topic)
+    public DeployWorkflowCommandImpl(final RequestManager commandManager, String topic)
     {
         super(commandManager);
 

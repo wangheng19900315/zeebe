@@ -13,46 +13,44 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.zeebe.client.workflow.impl;
+package io.zeebe.client.impl.command;
 
 import java.io.InputStream;
 
 import com.fasterxml.jackson.annotation.*;
-import io.zeebe.client.event.TopicEventType;
-import io.zeebe.client.event.WorkflowInstanceEvent;
+import io.zeebe.client.api.commands.WorkflowInstanceCommand;
+import io.zeebe.client.api.record.RecordMetadata;
+import io.zeebe.client.api.record.ZeebeObjectMapper;
 import io.zeebe.client.event.impl.RecordImpl;
 import io.zeebe.client.impl.data.MsgPackConverter;
 import io.zeebe.client.task.impl.subscription.MsgPackField;
 
-/**
- * Represents a event, which is used to create a workflow instance on the broker.
- */
-public class WorkflowInstanceEventImpl extends RecordImpl implements WorkflowInstanceEvent
+public class WorkflowInstanceCommandImpl extends RecordImpl implements WorkflowInstanceCommand
 {
+    private WorkflowInstanceCommandName commandName;
 
-    protected String bpmnProcessId;
-    protected int version = -1;
-    protected long workflowKey = -1L;
-    protected long workflowInstanceKey = -1L;
-    protected String activityId;
-    protected final MsgPackField payload;
+    private String bpmnProcessId;
+    private int version = -1;
+    private long workflowKey = -1L;
+    private long workflowInstanceKey = -1L;
+    private String activityId;
+    private final MsgPackField payload;
 
     @JsonCreator
-    public WorkflowInstanceEventImpl(@JsonProperty("state") String state, @JacksonInject MsgPackConverter converter)
+    public WorkflowInstanceCommandImpl(@JacksonInject ZeebeObjectMapper objectMapper, @JacksonInject MsgPackConverter converter, @JsonProperty("commandName") String commandName)
     {
-        super(TopicEventType.WORKFLOW_INSTANCE, state);
+        super(objectMapper, RecordMetadata.RecordType.EVENT, RecordMetadata.ValueType.WORKFLOW_INSTANCE, commandName);
+
         this.payload = new MsgPackField(converter);
+        this.commandName = WorkflowInstanceCommandName.valueOf(commandName);
     }
 
-    public WorkflowInstanceEventImpl(WorkflowInstanceEventImpl baseEvent, String state)
+    public WorkflowInstanceCommandImpl(MsgPackConverter converter, WorkflowInstanceCommandName commandName)
     {
-        super(baseEvent, state);
-        this.bpmnProcessId = baseEvent.bpmnProcessId;
-        this.version = baseEvent.version;
-        this.workflowKey = baseEvent.workflowKey;
-        this.workflowInstanceKey = baseEvent.workflowInstanceKey;
-        this.activityId = baseEvent.activityId;
-        this.payload = new MsgPackField(baseEvent.payload);
+        super(null, RecordMetadata.RecordType.EVENT, RecordMetadata.ValueType.WORKFLOW_INSTANCE, commandName.name());
+
+        this.payload = new MsgPackField(converter);
+        this.commandName = commandName;
     }
 
     @Override
@@ -140,11 +138,17 @@ public class WorkflowInstanceEventImpl extends RecordImpl implements WorkflowIns
     }
 
     @Override
+    public WorkflowInstanceCommandName getName()
+    {
+        return commandName;
+    }
+
+    @Override
     public String toString()
     {
         final StringBuilder builder = new StringBuilder();
-        builder.append("WorkflowInstanceEvent [state=");
-        builder.append(state);
+        builder.append("WorkflowInstanceCommand [command=");
+        builder.append(commandName);
         builder.append(", workflowInstanceKey=");
         builder.append(workflowInstanceKey);
         builder.append(", workflowKey=");

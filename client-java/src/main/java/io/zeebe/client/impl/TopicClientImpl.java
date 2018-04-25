@@ -1,7 +1,7 @@
 package io.zeebe.client.impl;
 
 import io.zeebe.client.api.clients.*;
-import io.zeebe.client.workflow.WorkflowsClientImpl;
+import io.zeebe.client.impl.data.MsgPackConverter;
 
 public class TopicClientImpl implements TopicClient
 {
@@ -47,6 +47,11 @@ public class TopicClientImpl implements TopicClient
     public ZeebeObjectMapper getObjectMapper()
     {
         return client.getObjectMapper();
+    }
+
+    public MsgPackConverter getMsgPackConverter()
+    {
+        return client.getMsgPackConverter();
     }
 
 }

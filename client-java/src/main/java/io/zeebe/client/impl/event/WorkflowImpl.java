@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.zeebe.client.workflow.impl;
+package io.zeebe.client.impl.event;
 
-import io.zeebe.client.event.WorkflowDefinition;
+import io.zeebe.client.api.commands.Workflow;
 
-public class WorkflowDefinitionImpl implements WorkflowDefinition
+public class WorkflowImpl implements Workflow
 {
     private String bpmnProcessId;
     private int version;
@@ -34,13 +34,13 @@ public class WorkflowDefinitionImpl implements WorkflowDefinition
         return version;
     }
 
-    public WorkflowDefinitionImpl setBpmnProcessId(String bpmnProcessId)
+    public WorkflowImpl setBpmnProcessId(String bpmnProcessId)
     {
         this.bpmnProcessId = bpmnProcessId;
         return this;
     }
 
-    public WorkflowDefinitionImpl setVersion(int version)
+    public WorkflowImpl setVersion(int version)
     {
         this.version = version;
         return this;
@@ -50,7 +50,7 @@ public class WorkflowDefinitionImpl implements WorkflowDefinition
     public String toString()
     {
         final StringBuilder builder = new StringBuilder();
-        builder.append("WorkflowDefinition [bpmnProcessId=");
+        builder.append("Workflow [bpmnProcessId=");
         builder.append(bpmnProcessId);
         builder.append(", version=");
         builder.append(version);
