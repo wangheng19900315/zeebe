@@ -105,6 +105,6 @@ public interface JobClient
      *
      * @return a builder for the command
      */
-    UpdateRetriesJobCommandBuilderStep1 newUpdateRetriesCommand(JobEvent event);
+    UpdateRetriesJobCommandStep1 newUpdateRetriesCommand(JobEvent event);
 
 }
