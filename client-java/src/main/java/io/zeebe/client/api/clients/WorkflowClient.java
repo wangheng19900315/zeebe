@@ -1,6 +1,7 @@
 package io.zeebe.client.api.clients;
 
 import io.zeebe.client.api.commands.*;
+import io.zeebe.client.api.events.WorkflowInstanceEvent;
 
 /**
  * A client with access to all workflow-related operations:
@@ -48,8 +49,7 @@ public interface WorkflowClient
      *
      * <pre>
      * workflowClient
-     *  .newCancelInstanceCommand()
-     *  .event(workflowInstanceEvent)
+     *  .newCancelInstanceCommand(workflowInstanceEvent)
      *  .send();
      * </pre>
      *
@@ -58,17 +58,19 @@ public interface WorkflowClient
      * based on the latest state of the workflow instance. If it's not the
      * latest one then the command is rejected.
      *
+     * @param event
+     *            the latest workflow instance event
+     *
      * @return a builder for the command
      */
-    CancelWorkflowInstanceCommandStep1 newCancelInstanceCommand();
+    CancelWorkflowInstanceCommandStep1 newCancelInstanceCommand(WorkflowInstanceEvent event);
 
     /**
      * Command to update the payload of a workflow instance.
      *
      * <pre>
      * workflowClient
-     *  .newUpdatePayloadCommand()
-     *  .event(workflowInstanceEvent)
+     *  .newUpdatePayloadCommand(workflowInstanceEvent)
      *  .payload(json)
      *  .send();
      * </pre>
@@ -81,7 +83,10 @@ public interface WorkflowClient
      * If the workflow instance failed because of a payload-related incident
      * then it will try to resolve the incident with the given payload.
      *
+     * @param event
+     *            the latest workflow instance event
+     *
      * @return a builder for the command
      */
-    UpdatePayloadWorkflowInstanceCommandStep1 newUpdatePayloadCommand();
+    UpdatePayloadWorkflowInstanceCommandStep1 newUpdatePayloadCommand(WorkflowInstanceEvent event);
 }

@@ -13,35 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.zeebe.client.workflow.impl;
+package io.zeebe.client.workflow;
 
-import io.zeebe.client.event.WorkflowInstanceEvent;
+import io.zeebe.client.api.commands.CancelWorkflowInstanceCommandStep1;
+import io.zeebe.client.api.commands.WorkflowInstanceCommand.WorkflowInstanceCommandName;
+import io.zeebe.client.api.events.WorkflowInstanceEvent;
 import io.zeebe.client.event.impl.RecordImpl;
 import io.zeebe.client.impl.RequestManager;
 import io.zeebe.client.impl.cmd.CommandImpl;
+import io.zeebe.client.impl.command.WorkflowInstanceCommandImpl;
+import io.zeebe.client.impl.event.WorkflowInstanceEventImpl;
 import io.zeebe.util.EnsureUtil;
 
-public class CancelWorkflowInstanceCmdImpl extends CommandImpl<WorkflowInstanceEvent>
+public class CancelWorkflowInstanceCommandImpl extends CommandImpl<WorkflowInstanceEvent> implements CancelWorkflowInstanceCommandStep1
 {
-    private final WorkflowInstanceRecordImpl workflowInstanceEvent;
+    private final WorkflowInstanceCommandImpl command;
 
-    public CancelWorkflowInstanceCmdImpl(final RequestManager commandManager, WorkflowInstanceEvent baseEvent)
+    public CancelWorkflowInstanceCommandImpl(final RequestManager commandManager, WorkflowInstanceEvent event)
     {
         super(commandManager);
-        EnsureUtil.ensureNotNull("base event", baseEvent);
-        this.workflowInstanceEvent = new WorkflowInstanceRecordImpl((WorkflowInstanceRecordImpl) baseEvent,
-                WorkflowInstanceEventType.CANCEL_WORKFLOW_INSTANCE.name());
+
+        EnsureUtil.ensureNotNull("event", event);
+
+        command = new WorkflowInstanceCommandImpl((WorkflowInstanceEventImpl) event, WorkflowInstanceCommandName.CANCEL_WORKFLOW_INSTANCE);
     }
 
     @Override
     public RecordImpl getCommand()
     {
-        return workflowInstanceEvent;
+        return command;
     }
 
-    @Override
-    public String getExpectedStatus()
-    {
-        return WorkflowInstanceEventType.WORKFLOW_INSTANCE_CANCELED.name();
-    }
 }

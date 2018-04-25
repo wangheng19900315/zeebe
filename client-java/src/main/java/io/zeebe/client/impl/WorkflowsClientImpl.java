@@ -17,8 +17,8 @@ package io.zeebe.client.impl;
 
 import io.zeebe.client.api.clients.WorkflowClient;
 import io.zeebe.client.api.commands.*;
-import io.zeebe.client.workflow.CreateWorkflowInstanceCommandImpl;
-import io.zeebe.client.workflow.DeployWorkflowCommandImpl;
+import io.zeebe.client.api.events.WorkflowInstanceEvent;
+import io.zeebe.client.workflow.*;
 
 public class WorkflowsClientImpl implements WorkflowClient
 {
@@ -42,17 +42,15 @@ public class WorkflowsClientImpl implements WorkflowClient
     }
 
     @Override
-    public CancelWorkflowInstanceCommandStep1 newCancelInstanceCommand()
+    public CancelWorkflowInstanceCommandStep1 newCancelInstanceCommand(WorkflowInstanceEvent event)
     {
-        // TODO Auto-generated method stub
-        return null;
+        return new CancelWorkflowInstanceCommandImpl(client.getCommandManager(), event);
     }
 
     @Override
-    public UpdatePayloadWorkflowInstanceCommandStep1 newUpdatePayloadCommand()
+    public UpdatePayloadWorkflowInstanceCommandStep1 newUpdatePayloadCommand(WorkflowInstanceEvent event)
     {
-        // TODO Auto-generated method stub
-        return null;
+        return new UpdatePayloadCommandImpl(client.getCommandManager(), event);
     }
 
 }

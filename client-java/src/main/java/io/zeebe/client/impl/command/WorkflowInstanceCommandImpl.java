@@ -40,6 +40,13 @@ public class WorkflowInstanceCommandImpl extends WorkflowInstanceRecordImpl impl
         this.name = name;
     }
 
+    public WorkflowInstanceCommandImpl(WorkflowInstanceRecordImpl base, WorkflowInstanceCommandName name)
+    {
+        super(base, name.name());
+
+        this.name = name;
+    }
+
     @Override
     public WorkflowInstanceCommandName getName()
     {

@@ -40,16 +40,16 @@ public abstract class WorkflowInstanceRecordImpl extends RecordImpl implements W
         this.payload = new MsgPackField(converter);
     }
 
-    public WorkflowInstanceRecordImpl(WorkflowInstanceRecordImpl baseEvent, String state)
+    public WorkflowInstanceRecordImpl(WorkflowInstanceRecordImpl base, String intent)
     {
-        super(baseEvent, state);
+        super(base, intent);
 
-        this.bpmnProcessId = baseEvent.bpmnProcessId;
-        this.version = baseEvent.version;
-        this.workflowKey = baseEvent.workflowKey;
-        this.workflowInstanceKey = baseEvent.workflowInstanceKey;
-        this.activityId = baseEvent.activityId;
-        this.payload = new MsgPackField(baseEvent.payload);
+        this.bpmnProcessId = base.getBpmnProcessId();
+        this.version = base.getVersion();
+        this.workflowKey = base.getWorkflowKey();
+        this.workflowInstanceKey = base.getWorkflowInstanceKey();
+        this.activityId = base.getActivityId();
+        this.payload = new MsgPackField(base.payload);
     }
 
     @Override
