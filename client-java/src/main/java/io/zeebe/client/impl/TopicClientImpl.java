@@ -2,7 +2,7 @@ package io.zeebe.client.impl;
 
 import io.zeebe.client.api.clients.*;
 import io.zeebe.client.impl.data.MsgPackConverter;
-import io.zeebe.client.job.impl.subscription.SubscriptionManager;
+import io.zeebe.client.subscription.SubscriptionManager;
 
 public class TopicClientImpl implements TopicClient
 {

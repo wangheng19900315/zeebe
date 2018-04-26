@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.zeebe.client.job.impl.subscription;
+package io.zeebe.client.subscription.job;
 
 import io.zeebe.client.api.clients.JobClient;
 import io.zeebe.client.api.subscription.JobHandler;
@@ -21,8 +21,7 @@ import io.zeebe.client.impl.Loggers;
 import io.zeebe.client.impl.ZeebeClientImpl;
 import io.zeebe.client.impl.command.JobEventImpl;
 import io.zeebe.client.impl.data.MsgPackMapper;
-import io.zeebe.client.job.impl.CloseTaskSubscriptionCommandImpl;
-import io.zeebe.client.job.impl.IncreaseTaskSubscriptionCreditsCmdImpl;
+import io.zeebe.client.subscription.*;
 import io.zeebe.transport.RemoteAddress;
 import io.zeebe.util.sched.future.ActorFuture;
 import org.slf4j.Logger;
@@ -88,16 +87,17 @@ public class JobSubscriber extends Subscriber
     @Override
     protected ActorFuture<?> requestEventSourceReplenishment(int eventsProcessed)
     {
-        return new IncreaseTaskSubscriptionCreditsCmdImpl(client.getCommandManager(), partitionId)
+        return new IncreaseJobSubscriptionCreditsCmdImpl(client.getCommandManager(), partitionId)
             .subscriberKey(subscriberKey)
             .credits(eventsProcessed)
-            .send();
+            .executeAsync();
     }
 
     @Override
     public ActorFuture<Void> requestSubscriptionClose()
     {
-        return new CloseTaskSubscriptionCommandImpl(client.getCommandManager(), partitionId, subscriberKey).send();
+        return new CloseJobSubscriptionCommandImpl(client.getCommandManager(), partitionId, subscriberKey)
+                .executeAsync();
     }
 
     @Override

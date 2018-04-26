@@ -49,7 +49,7 @@ import io.zeebe.client.event.TaskEvent;
 import io.zeebe.client.impl.TasksClientImpl;
 import io.zeebe.client.impl.data.MsgPackConverter;
 import io.zeebe.client.job.*;
-import io.zeebe.client.job.impl.subscription.Subscriber;
+import io.zeebe.client.subscription.Subscriber;
 import io.zeebe.client.util.ClientRule;
 import io.zeebe.protocol.clientapi.ControlMessageType;
 import io.zeebe.protocol.clientapi.ErrorCode;

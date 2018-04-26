@@ -22,7 +22,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.zeebe.client.api.record.*;
 import io.zeebe.client.event.impl.RecordImpl;
 import io.zeebe.client.impl.data.MsgPackConverter;
-import io.zeebe.client.job.impl.subscription.MsgPackField;
 
 public abstract class WorkflowInstanceRecordImpl extends RecordImpl implements WorkflowInstanceRecord
 {

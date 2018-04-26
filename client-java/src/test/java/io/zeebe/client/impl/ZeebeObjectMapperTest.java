@@ -46,7 +46,7 @@ public class ZeebeObjectMapperTest
         final TaskEventImpl task = new TaskEventImpl("CREATED", objectMapper.getMsgPackConverter());
         task.setTopicName("topic");
         task.setPartitionId(1);
-        task.setEventPosition(10L);
+        task.setPosition(10L);
         task.setKey(20L);
         task.setType("type");
         task.setRetries(3);

@@ -13,66 +13,72 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.zeebe.client.subscription;
+package io.zeebe.client.subscription.job;
 
 import java.time.Duration;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
-import io.zeebe.client.api.subscription.JobSubscriptionBuilderStep1.PollableJobSubscriptionBuilderStep2;
-import io.zeebe.client.api.subscription.JobSubscriptionBuilderStep1.PollableJobSubscriptionBuilderStep3;
-import io.zeebe.client.api.subscription.PollableJobSubscription;
+import io.zeebe.client.api.subscription.JobHandler;
+import io.zeebe.client.api.subscription.JobSubscription;
+import io.zeebe.client.api.subscription.JobSubscriptionBuilderStep1.*;
 import io.zeebe.client.cmd.ClientException;
-import io.zeebe.client.job.impl.subscription.*;
+import io.zeebe.client.subscription.SubscriptionManager;
 
-public class PollableJobSubscriptionBuilderImpl implements PollableJobSubscriptionBuilderStep2, PollableJobSubscriptionBuilderStep3
+public class ManagedJobSubscriptionBuilderImpl
+        implements ManagedJobSubscriptionBuilderStep2, ManagedJobSubscriptionBuilderStep3, ManagedJobSubscriptionBuilderStep4
 {
     private final JobSubscriberGroupBuilder subscriberBuilder;
 
-    public PollableJobSubscriptionBuilderImpl(
-            String topic,
-            SubscriptionManager subscriptionManager)
+    public ManagedJobSubscriptionBuilderImpl(String topic, SubscriptionManager subscriptionManager)
     {
         this.subscriberBuilder = new JobSubscriberGroupBuilder(topic, subscriptionManager);
     }
 
     @Override
-    public PollableJobSubscriptionBuilderStep3 lockTime(long lockTime)
-    {
-        subscriberBuilder.lockTime(lockTime);
-        return this;
-    }
-
-    @Override
-    public PollableJobSubscriptionBuilderStep3 lockTime(Duration lockTime)
-    {
-        subscriberBuilder.lockTime(lockTime.toMillis());
-        return this;
-    }
-
-    @Override
-    public PollableJobSubscriptionBuilderStep3 lockOwner(String lockOwner)
-    {
-        subscriberBuilder.lockOwner(lockOwner);
-        return this;
-    }
-
-    @Override
-    public PollableJobSubscriptionBuilderStep3 fetchSize(int fetchSize)
-    {
-        subscriberBuilder.jobFetchSize(fetchSize);
-        return this;
-    }
-
-    @Override
-    public PollableJobSubscriptionBuilderStep3 jobType(String type)
+    public ManagedJobSubscriptionBuilderStep3 jobType(String type)
     {
         subscriberBuilder.jobType(type);
         return this;
     }
 
     @Override
-    public PollableJobSubscription open()
+    public ManagedJobSubscriptionBuilderStep4 lockTime(long lockTime)
+    {
+        subscriberBuilder.lockTime(lockTime);
+        return this;
+    }
+
+    @Override
+    public ManagedJobSubscriptionBuilderStep4 lockTime(Duration lockTime)
+    {
+        subscriberBuilder.lockTime(lockTime.toMillis());
+        return this;
+    }
+
+    @Override
+    public ManagedJobSubscriptionBuilderStep4 lockOwner(String lockOwner)
+    {
+        subscriberBuilder.lockOwner(lockOwner);
+        return this;
+    }
+
+    @Override
+    public ManagedJobSubscriptionBuilderStep4 fetchSize(int fetchSize)
+    {
+        subscriberBuilder.jobFetchSize(fetchSize);
+        return this;
+    }
+
+    @Override
+    public ManagedJobSubscriptionBuilderStep4 handler(JobHandler handler)
+    {
+        subscriberBuilder.jobHandler(handler);
+        return this;
+    }
+
+    @Override
+    public JobSubscription open()
     {
         final Future<JobSubscriberGroup> subscriberGroup = subscriberBuilder.build();
 

@@ -23,7 +23,7 @@ public class TopicSubscriptionSpec
 {
 
     protected final String topic;
-    protected final CheckedConsumer<GeneralEventImpl> handler;
+    protected final CheckedConsumer<GeneralRecordImpl> handler;
     protected final boolean forceStart;
     protected final String name;
     protected final int prefetchCapacity;
@@ -32,7 +32,7 @@ public class TopicSubscriptionSpec
 
     public TopicSubscriptionSpec(
             String topic,
-            CheckedConsumer<GeneralEventImpl> handler,
+            CheckedConsumer<GeneralRecordImpl> handler,
             long defaultStartPosition,
             Long2LongHashMap startPositions,
             boolean forceStart,
@@ -52,7 +52,7 @@ public class TopicSubscriptionSpec
     {
         return topic;
     }
-    public CheckedConsumer<GeneralEventImpl> getHandler()
+    public CheckedConsumer<GeneralRecordImpl> getHandler()
     {
         return handler;
     }

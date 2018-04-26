@@ -19,6 +19,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
 
 import io.zeebe.client.job.impl.subscription.*;
+import io.zeebe.client.subscription.*;
 import io.zeebe.transport.RemoteAddress;
 import io.zeebe.util.CheckedConsumer;
 import io.zeebe.util.sched.future.ActorFuture;
@@ -37,7 +38,7 @@ public class TopicSubscriber extends Subscriber
 
     protected final TopicSubscriptionSpec subscription;
 
-    protected final Function<CheckedConsumer<GeneralEventImpl>, CheckedConsumer<GeneralEventImpl>> eventHandlerAdapter;
+    protected final Function<CheckedConsumer<GeneralRecordImpl>, CheckedConsumer<GeneralRecordImpl>> eventHandlerAdapter;
 
     public TopicSubscriber(
             TopicClientImpl client,
@@ -70,12 +71,12 @@ public class TopicSubscriber extends Subscriber
 
     }
 
-    public int pollEvents(CheckedConsumer<GeneralEventImpl> consumer)
+    public int pollEvents(CheckedConsumer<GeneralRecordImpl> consumer)
     {
         return super.pollEvents(eventHandlerAdapter.apply(consumer));
     }
 
-    protected void logExceptionAndClose(GeneralEventImpl event, Exception e)
+    protected void logExceptionAndClose(GeneralRecordImpl event, Exception e)
     {
         logEventHandlingError(e, event, "Closing subscription.");
         disable();
@@ -83,13 +84,13 @@ public class TopicSubscriber extends Subscriber
         acquisition.closeGroup(group, "Event handling failed");
     }
 
-    protected void logExceptionAndPropagate(GeneralEventImpl event, Exception e)
+    protected void logExceptionAndPropagate(GeneralRecordImpl event, Exception e)
     {
         logEventHandlingError(e, event, "Propagating exception to caller.");
         throw new RuntimeException(e);
     }
 
-    protected void logRetry(GeneralEventImpl event, Exception e)
+    protected void logRetry(GeneralRecordImpl event, Exception e)
     {
         logEventHandlingError(e, event, "Retrying.");
     }
@@ -133,12 +134,12 @@ public class TopicSubscriber extends Subscriber
         }
     }
 
-    protected void recordProcessedEvent(GeneralEventImpl event)
+    protected void recordProcessedEvent(GeneralRecordImpl event)
     {
         this.lastProcessedEventPosition = event.getMetadata().getPosition();
     }
 
-    protected void logEventHandlingError(Exception e, GeneralEventImpl event, String resolution)
+    protected void logEventHandlingError(Exception e, GeneralRecordImpl event, String resolution)
     {
         LOGGER.error(LOG_MESSAGE_PREFIX + "Unhandled exception during handling of event {}.{}", this, event, resolution, e);
     }

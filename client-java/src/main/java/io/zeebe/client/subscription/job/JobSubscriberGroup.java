@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.zeebe.client.job.impl.subscription;
+package io.zeebe.client.subscription.job;
 
 import io.zeebe.client.api.subscription.*;
 import io.zeebe.client.impl.ZeebeClientImpl;
-import io.zeebe.client.job.impl.CreateJobSubscriptionCommandImpl;
+import io.zeebe.client.subscription.*;
 import io.zeebe.util.sched.ActorControl;
 import io.zeebe.util.sched.future.ActorFuture;
 
@@ -68,7 +68,7 @@ public class JobSubscriberGroup extends SubscriberGroup<JobSubscriber> implement
                 .lockDuration(subscription.getLockTime())
                 .lockOwner(subscription.getLockOwner())
                 .initialCredits(subscription.getCapacity())
-                .send();
+                .executeAsync();
     }
 
     @Override

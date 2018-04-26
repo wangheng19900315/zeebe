@@ -26,7 +26,6 @@ import io.zeebe.client.api.record.*;
 import io.zeebe.client.api.record.RecordMetadata.RecordType;
 import io.zeebe.client.event.impl.RecordImpl;
 import io.zeebe.client.impl.data.MsgPackConverter;
-import io.zeebe.client.job.impl.subscription.MsgPackField;
 import io.zeebe.protocol.Protocol;
 
 public abstract class JobRecordImpl extends RecordImpl implements JobRecord

@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.zeebe.client.job.impl.subscription;
+package io.zeebe.client.subscription;
 
-import io.zeebe.client.event.impl.GeneralEventImpl;
+import io.zeebe.client.event.impl.GeneralRecordImpl;
 import io.zeebe.protocol.clientapi.SubscriptionType;
 
 public interface SubscribedEventHandler
@@ -24,5 +24,5 @@ public interface SubscribedEventHandler
     /**
      * @return true if event could be successfully handled; false, if it should be retried later
      */
-    boolean onEvent(SubscriptionType type, long subscriberKey, GeneralEventImpl event);
+    boolean onEvent(SubscriptionType type, long subscriberKey, GeneralRecordImpl event);
 }

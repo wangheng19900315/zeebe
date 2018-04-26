@@ -13,19 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.zeebe.client.job.impl;
+package io.zeebe.client.subscription.job;
 
+import io.zeebe.client.impl.ControlMessageRequest;
 import io.zeebe.client.impl.RequestManager;
 import io.zeebe.protocol.clientapi.ControlMessageType;
 
-public class CloseTaskSubscriptionCommandImpl extends ControlMessageRequest<Void>
+public class CloseJobSubscriptionCommandImpl extends ControlMessageRequest<Void>
 {
-    protected final TaskSubscription subscription;
+    private final JobSubscriptionImpl subscription;
 
-    public CloseTaskSubscriptionCommandImpl(final RequestManager commandManager, int partition, long subscriberKey)
+    public CloseJobSubscriptionCommandImpl(final RequestManager commandManager, int partition, long subscriberKey)
     {
         super(commandManager, ControlMessageType.REMOVE_TASK_SUBSCRIPTION, partition, Void.class);
-        this.subscription = new TaskSubscription();
+        this.subscription = new JobSubscriptionImpl();
         this.subscription.setSubscriberKey(subscriberKey);
     }
 

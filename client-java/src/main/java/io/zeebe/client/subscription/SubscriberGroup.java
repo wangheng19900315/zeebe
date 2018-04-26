@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.zeebe.client.job.impl.subscription;
+package io.zeebe.client.subscription;
 
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -21,7 +21,7 @@ import java.util.function.Predicate;
 
 import io.zeebe.client.api.commands.*;
 import io.zeebe.client.cmd.ClientException;
-import io.zeebe.client.event.impl.GeneralEventImpl;
+import io.zeebe.client.event.impl.GeneralRecordImpl;
 import io.zeebe.client.impl.Loggers;
 import io.zeebe.client.impl.ZeebeClientImpl;
 import io.zeebe.transport.RemoteAddress;
@@ -398,7 +398,7 @@ public abstract class SubscriberGroup<T extends Subscriber>
 
     protected abstract String describeGroup();
 
-    public int pollEvents(CheckedConsumer<GeneralEventImpl> pollHandler)
+    public int pollEvents(CheckedConsumer<GeneralRecordImpl> pollHandler)
     {
         int events = 0;
         for (Subscriber subscriber : subscribersList)

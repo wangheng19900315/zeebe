@@ -60,7 +60,7 @@ public abstract class RecordImpl implements Record
         this.metadata.setKey(key);
     }
 
-    public void setEventPosition(long position)
+    public void setPosition(long position)
     {
         this.metadata.setPosition(position);
     }

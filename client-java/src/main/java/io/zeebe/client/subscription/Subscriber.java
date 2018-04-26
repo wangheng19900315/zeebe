@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.zeebe.client.job.impl.subscription;
+package io.zeebe.client.subscription;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.agrona.concurrent.ManyToManyConcurrentArrayQueue;
 import org.slf4j.Logger;
 
-import io.zeebe.client.event.impl.GeneralEventImpl;
+import io.zeebe.client.event.impl.GeneralRecordImpl;
 import io.zeebe.client.impl.Loggers;
 import io.zeebe.transport.RemoteAddress;
 import io.zeebe.util.CheckedConsumer;
@@ -37,7 +37,7 @@ public abstract class Subscriber
     public static final double REPLENISHMENT_THRESHOLD = 0.3d;
 
     protected final long subscriberKey;
-    protected final ManyToManyConcurrentArrayQueue<GeneralEventImpl> pendingEvents;
+    protected final ManyToManyConcurrentArrayQueue<GeneralRecordImpl> pendingEvents;
     protected final int capacity;
     protected final SubscriptionManager acquisition;
     protected final SubscriberGroup<?> group;
@@ -122,7 +122,7 @@ public abstract class Subscriber
 
     protected abstract ActorFuture<?> requestEventSourceReplenishment(int eventsProcessed);
 
-    public boolean addEvent(GeneralEventImpl event)
+    public boolean addEvent(GeneralRecordImpl event)
     {
         final boolean added = this.pendingEvents.offer(event);
 
@@ -155,12 +155,12 @@ public abstract class Subscriber
         this.state = STATE_DISABLED;
     }
 
-    protected int pollEvents(CheckedConsumer<GeneralEventImpl> pollHandler)
+    protected int pollEvents(CheckedConsumer<GeneralRecordImpl> pollHandler)
     {
         final int currentlyAvailableEvents = size();
         int handledEvents = 0;
 
-        GeneralEventImpl event;
+        GeneralRecordImpl event;
 
         // handledTasks < currentlyAvailableTasks avoids very long cycles that we spend in this method
         // in case the broker continuously produces new tasks
@@ -212,7 +212,7 @@ public abstract class Subscriber
     }
 
 
-    protected void logHandling(GeneralEventImpl event)
+    protected void logHandling(GeneralRecordImpl event)
     {
         try
         {
@@ -225,7 +225,7 @@ public abstract class Subscriber
         }
     }
 
-    protected void onUnhandledEventHandlingException(GeneralEventImpl event, Exception e)
+    protected void onUnhandledEventHandlingException(GeneralRecordImpl event, Exception e)
     {
         throw new RuntimeException("Exception during handling of event " + event.getMetadata().getKey(), e);
     }

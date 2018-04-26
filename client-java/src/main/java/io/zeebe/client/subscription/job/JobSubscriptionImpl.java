@@ -13,19 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.zeebe.client.job.impl;
+package io.zeebe.client.subscription.job;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import io.zeebe.client.impl.cmd.ReceiverAwareResponseResult;
-import io.zeebe.client.job.impl.subscription.EventSubscriptionCreationResult;
+import io.zeebe.client.subscription.EventSubscriptionCreationResult;
 import io.zeebe.transport.RemoteAddress;
 
-public class TaskSubscription implements EventSubscriptionCreationResult, ReceiverAwareResponseResult
+public class JobSubscriptionImpl implements EventSubscriptionCreationResult, ReceiverAwareResponseResult
 {
     private long subscriberKey;
 
-    private String taskType;
+    private String jobType;
 
     private long lockDuration;
     private String lockOwner;
@@ -34,6 +33,7 @@ public class TaskSubscription implements EventSubscriptionCreationResult, Receiv
     protected RemoteAddress receiver;
     protected int partitionId;
 
+    @Override
     public long getSubscriberKey()
     {
         return subscriberKey;
@@ -44,14 +44,14 @@ public class TaskSubscription implements EventSubscriptionCreationResult, Receiv
         this.subscriberKey = subscriberKey;
     }
 
-    public String getTaskType()
+    public String getJobType()
     {
-        return taskType;
+        return jobType;
     }
 
-    public void setTaskType(final String taskType)
+    public void setJobType(final String jobType)
     {
-        this.taskType = taskType;
+        this.jobType = jobType;
     }
 
     public long getLockDuration()

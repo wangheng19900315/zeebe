@@ -15,8 +15,8 @@
  */
 package io.zeebe.client.event.impl;
 
+import io.zeebe.client.impl.ControlMessageRequest;
 import io.zeebe.client.impl.RequestManager;
-import io.zeebe.client.job.impl.ControlMessageRequest;
 import io.zeebe.protocol.clientapi.ControlMessageType;
 
 public class CloseTopicSubscriptionCommandImpl extends ControlMessageRequest<Void>

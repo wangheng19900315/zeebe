@@ -3,7 +3,7 @@ package io.zeebe.client.impl;
 import io.zeebe.client.api.clients.SubscriptionClient;
 import io.zeebe.client.api.subscription.JobSubscriptionBuilderStep1;
 import io.zeebe.client.api.subscription.TopicSubscriptionBuilderStep1;
-import io.zeebe.client.subscription.JobSubcriptionBuilder;
+import io.zeebe.client.subscription.job.JobSubcriptionBuilder;
 
 public class SubscriptionClientImpl implements SubscriptionClient
 {

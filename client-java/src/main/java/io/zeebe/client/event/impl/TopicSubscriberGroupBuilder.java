@@ -18,14 +18,14 @@ package io.zeebe.client.event.impl;
 import java.util.concurrent.Future;
 
 import org.agrona.collections.Long2LongHashMap;
-import io.zeebe.client.job.impl.subscription.SubscriptionManager;
+import io.zeebe.client.subscription.SubscriptionManager;
 import io.zeebe.util.CheckedConsumer;
 import io.zeebe.util.EnsureUtil;
 
 public class TopicSubscriberGroupBuilder
 {
     protected final String topic;
-    protected CheckedConsumer<GeneralEventImpl> handler;
+    protected CheckedConsumer<GeneralRecordImpl> handler;
     protected final SubscriptionManager acquisition;
     protected String name;
     protected final int prefetchCapacity;
@@ -47,7 +47,7 @@ public class TopicSubscriberGroupBuilder
         startAtTailOfTopic();
     }
 
-    public TopicSubscriberGroupBuilder handler(CheckedConsumer<GeneralEventImpl> handler)
+    public TopicSubscriberGroupBuilder handler(CheckedConsumer<GeneralRecordImpl> handler)
     {
         this.handler = handler;
         return this;
@@ -87,7 +87,7 @@ public class TopicSubscriberGroupBuilder
         return this;
     }
 
-    public CheckedConsumer<GeneralEventImpl> getHandler()
+    public CheckedConsumer<GeneralRecordImpl> getHandler()
     {
         return handler;
     }

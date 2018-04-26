@@ -22,7 +22,6 @@ import org.agrona.io.DirectBufferInputStream;
 import org.agrona.io.ExpandableDirectBufferOutputStream;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.zeebe.client.job.impl.ControlMessageRequest;
 import io.zeebe.protocol.clientapi.ControlMessageRequestDecoder;
 import io.zeebe.protocol.clientapi.ControlMessageRequestEncoder;
 import io.zeebe.protocol.clientapi.ControlMessageResponseDecoder;

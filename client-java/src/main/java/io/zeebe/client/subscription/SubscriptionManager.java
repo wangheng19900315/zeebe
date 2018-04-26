@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.zeebe.client.job.impl.subscription;
+package io.zeebe.client.subscription;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +22,8 @@ import java.util.concurrent.TimeUnit;
 import io.zeebe.client.event.impl.*;
 import io.zeebe.client.impl.Loggers;
 import io.zeebe.client.impl.ZeebeClientImpl;
+import io.zeebe.client.subscription.job.JobSubscriberGroup;
+import io.zeebe.client.subscription.job.JobSubscriptionSpec;
 import io.zeebe.protocol.clientapi.SubscriptionType;
 import io.zeebe.transport.*;
 import io.zeebe.util.sched.Actor;
@@ -58,7 +60,8 @@ public class SubscriptionManager extends Actor implements SubscribedEventHandler
     {
         final SubscribedEventCollector taskCollector = new SubscribedEventCollector(
                 this,
-                client.getMsgPackConverter());
+                client.getMsgPackConverter(),
+                client.getObjectMapper());
 
         actor.runOnCompletion(
             client.getTransport().openSubscription("event-acquisition", taskCollector),
@@ -202,7 +205,7 @@ public class SubscriptionManager extends Actor implements SubscribedEventHandler
     }
 
     @Override
-    public boolean onEvent(SubscriptionType type, long subscriberKey, GeneralEventImpl event)
+    public boolean onEvent(SubscriptionType type, long subscriberKey, GeneralRecordImpl event)
     {
         final RecordMetadataImpl eventMetadata = event.getMetadata();
 

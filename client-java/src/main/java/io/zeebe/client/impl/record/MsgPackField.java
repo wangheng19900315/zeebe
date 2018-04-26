@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.zeebe.client.job.impl.subscription;
+package io.zeebe.client.impl.record;
 
 import java.io.InputStream;
 
@@ -21,10 +21,10 @@ import io.zeebe.client.impl.data.MsgPackConverter;
 
 public class MsgPackField
 {
-    protected final MsgPackConverter msgPackConverter;
+    private final MsgPackConverter msgPackConverter;
 
-    protected String json;
-    protected byte[] msgPack;
+    private String json;
+    private byte[] msgPack;
 
     public MsgPackField(MsgPackConverter msgPackConverter)
     {

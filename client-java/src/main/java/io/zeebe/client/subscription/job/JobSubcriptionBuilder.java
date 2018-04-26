@@ -1,4 +1,4 @@
-package io.zeebe.client.subscription;
+package io.zeebe.client.subscription.job;
 
 import io.zeebe.client.api.subscription.JobSubscriptionBuilderStep1;
 import io.zeebe.client.impl.TopicClientImpl;

@@ -21,6 +21,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import io.zeebe.client.job.impl.subscription.*;
+import io.zeebe.client.subscription.*;
+import io.zeebe.client.subscription.job.JobSubscriberGroup;
 import org.junit.Test;
 
 public class TaskExecutorTest

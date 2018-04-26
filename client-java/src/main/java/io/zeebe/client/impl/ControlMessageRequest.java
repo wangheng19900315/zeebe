@@ -13,11 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.zeebe.client.job.impl;
+package io.zeebe.client.impl;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.zeebe.client.cmd.Request;
-import io.zeebe.client.impl.RequestManager;
 import io.zeebe.protocol.clientapi.ControlMessageType;
 import io.zeebe.util.sched.future.ActorFuture;
 

@@ -23,6 +23,7 @@ import io.zeebe.client.event.UniversalEventHandler;
 import io.zeebe.client.impl.Loggers;
 import io.zeebe.client.impl.ZeebeClientImpl;
 import io.zeebe.client.job.impl.subscription.*;
+import io.zeebe.client.subscription.*;
 import io.zeebe.util.CheckedConsumer;
 import io.zeebe.util.sched.ActorControl;
 import io.zeebe.util.sched.future.ActorFuture;
@@ -60,7 +61,7 @@ public class TopicSubscriberGroup extends SubscriberGroup<TopicSubscriber>
     }
 
     @Override
-    public int pollEvents(CheckedConsumer<GeneralEventImpl> pollHandler)
+    public int pollEvents(CheckedConsumer<GeneralRecordImpl> pollHandler)
     {
 
         // ensuring at most one thread polls at a time which is the guarantee we give for

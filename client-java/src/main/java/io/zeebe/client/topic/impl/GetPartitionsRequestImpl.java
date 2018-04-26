@@ -17,8 +17,8 @@ package io.zeebe.client.topic.impl;
 
 import java.util.Collections;
 
+import io.zeebe.client.impl.ControlMessageRequest;
 import io.zeebe.client.impl.RequestManager;
-import io.zeebe.client.job.impl.ControlMessageRequest;
 import io.zeebe.client.topic.Topics;
 import io.zeebe.protocol.Protocol;
 import io.zeebe.protocol.clientapi.ControlMessageType;

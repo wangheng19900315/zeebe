@@ -13,28 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.zeebe.client.job.impl;
+package io.zeebe.client.subscription.job;
 
+import io.zeebe.client.impl.ControlMessageRequest;
 import io.zeebe.client.impl.RequestManager;
 import io.zeebe.protocol.clientapi.ControlMessageType;
 
-public class IncreaseTaskSubscriptionCreditsCmdImpl extends ControlMessageRequest<Void>
+public class IncreaseJobSubscriptionCreditsCmdImpl extends ControlMessageRequest<Void>
 {
-    protected final TaskSubscription subscription;
+    private final JobSubscriptionImpl subscription;
 
-    public IncreaseTaskSubscriptionCreditsCmdImpl(final RequestManager commandManager, int partition)
+    public IncreaseJobSubscriptionCreditsCmdImpl(final RequestManager commandManager, int partition)
     {
         super(commandManager, ControlMessageType.INCREASE_TASK_SUBSCRIPTION_CREDITS, partition, Void.class);
-        this.subscription = new TaskSubscription();
+        this.subscription = new JobSubscriptionImpl();
     }
 
-    public IncreaseTaskSubscriptionCreditsCmdImpl subscriberKey(long subscriberKey)
+    public IncreaseJobSubscriptionCreditsCmdImpl subscriberKey(long subscriberKey)
     {
         this.subscription.setSubscriberKey(subscriberKey);
         return this;
     }
 
-    public IncreaseTaskSubscriptionCreditsCmdImpl credits(final int credits)
+    public IncreaseJobSubscriptionCreditsCmdImpl credits(final int credits)
     {
         this.subscription.setCredits(credits);
         return this;

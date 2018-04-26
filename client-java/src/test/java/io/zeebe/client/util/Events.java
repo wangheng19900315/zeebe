@@ -38,7 +38,7 @@ public class Events
         baseEvent.setRetries(123);
         baseEvent.setTopicName(ClientApiRule.DEFAULT_TOPIC_NAME);
         baseEvent.setType("taskTypeFoo");
-        baseEvent.setEventPosition(456);
+        baseEvent.setPosition(456);
 
         return baseEvent;
     }

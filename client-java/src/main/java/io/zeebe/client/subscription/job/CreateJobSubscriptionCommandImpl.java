@@ -13,26 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.zeebe.client.job.impl;
+package io.zeebe.client.subscription.job;
 
+import io.zeebe.client.impl.ControlMessageRequest;
 import io.zeebe.client.impl.RequestManager;
 import io.zeebe.protocol.clientapi.ControlMessageType;
 
-public class CreateJobSubscriptionCommandImpl extends ControlMessageRequest<TaskSubscription>
+public class CreateJobSubscriptionCommandImpl extends ControlMessageRequest<JobSubscriptionImpl>
 {
-    protected TaskSubscription subscription;
+    protected JobSubscriptionImpl subscription;
 
     public CreateJobSubscriptionCommandImpl(RequestManager client, int partition)
     {
-        super(client, ControlMessageType.ADD_TASK_SUBSCRIPTION, partition, TaskSubscription.class);
-        this.subscription = new TaskSubscription();
+        super(client, ControlMessageType.ADD_TASK_SUBSCRIPTION, partition, JobSubscriptionImpl.class);
+        this.subscription = new JobSubscriptionImpl();
         this.subscription.setPartitionId(partition);
     }
 
     public CreateJobSubscriptionCommandImpl(RequestManager client, String topic)
     {
-        super(client, ControlMessageType.ADD_TASK_SUBSCRIPTION, topic, TaskSubscription.class);
-        this.subscription = new TaskSubscription();
+        super(client, ControlMessageType.ADD_TASK_SUBSCRIPTION, topic, JobSubscriptionImpl.class);
+        this.subscription = new JobSubscriptionImpl();
         this.subscription.setPartitionId(-1);
     }
 
@@ -54,9 +55,9 @@ public class CreateJobSubscriptionCommandImpl extends ControlMessageRequest<Task
         return this;
     }
 
-    public CreateJobSubscriptionCommandImpl jobType(final String taskType)
+    public CreateJobSubscriptionCommandImpl jobType(final String jobType)
     {
-        this.subscription.setTaskType(taskType);
+        this.subscription.setJobType(jobType);
         return this;
     }
 
@@ -68,7 +69,7 @@ public class CreateJobSubscriptionCommandImpl extends ControlMessageRequest<Task
     }
 
     @Override
-    public void onResponse(TaskSubscription response)
+    public void onResponse(JobSubscriptionImpl response)
     {
         response.setPartitionId(targetPartition);
     }

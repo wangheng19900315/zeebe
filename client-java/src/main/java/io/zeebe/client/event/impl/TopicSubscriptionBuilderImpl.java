@@ -29,7 +29,7 @@ import io.zeebe.client.event.UniversalEventHandler;
 import io.zeebe.client.event.WorkflowEventHandler;
 import io.zeebe.client.event.WorkflowInstanceEventHandler;
 import io.zeebe.client.impl.data.MsgPackMapper;
-import io.zeebe.client.job.impl.subscription.SubscriptionManager;
+import io.zeebe.client.subscription.SubscriptionManager;
 import io.zeebe.client.workflow.impl.WorkflowInstanceEventImpl;
 import io.zeebe.util.EnsureUtil;
 
@@ -126,7 +126,7 @@ public class TopicSubscriptionBuilderImpl implements TopicSubscriptionBuilder
         return builder.build();
     }
 
-    protected void dispatchEvent(GeneralEventImpl event) throws Exception
+    protected void dispatchEvent(GeneralRecordImpl event) throws Exception
     {
         final TopicEventType eventType = event.getMetadata().getType();
 

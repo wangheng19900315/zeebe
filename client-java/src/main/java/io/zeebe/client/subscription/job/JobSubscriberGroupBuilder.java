@@ -13,12 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.zeebe.client.job.impl.subscription;
+package io.zeebe.client.subscription.job;
 
 import java.util.concurrent.Future;
 
 import io.zeebe.client.api.subscription.JobHandler;
 import io.zeebe.client.api.subscription.JobSubscriptionBuilderStep1;
+import io.zeebe.client.subscription.SubscriptionManager;
 import io.zeebe.util.EnsureUtil;
 
 public class JobSubscriberGroupBuilder

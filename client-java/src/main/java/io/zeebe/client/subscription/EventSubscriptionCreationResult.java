@@ -13,35 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.zeebe.client.job.impl;
+package io.zeebe.client.subscription;
 
-public enum TaskEventType
+import io.zeebe.transport.RemoteAddress;
+
+public interface EventSubscriptionCreationResult
 {
-    CREATE,
-    CREATED,
+    RemoteAddress getEventPublisher();
 
-    LOCK,
-    LOCKED,
-    LOCK_REJECTED,
+    long getSubscriberKey();
 
-    COMPLETE,
-    COMPLETED,
-    COMPLETE_REJECTED,
-
-    EXPIRE_LOCK,
-    LOCK_EXPIRED,
-    LOCK_EXPIRATION_REJECTED,
-
-    FAIL,
-    FAILED,
-    FAIL_REJECTED,
-
-    UPDATE_RETRIES,
-    RETRIES_UPDATED,
-    UPDATE_RETRIES_REJECTED,
-
-    CANCEL,
-    CANCELED,
-    CANCEL_REJECTED;
-
+    int getPartitionId();
 }
