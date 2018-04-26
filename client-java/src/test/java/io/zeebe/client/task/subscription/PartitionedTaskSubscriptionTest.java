@@ -86,7 +86,7 @@ public class PartitionedTaskSubscriptionTest
         // when
         final TaskSubscription subscription = client.tasks().newTaskSubscription(TOPIC)
             .handler(new RecordingTaskHandler())
-            .taskType(TASK_TYPE)
+            .jobType(TASK_TYPE)
             .lockOwner("bumbum")
             .lockTime(Duration.ofSeconds(6))
             .open();
@@ -125,7 +125,7 @@ public class PartitionedTaskSubscriptionTest
         final RecordingTaskHandler eventHandler = new RecordingTaskHandler();
         client.tasks().newTaskSubscription(TOPIC)
             .handler(eventHandler)
-            .taskType(TASK_TYPE)
+            .jobType(TASK_TYPE)
             .lockOwner("bumbum")
             .lockTime(Duration.ofSeconds(6))
             .open();
@@ -171,7 +171,7 @@ public class PartitionedTaskSubscriptionTest
 
         final RecordingTaskHandler eventHandler = new RecordingTaskHandler();
         final PollableTaskSubscription subscription = client.tasks().newPollableTaskSubscription(TOPIC)
-            .taskType(TASK_TYPE)
+            .jobType(TASK_TYPE)
             .lockOwner("bumbum")
             .lockTime(Duration.ofSeconds(6))
             .open();

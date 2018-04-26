@@ -96,7 +96,7 @@ public class TopicSubscriberGroup extends SubscriberGroup<TopicSubscriber>
             .prefetchCapacity(subscription.getPrefetchCapacity())
             .name(subscription.getName())
             .forceStart(subscription.isForceStart())
-            .executeAsync();
+            .send();
     }
 
     @Override

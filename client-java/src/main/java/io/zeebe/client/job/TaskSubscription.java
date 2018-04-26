@@ -18,7 +18,7 @@ package io.zeebe.client.job;
 /**
  * Represents the subscription to tasks of a certain topic. When a subscription is open,
  * the client continuously receives tasks from the broker and hands them to a registered
- * {@link TaskHandler}.
+ * {@link JobHandler}.
  *
  * @author Lindhauer
  */

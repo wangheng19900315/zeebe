@@ -26,20 +26,20 @@ import io.zeebe.client.job.PollableTaskSubscriptionBuilder;
 
 public class PollableTaskSubscriptionBuilderImpl implements PollableTaskSubscriptionBuilder
 {
-    protected final TaskSubscriberGroupBuilder subscriberBuilder;
+    protected final JobSubscriberGroupBuilder subscriberBuilder;
 
     public PollableTaskSubscriptionBuilderImpl(
             ZeebeClient client,
             String topic,
             SubscriptionManager taskAcquisition)
     {
-        this.subscriberBuilder = new TaskSubscriberGroupBuilder(client, topic, taskAcquisition);
+        this.subscriberBuilder = new JobSubscriberGroupBuilder(client, topic, taskAcquisition);
     }
 
     @Override
-    public PollableTaskSubscriptionBuilder taskType(String taskType)
+    public PollableTaskSubscriptionBuilder jobType(String taskType)
     {
-        subscriberBuilder.taskType(taskType);
+        subscriberBuilder.jobType(taskType);
         return this;
     }
 
@@ -66,14 +66,14 @@ public class PollableTaskSubscriptionBuilderImpl implements PollableTaskSubscrip
     @Override
     public PollableTaskSubscriptionBuilderImpl taskFetchSize(int numTasks)
     {
-        subscriberBuilder.taskFetchSize(numTasks);
+        subscriberBuilder.jobFetchSize(numTasks);
         return this;
     }
 
     @Override
     public PollableTaskSubscription open()
     {
-        final Future<TaskSubscriberGroup> subscriberGroup = subscriberBuilder.build();
+        final Future<JobSubscriberGroup> subscriberGroup = subscriberBuilder.build();
 
         try
         {

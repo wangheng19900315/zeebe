@@ -15,29 +15,29 @@
  */
 package io.zeebe.client.job.impl.subscription;
 
-import io.zeebe.client.job.TaskHandler;
+import io.zeebe.client.api.subscription.JobHandler;
 
-public class TaskSubscriptionSpec
+public class JobSubscriptionSpec
 {
 
     protected final String topic;
-    protected final TaskHandler taskHandler;
-    protected final String taskType;
+    protected final JobHandler jobHandler;
+    protected final String jobType;
     protected final long lockTime;
     protected final String lockOwner;
     protected final int capacity;
 
-    public TaskSubscriptionSpec(
+    public JobSubscriptionSpec(
             String topic,
-            TaskHandler taskHandler,
+            JobHandler jobHandler,
             String taskType,
             long lockTime,
             String lockOwner,
             int capacity)
     {
         this.topic = topic;
-        this.taskHandler = taskHandler;
-        this.taskType = taskType;
+        this.jobHandler = jobHandler;
+        this.jobType = taskType;
         this.lockTime = lockTime;
         this.lockOwner = lockOwner;
         this.capacity = capacity;
@@ -48,14 +48,14 @@ public class TaskSubscriptionSpec
         return topic;
     }
 
-    public TaskHandler getTaskHandler()
+    public JobHandler getJobHandler()
     {
-        return taskHandler;
+        return jobHandler;
     }
 
-    public String getTaskType()
+    public String getJobType()
     {
-        return taskType;
+        return jobType;
     }
 
     public long getLockTime()
@@ -75,7 +75,7 @@ public class TaskSubscriptionSpec
 
     public boolean isManaged()
     {
-        return taskHandler != null;
+        return jobHandler != null;
     }
 
     @Override
@@ -84,10 +84,10 @@ public class TaskSubscriptionSpec
         final StringBuilder builder = new StringBuilder();
         builder.append("[topic=");
         builder.append(topic);
-        builder.append(", taskHandler=");
-        builder.append(taskHandler);
-        builder.append(", taskType=");
-        builder.append(taskType);
+        builder.append(", jobHandler=");
+        builder.append(jobHandler);
+        builder.append(", jobType=");
+        builder.append(jobType);
         builder.append(", lockTime=");
         builder.append(lockTime);
         builder.append(", lockOwner=");
@@ -97,7 +97,5 @@ public class TaskSubscriptionSpec
         builder.append("]");
         return builder.toString();
     }
-
-
 
 }

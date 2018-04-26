@@ -15,66 +15,69 @@
  */
 package io.zeebe.client.job.impl.subscription;
 
-import org.slf4j.Logger;
-
-import io.zeebe.client.event.impl.TaskEventImpl;
+import io.zeebe.client.api.clients.JobClient;
+import io.zeebe.client.api.subscription.JobHandler;
 import io.zeebe.client.impl.Loggers;
-import io.zeebe.client.impl.TasksClientImpl;
+import io.zeebe.client.impl.ZeebeClientImpl;
+import io.zeebe.client.impl.command.JobEventImpl;
 import io.zeebe.client.impl.data.MsgPackMapper;
-import io.zeebe.client.job.TaskHandler;
+import io.zeebe.client.job.impl.CloseTaskSubscriptionCommandImpl;
+import io.zeebe.client.job.impl.IncreaseTaskSubscriptionCreditsCmdImpl;
 import io.zeebe.transport.RemoteAddress;
 import io.zeebe.util.sched.future.ActorFuture;
+import org.slf4j.Logger;
 
-public class TaskSubscriber extends Subscriber
+public class JobSubscriber extends Subscriber
 {
-    protected static final Logger LOGGER = Loggers.TASK_SUBSCRIPTION_LOGGER;
+    private static final Logger LOGGER = Loggers.TASK_SUBSCRIPTION_LOGGER;
 
-    protected final TasksClientImpl taskClient;
-    protected final TaskSubscriptionSpec subscription;
+    private final ZeebeClientImpl client;
+    private final JobClient jobClient;
+    private final JobSubscriptionSpec subscription;
+    private final MsgPackMapper msgPackMapper;
 
-    protected MsgPackMapper msgPackMapper;
-
-    public TaskSubscriber(
-            TasksClientImpl client,
-            TaskSubscriptionSpec subscription,
+    public JobSubscriber(
+            ZeebeClientImpl client,
+            JobSubscriptionSpec subscription,
             long subscriberKey,
             RemoteAddress eventSource,
             int partition,
-            SubscriberGroup<TaskSubscriber> group,
+            SubscriberGroup<JobSubscriber> group,
             MsgPackMapper msgPackMapper,
             SubscriptionManager acquisition)
     {
         super(subscriberKey, partition, subscription.getCapacity(), eventSource, group, acquisition);
-        this.taskClient = client;
+        this.client = client;
+        this.jobClient = client.topicClient(subscription.getTopic()).jobClient();
         this.subscription = subscription;
         this.msgPackMapper = msgPackMapper;
     }
 
-    public int pollEvents(TaskHandler taskHandler)
+    public int pollEvents(JobHandler jobHandler)
     {
         int polledEvents = pollEvents((e) ->
         {
-            final TaskEventImpl taskEvent = msgPackMapper.convert(e.getAsMsgPack(), TaskEventImpl.class);
-            taskEvent.updateMetadata(e.getMetadata());
+            final JobEventImpl jobEvent = msgPackMapper.convert(e.getAsMsgPack(), JobEventImpl.class);
+            jobEvent.updateMetadata(e.getMetadata());
 
             try
             {
-                taskHandler.handle(taskClient, taskEvent);
+                jobHandler.handle(jobClient, jobEvent);
             }
             catch (Exception handlingException)
             {
-                LOGGER.info("An error occurred when handling task " + taskEvent.getMetadata().getKey() +
+                LOGGER.info("An error occurred when handling job " + jobEvent.getMetadata().getKey() +
                         ". Reporting failure to broker.", handlingException);
                 try
                 {
-                    taskClient.fail(taskEvent)
-                        .retries(taskEvent.getRetries() - 1)
-                        .execute();
+                    jobClient.newFailCommand(jobEvent)
+                        .retries(jobEvent.getRetries() - 1)
+                        .send();
                 }
                 catch (Exception failureException)
                 {
-                    LOGGER.info("Could not report failure of task " + taskEvent.getMetadata().getKey() +
-                        " to broker. Continuing with next task", failureException);
+                    LOGGER.info("Could not report failure of job " + jobEvent.getMetadata().getKey() +
+                        " to broker. Continuing with next job", failureException);
                 }
             }
         });
@@ -85,23 +88,23 @@ public class TaskSubscriber extends Subscriber
     @Override
     protected ActorFuture<?> requestEventSourceReplenishment(int eventsProcessed)
     {
-        return taskClient.increaseSubscriptionCredits(partitionId)
+        return new IncreaseTaskSubscriptionCreditsCmdImpl(client.getCommandManager(), partitionId)
             .subscriberKey(subscriberKey)
             .credits(eventsProcessed)
-            .executeAsync();
+            .send();
     }
 
     @Override
     public ActorFuture<Void> requestSubscriptionClose()
     {
-        return taskClient.closeTaskSubscription(partitionId, subscriberKey).executeAsync();
+        return new CloseTaskSubscriptionCommandImpl(client.getCommandManager(), partitionId, subscriberKey).send();
     }
 
     @Override
     public String toString()
     {
-        return "TaskSubscriber[topic=" + subscription.getTopic() + ", partition=" + partitionId +
-                ", taskType=" + subscription.getTaskType() + ", subscriberKey=" + subscriberKey + "]";
+        return "JobSubscriber[topic=" + subscription.getTopic() + ", partition=" + partitionId +
+                ", jobType=" + subscription.getJobType() + ", subscriberKey=" + subscriberKey + "]";
     }
 
     @Override

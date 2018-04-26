@@ -19,27 +19,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import org.agrona.ErrorHandler;
-import org.agrona.concurrent.Agent;
-import org.agrona.concurrent.AgentRunner;
-import org.agrona.concurrent.BackoffIdleStrategy;
-import org.agrona.concurrent.IdleStrategy;
-import org.slf4j.Logger;
-
-import io.zeebe.client.event.EventMetadata;
-import io.zeebe.client.event.impl.GeneralEventImpl;
-import io.zeebe.client.event.impl.TopicSubscriber;
-import io.zeebe.client.event.impl.TopicSubscriberGroup;
-import io.zeebe.client.event.impl.TopicSubscriptionSpec;
+import io.zeebe.client.event.impl.*;
 import io.zeebe.client.impl.Loggers;
 import io.zeebe.client.impl.ZeebeClientImpl;
 import io.zeebe.protocol.clientapi.SubscriptionType;
-import io.zeebe.transport.ClientInputMessageSubscription;
-import io.zeebe.transport.RemoteAddress;
-import io.zeebe.transport.TransportListener;
+import io.zeebe.transport.*;
 import io.zeebe.util.sched.Actor;
 import io.zeebe.util.sched.future.ActorFuture;
 import io.zeebe.util.sched.future.CompletableActorFuture;
+import org.agrona.ErrorHandler;
+import org.agrona.concurrent.*;
+import org.slf4j.Logger;
 
 public class SubscriptionManager extends Actor implements SubscribedEventHandler, TransportListener
 {
@@ -147,12 +137,12 @@ public class SubscriptionManager extends Actor implements SubscribedEventHandler
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    public ActorFuture<TaskSubscriberGroup> openTaskSubscription(TaskSubscriptionSpec spec)
+    public ActorFuture<JobSubscriberGroup> openJobSubscription(JobSubscriptionSpec spec)
     {
-        final CompletableActorFuture<TaskSubscriberGroup> future = new CompletableActorFuture<>();
+        final CompletableActorFuture<JobSubscriberGroup> future = new CompletableActorFuture<>();
         actor.call(() ->
         {
-            final TaskSubscriberGroup group = new TaskSubscriberGroup(actor, client, this, spec);
+            final JobSubscriberGroup group = new JobSubscriberGroup(actor, client, this, spec);
             taskSubscribers.addGroup(group);
             group.open((CompletableActorFuture) future);
         });
@@ -214,7 +204,7 @@ public class SubscriptionManager extends Actor implements SubscribedEventHandler
     @Override
     public boolean onEvent(SubscriptionType type, long subscriberKey, GeneralEventImpl event)
     {
-        final EventMetadata eventMetadata = event.getMetadata();
+        final RecordMetadataImpl eventMetadata = event.getMetadata();
 
         final EventSubscribers subscribers;
 

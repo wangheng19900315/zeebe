@@ -102,7 +102,7 @@ public class TopologyRequestTest
 
     private List<TopologyBroker> requestTopologyAsync()
     {
-        final Future<TopologyResponse> topologyResponseFuture = zeebeClient.requestTopology().executeAsync();
+        final Future<TopologyResponse> topologyResponseFuture = zeebeClient.requestTopology().send();
 
         waitUntil(() -> topologyResponseFuture.isDone());
 

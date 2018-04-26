@@ -4,6 +4,8 @@ import java.time.Duration;
 
 public interface JobSubscriptionBuilderStep1
 {
+    int DEFAULT_JOB_FETCH_SIZE = 32;
+
     /**
      * This is a <i>managed</i> subscription. The given job handler is
      * automatically invoked whenever new job is available. Choose a managed
@@ -254,7 +256,7 @@ public interface JobSubscriptionBuilderStep1
          *
          * @return the builder for this subscription
          */
-        PollableJobSubscriptionBuilderStep3 fetchSize(int numTasks);
+        PollableJobSubscriptionBuilderStep3 fetchSize(int fetchSize);
 
         /**
          * Open the subscription. Call

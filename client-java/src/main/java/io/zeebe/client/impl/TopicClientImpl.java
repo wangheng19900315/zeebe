@@ -2,6 +2,7 @@ package io.zeebe.client.impl;
 
 import io.zeebe.client.api.clients.*;
 import io.zeebe.client.impl.data.MsgPackConverter;
+import io.zeebe.client.job.impl.subscription.SubscriptionManager;
 
 public class TopicClientImpl implements TopicClient
 {
@@ -52,6 +53,11 @@ public class TopicClientImpl implements TopicClient
     public MsgPackConverter getMsgPackConverter()
     {
         return client.getMsgPackConverter();
+    }
+
+    public SubscriptionManager getSubscriptionManager()
+    {
+        return client.getSubscriptionManager();
     }
 
 }

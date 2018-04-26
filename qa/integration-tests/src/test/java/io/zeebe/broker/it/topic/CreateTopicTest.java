@@ -77,8 +77,8 @@ public class CreateTopicTest
         final TopicsClient topics = clientRule.topics();
 
         // when
-        final Future<Event> foo = topics.create("foo", 2).executeAsync();
-        final Future<Event> bar = topics.create("bar", 2).executeAsync();
+        final Future<Event> foo = topics.create("foo", 2).send();
+        final Future<Event> bar = topics.create("bar", 2).send();
 
         // then
         assertThat(bar.get(10, TimeUnit.SECONDS).getState()).isEqualTo("CREATED");

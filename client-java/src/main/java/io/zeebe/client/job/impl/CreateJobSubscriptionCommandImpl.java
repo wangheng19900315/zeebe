@@ -18,43 +18,43 @@ package io.zeebe.client.job.impl;
 import io.zeebe.client.impl.RequestManager;
 import io.zeebe.protocol.clientapi.ControlMessageType;
 
-public class CreateTaskSubscriptionCommandImpl extends ControlMessageRequest<TaskSubscription>
+public class CreateJobSubscriptionCommandImpl extends ControlMessageRequest<TaskSubscription>
 {
     protected TaskSubscription subscription;
 
-    public CreateTaskSubscriptionCommandImpl(RequestManager client, int partition)
+    public CreateJobSubscriptionCommandImpl(RequestManager client, int partition)
     {
         super(client, ControlMessageType.ADD_TASK_SUBSCRIPTION, partition, TaskSubscription.class);
         this.subscription = new TaskSubscription();
         this.subscription.setPartitionId(partition);
     }
 
-    public CreateTaskSubscriptionCommandImpl(RequestManager client, String topic)
+    public CreateJobSubscriptionCommandImpl(RequestManager client, String topic)
     {
         super(client, ControlMessageType.ADD_TASK_SUBSCRIPTION, topic, TaskSubscription.class);
         this.subscription = new TaskSubscription();
         this.subscription.setPartitionId(-1);
     }
 
-    public CreateTaskSubscriptionCommandImpl lockOwner(final String lockOwner)
+    public CreateJobSubscriptionCommandImpl lockOwner(final String lockOwner)
     {
         this.subscription.setLockOwner(lockOwner);
         return this;
     }
 
-    public CreateTaskSubscriptionCommandImpl initialCredits(final int initialCredits)
+    public CreateJobSubscriptionCommandImpl initialCredits(final int initialCredits)
     {
         this.subscription.setCredits(initialCredits);
         return this;
     }
 
-    public CreateTaskSubscriptionCommandImpl lockDuration(final long lockDuration)
+    public CreateJobSubscriptionCommandImpl lockDuration(final long lockDuration)
     {
         this.subscription.setLockDuration(lockDuration);
         return this;
     }
 
-    public CreateTaskSubscriptionCommandImpl taskType(final String taskType)
+    public CreateJobSubscriptionCommandImpl jobType(final String taskType)
     {
         this.subscription.setTaskType(taskType);
         return this;

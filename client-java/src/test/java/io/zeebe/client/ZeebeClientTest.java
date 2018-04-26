@@ -166,7 +166,7 @@ public class ZeebeClientTest
         // when then
         for (int i = 0; i < clientMaxRequests; i++)
         {
-            client.tasks().create(topic, "bar").executeAsync();
+            client.tasks().create(topic, "bar").send();
         }
 
     }
@@ -187,7 +187,7 @@ public class ZeebeClientTest
         final List<Future<TaskEvent>> futures = new ArrayList<>();
         for (int i = 0; i < clientMaxRequests; i++)
         {
-            futures.add(client.tasks().create(topic, "bar").executeAsync());
+            futures.add(client.tasks().create(topic, "bar").send());
         }
 
         // when
@@ -199,7 +199,7 @@ public class ZeebeClientTest
         // then
         for (int i = 0; i < clientMaxRequests; i++)
         {
-            futures.add(client.tasks().create(topic, "bar").executeAsync());
+            futures.add(client.tasks().create(topic, "bar").send());
         }
     }
 
@@ -216,7 +216,7 @@ public class ZeebeClientTest
         final List<Future<TaskEvent>> futures = new ArrayList<>();
         for (int i = 0; i < clientMaxRequests; i++)
         {
-            futures.add(client.tasks().complete(baseEvent).executeAsync());
+            futures.add(client.tasks().complete(baseEvent).send());
         }
 
         // when
@@ -236,7 +236,7 @@ public class ZeebeClientTest
         // then
         for (int i = 0; i < clientMaxRequests; i++)
         {
-            futures.add(client.tasks().complete(baseEvent).executeAsync());
+            futures.add(client.tasks().complete(baseEvent).send());
         }
 
     }
@@ -256,12 +256,12 @@ public class ZeebeClientTest
 
         for (int i = 0; i < clientMaxRequests; i++)
         {
-            client.tasks().create(topic, "bar").executeAsync();
+            client.tasks().create(topic, "bar").send();
         }
 
         try
         {
-            client.tasks().create(topic, "bar").executeAsync();
+            client.tasks().create(topic, "bar").send();
             fail("should throw exception");
         }
         catch (Exception e)
@@ -389,7 +389,7 @@ public class ZeebeClientTest
         {
             client.tasks()
                   .complete(baseEvent)
-                  .executeAsync().get();
+                  .send().get();
 
             fail("should throw exception");
         }

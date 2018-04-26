@@ -98,7 +98,7 @@ public class TopicSubscriber extends Subscriber
     protected ActorFuture<Void> requestSubscriptionClose()
     {
         System.out.println("Closing subscriber at partition " + partitionId);
-        return client.closeTopicSubscription(partitionId, subscriberKey).executeAsync();
+        return client.closeTopicSubscription(partitionId, subscriberKey).send();
     }
 
     @Override
@@ -120,7 +120,7 @@ public class TopicSubscriber extends Subscriber
             final ActorFuture<TopicSubscriptionEvent> future = client.acknowledgeEvent(subscription.getTopic(), partitionId)
                 .subscriptionName(subscription.getName())
                 .ackPosition(positionToAck)
-                .executeAsync();
+                .send();
 
             // record this immediately to avoid repeated requests for the same position
             lastAcknowledgedPosition = positionToAck;

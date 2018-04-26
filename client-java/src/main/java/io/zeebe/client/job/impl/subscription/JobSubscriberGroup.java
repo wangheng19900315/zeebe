@@ -15,22 +15,22 @@
  */
 package io.zeebe.client.job.impl.subscription;
 
+import io.zeebe.client.api.subscription.*;
 import io.zeebe.client.impl.ZeebeClientImpl;
-import io.zeebe.client.job.*;
+import io.zeebe.client.job.impl.CreateJobSubscriptionCommandImpl;
 import io.zeebe.util.sched.ActorControl;
 import io.zeebe.util.sched.future.ActorFuture;
 
-public class TaskSubscriberGroup extends SubscriberGroup<TaskSubscriber> implements
-    TaskSubscription, PollableTaskSubscription
+public class JobSubscriberGroup extends SubscriberGroup<JobSubscriber> implements
+    JobSubscription, PollableJobSubscription
 {
+    private final JobSubscriptionSpec subscription;
 
-    protected final TaskSubscriptionSpec subscription;
-
-    public TaskSubscriberGroup(
+    public JobSubscriberGroup(
             ActorControl actor,
             ZeebeClientImpl client,
             SubscriptionManager acquisition,
-            TaskSubscriptionSpec subscription)
+            JobSubscriptionSpec subscription)
     {
         super(actor, client, acquisition, subscription.getTopic());
         this.subscription = subscription;
@@ -39,16 +39,16 @@ public class TaskSubscriberGroup extends SubscriberGroup<TaskSubscriber> impleme
     @Override
     public int poll()
     {
-        return poll(subscription.getTaskHandler());
+        return poll(subscription.getJobHandler());
     }
 
     @Override
-    public int poll(TaskHandler taskHandler)
+    public int poll(JobHandler jobHandler)
     {
         int workCount = 0;
-        for (TaskSubscriber subscriber : subscribersList)
+        for (JobSubscriber subscriber : subscribersList)
         {
-            workCount += subscriber.pollEvents(taskHandler);
+            workCount += subscriber.pollEvents(jobHandler);
         }
 
         return workCount;
@@ -63,19 +63,19 @@ public class TaskSubscriberGroup extends SubscriberGroup<TaskSubscriber> impleme
     @Override
     protected ActorFuture<? extends EventSubscriptionCreationResult> requestNewSubscriber(int partitionId)
     {
-        return client.tasks().createTaskSubscription(partitionId)
-                .taskType(subscription.getTaskType())
+        return new CreateJobSubscriptionCommandImpl(client.getCommandManager(), partitionId)
+                .jobType(subscription.getJobType())
                 .lockDuration(subscription.getLockTime())
                 .lockOwner(subscription.getLockOwner())
                 .initialCredits(subscription.getCapacity())
-                .executeAsync();
+                .send();
     }
 
     @Override
-    protected TaskSubscriber buildSubscriber(EventSubscriptionCreationResult result)
+    protected JobSubscriber buildSubscriber(EventSubscriptionCreationResult result)
     {
-        return new TaskSubscriber(
-                client.tasks(),
+        return new JobSubscriber(
+                client,
                 subscription,
                 result.getSubscriberKey(),
                 result.getEventPublisher(),

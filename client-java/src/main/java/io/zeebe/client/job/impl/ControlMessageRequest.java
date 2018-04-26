@@ -16,7 +16,6 @@
 package io.zeebe.client.job.impl;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import io.zeebe.client.cmd.Request;
 import io.zeebe.client.impl.RequestManager;
 import io.zeebe.protocol.clientapi.ControlMessageType;

@@ -79,7 +79,7 @@ public class NonBlockingTaskCreator
                             .addCustomHeader("some", "value")
                             .payload(payload);
 
-                    inFlightRequests.add(cmd.executeAsync());
+                    inFlightRequests.add(cmd.send());
                     tasksCreated++;
                 }
 

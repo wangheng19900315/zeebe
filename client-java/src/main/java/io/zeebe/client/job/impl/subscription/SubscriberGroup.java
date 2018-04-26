@@ -15,28 +15,22 @@
  */
 package io.zeebe.client.job.impl.subscription;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Predicate;
 
-import org.agrona.collections.Int2ObjectHashMap;
-
+import io.zeebe.client.api.commands.*;
 import io.zeebe.client.cmd.ClientException;
 import io.zeebe.client.event.impl.GeneralEventImpl;
 import io.zeebe.client.impl.Loggers;
 import io.zeebe.client.impl.ZeebeClientImpl;
-import io.zeebe.client.topic.Partition;
-import io.zeebe.client.topic.Topic;
-import io.zeebe.client.topic.Topics;
 import io.zeebe.transport.RemoteAddress;
 import io.zeebe.util.CheckedConsumer;
 import io.zeebe.util.sched.ActorCondition;
 import io.zeebe.util.sched.ActorControl;
 import io.zeebe.util.sched.future.ActorFuture;
 import io.zeebe.util.sched.future.CompletableActorFuture;
+import org.agrona.collections.Int2ObjectHashMap;
 
 public abstract class SubscriberGroup<T extends Subscriber>
 {
@@ -88,7 +82,8 @@ public abstract class SubscriberGroup<T extends Subscriber>
     {
         this.openFuture = openFuture;
 
-        final ActorFuture<Topics> topicsFuture = client.topics().getTopics().executeAsync();
+        // TODO actor future vs. zeebe future
+        final ActorFuture<Topics> topicsFuture = (ActorFuture<Topics>) client.newTopicsRequest().send();
         actor.runOnCompletion(topicsFuture, (topics, failure) ->
         {
             if (failure != null)

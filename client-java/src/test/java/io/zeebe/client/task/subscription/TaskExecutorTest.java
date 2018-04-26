@@ -31,7 +31,7 @@ public class TaskExecutorTest
         // given
         final EventSubscribers subscriptions = new EventSubscribers();
 
-        final TaskSubscriberGroup subscription = mock(TaskSubscriberGroup.class);
+        final JobSubscriberGroup subscription = mock(JobSubscriberGroup.class);
         when(subscription.isManagedGroup()).thenReturn(true);
         when(subscription.poll()).thenReturn(34);
         subscriptions.addGroup(subscription);
