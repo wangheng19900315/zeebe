@@ -17,11 +17,9 @@ package io.zeebe.client.impl;
 
 import java.util.function.BiFunction;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.zeebe.client.api.record.Record;
 import io.zeebe.client.api.record.RecordMetadata;
 import io.zeebe.client.cmd.ClientCommandRejectedException;
-import io.zeebe.client.cmd.ClientException;
 import io.zeebe.client.event.impl.*;
 import io.zeebe.client.impl.cmd.CommandImpl;
 import io.zeebe.protocol.clientapi.*;
@@ -39,13 +37,13 @@ public class CommandRequestHandler implements RequestResponseHandler
     protected RecordImpl command;
     protected BiFunction<Record, String, String> errorFunction;
 
-    protected final ObjectMapper objectMapper;
+    protected final ZeebeObjectMapperImpl objectMapper;
 
     protected ExpandableArrayBuffer serializedCommand = new ExpandableArrayBuffer();
     protected int serializedCommandLength = 0;
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    public CommandRequestHandler(ObjectMapper objectMapper, CommandImpl command)
+    public CommandRequestHandler(ZeebeObjectMapperImpl objectMapper, CommandImpl command)
     {
         this.objectMapper = objectMapper;
         this.command = command.getCommand();
@@ -89,14 +87,8 @@ public class CommandRequestHandler implements RequestResponseHandler
         final int serializedCommandOffset = commandHeaderOffset + ExecuteCommandRequestEncoder.valueHeaderLength();
 
         final ExpandableDirectBufferOutputStream out = new ExpandableDirectBufferOutputStream(serializedCommand, serializedCommandOffset);
-        try
-        {
-            objectMapper.writeValue(out, event);
-        }
-        catch (final Throwable e)
-        {
-            throw new RuntimeException("Failed to serialize command", e);
-        }
+
+        objectMapper.toJson(out, event);
 
         // can only write the header after we have written the command, as we don't know the length beforehand
         final short commandLength = (short) out.position();
@@ -149,15 +141,8 @@ public class CommandRequestHandler implements RequestResponseHandler
                 buffer,
                 decoder.limit() + ExecuteCommandResponseDecoder.valueHeaderLength(),
                 valueLength);
-        final RecordImpl result;
-        try
-        {
-            result = objectMapper.readValue(inStream, command.getClass());
-        }
-        catch (Exception e)
-        {
-            throw new ClientException("Cannot deserialize event in response", e);
-        }
+
+        final RecordImpl result = objectMapper.fromJson(inStream, command.getClass());
 
         result.setIntent(intent);
 

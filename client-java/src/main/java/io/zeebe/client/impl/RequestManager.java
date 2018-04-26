@@ -20,7 +20,6 @@ import java.util.concurrent.*;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.zeebe.client.api.ZeebeFuture;
 import io.zeebe.client.api.record.Record;
 import io.zeebe.client.clustering.Topology;
@@ -44,7 +43,7 @@ public class RequestManager extends Actor
 {
     protected final ClientOutput output;
     protected final ClientTopologyManager topologyManager;
-    protected final ObjectMapper msgPackMapper;
+    protected final ZeebeObjectMapperImpl objectMapper;
     protected final Duration requestTimeout;
     protected final RequestDispatchStrategy dispatchStrategy;
     protected final Semaphore concurrentRequestsSemaphore;
@@ -53,14 +52,14 @@ public class RequestManager extends Actor
     public RequestManager(
             ClientOutput output,
             ClientTopologyManager topologyManager,
-            ObjectMapper msgPackMapper,
+            ZeebeObjectMapperImpl objectMapper,
             Duration requestTimeout,
             int requestPoolSize,
             long blockTimeMillis)
     {
         this.output = output;
         this.topologyManager = topologyManager;
-        this.msgPackMapper = msgPackMapper;
+        this.objectMapper = objectMapper;
         this.requestTimeout = requestTimeout;
         this.blockTimeMillis = blockTimeMillis;
         this.dispatchStrategy = new RoundRobinDispatchStrategy(topologyManager);
@@ -213,13 +212,13 @@ public class RequestManager extends Actor
 
     public <E> ActorFuture<E> executeAsync(final ControlMessageRequest<E> controlMessage)
     {
-        final ControlMessageRequestHandler requestHandler = new ControlMessageRequestHandler(msgPackMapper, controlMessage);
+        final ControlMessageRequestHandler requestHandler = new ControlMessageRequestHandler(objectMapper, controlMessage);
         return executeAsync(requestHandler);
     }
 
     public <R extends Record> ZeebeFuture<R> send(final CommandImpl<R> command)
     {
-        final CommandRequestHandler requestHandler = new CommandRequestHandler(msgPackMapper, command);
+        final CommandRequestHandler requestHandler = new CommandRequestHandler(objectMapper, command);
         return executeAsync(requestHandler);
     }
 

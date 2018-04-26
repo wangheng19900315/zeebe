@@ -1,6 +1,7 @@
 package io.zeebe.client.impl;
 
 import io.zeebe.client.api.clients.*;
+import io.zeebe.client.api.record.ZeebeObjectMapper;
 import io.zeebe.client.impl.data.MsgPackConverter;
 import io.zeebe.client.subscription.SubscriptionManager;
 
@@ -24,15 +25,13 @@ public class TopicClientImpl implements TopicClient
     @Override
     public JobClient jobClient()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return new JobClientImpl(this);
     }
 
     @Override
     public SubscriptionClient subscriptionClient()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return new SubscriptionClientImpl(this);
     }
 
     public String getTopic()

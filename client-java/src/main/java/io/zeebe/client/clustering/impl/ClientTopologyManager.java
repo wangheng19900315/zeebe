@@ -20,10 +20,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.zeebe.client.clustering.Topology;
 import io.zeebe.client.cmd.BrokerErrorException;
 import io.zeebe.client.impl.ControlMessageRequestHandler;
+import io.zeebe.client.impl.ZeebeObjectMapperImpl;
 import io.zeebe.protocol.clientapi.ErrorResponseDecoder;
 import io.zeebe.protocol.clientapi.MessageHeaderDecoder;
 import io.zeebe.transport.*;
@@ -59,7 +59,7 @@ public class ClientTopologyManager extends Actor
     protected int refreshAttempt = 0;
     protected long lastRefreshTime = -1;
 
-    public ClientTopologyManager(ClientTransport transport, ObjectMapper objectMapper, RemoteAddress initialContact)
+    public ClientTopologyManager(ClientTransport transport, ZeebeObjectMapperImpl objectMapper, RemoteAddress initialContact)
     {
         this.transport = transport;
         this.output = transport.getOutput();

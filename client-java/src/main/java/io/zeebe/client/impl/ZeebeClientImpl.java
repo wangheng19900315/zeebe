@@ -23,7 +23,6 @@ import io.zeebe.client.api.clients.TopicClient;
 import io.zeebe.client.api.commands.*;
 import io.zeebe.client.clustering.impl.ClientTopologyManager;
 import io.zeebe.client.impl.data.MsgPackConverter;
-import io.zeebe.client.impl.data.MsgPackMapper;
 import io.zeebe.client.subscription.SubscriptionManager;
 import io.zeebe.dispatcher.Dispatcher;
 import io.zeebe.dispatcher.Dispatchers;
@@ -53,8 +52,8 @@ public class ZeebeClientImpl implements ZeebeClient
 
     protected ClientTransport transport;
 
-    protected final ZeebeObjectMapper objectMapper;
-    protected final MsgPackMapper msgPackMapper;
+    protected final ZeebeObjectMapperImpl objectMapper;
+    protected final MsgPackConverter msgPackConverter;
 
     protected final ClientTopologyManager topologyManager;
     protected final RequestManager apiCommandManager;
@@ -111,8 +110,8 @@ public class ZeebeClientImpl implements ZeebeClient
 
         transport = transportBuilder.build();
 
-        this.objectMapper = new ZeebeObjectMapper();
-        this.msgPackMapper = new MsgPackMapper(objectMapper);
+        this.msgPackConverter = new MsgPackConverter();
+        this.objectMapper = new ZeebeObjectMapperImpl(msgPackConverter);
 
         subscriptionPrefetchCapacity = configuration.getTopicSubscriptionPrefetchCapacity();
 
@@ -194,12 +193,7 @@ public class ZeebeClientImpl implements ZeebeClient
         return topologyManager;
     }
 
-    public MsgPackMapper getMsgPackMapper()
-    {
-        return msgPackMapper;
-    }
-
-    public ZeebeObjectMapper getObjectMapper()
+    public ZeebeObjectMapperImpl getObjectMapper()
     {
         return objectMapper;
     }
@@ -217,7 +211,7 @@ public class ZeebeClientImpl implements ZeebeClient
 
     public MsgPackConverter getMsgPackConverter()
     {
-        return objectMapper.getMsgPackConverter();
+        return msgPackConverter;
     }
 
     public ActorScheduler getScheduler()

@@ -81,7 +81,7 @@ public class JobSubscriberGroup extends SubscriberGroup<JobSubscriber> implement
                 result.getEventPublisher(),
                 result.getPartitionId(),
                 this,
-                client.getMsgPackMapper(),
+                client.getObjectMapper(),
                 subscriptionManager);
     }
 
