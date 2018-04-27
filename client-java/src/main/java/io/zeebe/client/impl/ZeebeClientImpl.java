@@ -22,7 +22,7 @@ import io.zeebe.client.ZeebeClientConfiguration;
 import io.zeebe.client.api.clients.TopicClient;
 import io.zeebe.client.api.commands.*;
 import io.zeebe.client.api.record.ZeebeObjectMapper;
-import io.zeebe.client.clustering.impl.ClientTopologyManager;
+import io.zeebe.client.clustering.ClientTopologyManager;
 import io.zeebe.client.impl.data.MsgPackConverter;
 import io.zeebe.client.subscription.SubscriptionManager;
 import io.zeebe.client.topic.CreateTopicCommandImpl;

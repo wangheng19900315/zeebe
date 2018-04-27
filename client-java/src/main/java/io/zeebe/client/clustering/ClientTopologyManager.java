@@ -13,15 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.zeebe.client.clustering.impl;
+package io.zeebe.client.clustering;
 
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
-import io.zeebe.client.clustering.Topology;
-import io.zeebe.client.clustering.TopologyRequestImpl;
+import io.zeebe.client.api.commands.Topology;
 import io.zeebe.client.cmd.BrokerErrorException;
 import io.zeebe.client.impl.ControlMessageRequestHandler;
 import io.zeebe.client.impl.ZeebeObjectMapperImpl;
@@ -50,8 +49,8 @@ public class ClientTopologyManager extends Actor
     protected final ClientOutput output;
     protected final ClientTransport transport;
 
-    protected final AtomicReference<TopologyImpl> topology;
-    protected final List<CompletableActorFuture<Topology>> nextTopologyFutures = new ArrayList<>();
+    protected final AtomicReference<ClusterStateImpl> topology;
+    protected final List<CompletableActorFuture<ClusterState>> nextTopologyFutures = new ArrayList<>();
 
     protected final ControlMessageRequestHandler requestWriter;
     protected final MessageHeaderDecoder messageHeaderDecoder = new MessageHeaderDecoder();
@@ -65,7 +64,7 @@ public class ClientTopologyManager extends Actor
         this.transport = transport;
         this.output = transport.getOutput();
 
-        this.topology = new AtomicReference<>(new TopologyImpl(initialContact));
+        this.topology = new AtomicReference<>(new ClusterStateImpl(initialContact));
         this.requestWriter = new ControlMessageRequestHandler(objectMapper, new TopologyRequestImpl(null, null));
     }
 
@@ -80,14 +79,14 @@ public class ClientTopologyManager extends Actor
         return actor.close();
     }
 
-    public TopologyImpl getTopology()
+    public ClusterStateImpl getTopology()
     {
         return topology.get();
     }
 
-    public ActorFuture<Topology> requestTopology()
+    public ActorFuture<ClusterState> requestTopology()
     {
-        final CompletableActorFuture<Topology> future = new CompletableActorFuture<>();
+        final CompletableActorFuture<ClusterState> future = new CompletableActorFuture<>();
 
         actor.call(() ->
         {
@@ -119,7 +118,7 @@ public class ClientTopologyManager extends Actor
         }
     }
 
-    public void provideTopology(io.zeebe.client.api.commands.Topology response)
+    public void provideTopology(Topology response)
     {
         actor.call(() ->
         {
@@ -163,7 +162,7 @@ public class ClientTopologyManager extends Actor
         {
             try
             {
-                final io.zeebe.client.clustering.TopologyImpl topologyResponse = decodeTopology(response.getResponseBuffer());
+                final TopologyImpl topologyResponse = decodeTopology(response.getResponseBuffer());
                 onNewTopology(topologyResponse);
             }
             finally
@@ -177,9 +176,9 @@ public class ClientTopologyManager extends Actor
         }
     }
 
-    private void onNewTopology(io.zeebe.client.api.commands.Topology response)
+    private void onNewTopology(Topology response)
     {
-        this.topology.set(new TopologyImpl(response, transport::registerRemoteAddress));
+        this.topology.set(new ClusterStateImpl(response, transport::registerRemoteAddress));
         completeRefreshFutures();
     }
 
@@ -195,7 +194,7 @@ public class ClientTopologyManager extends Actor
         nextTopologyFutures.clear();
     }
 
-    private io.zeebe.client.clustering.TopologyImpl decodeTopology(DirectBuffer encodedTopology)
+    private TopologyImpl decodeTopology(DirectBuffer encodedTopology)
     {
         messageHeaderDecoder.wrap(encodedTopology, 0);
 
@@ -208,7 +207,7 @@ public class ClientTopologyManager extends Actor
         {
             try
             {
-                return (io.zeebe.client.clustering.TopologyImpl) requestWriter.getResult(encodedTopology, responseMessageOffset, blockLength, version);
+                return (TopologyImpl) requestWriter.getResult(encodedTopology, responseMessageOffset, blockLength, version);
             }
             catch (final Exception e)
             {

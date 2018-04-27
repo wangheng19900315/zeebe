@@ -19,7 +19,6 @@ import java.util.HashMap;
 
 import io.zeebe.client.api.commands.Topology;
 import io.zeebe.client.api.commands.TopologyRequestStep1;
-import io.zeebe.client.clustering.impl.ClientTopologyManager;
 import io.zeebe.client.impl.ControlMessageRequest;
 import io.zeebe.client.impl.RequestManager;
 import io.zeebe.protocol.clientapi.ControlMessageType;

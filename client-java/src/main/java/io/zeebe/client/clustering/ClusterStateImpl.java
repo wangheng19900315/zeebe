@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.zeebe.client.clustering.impl;
+package io.zeebe.client.clustering;
 
 import java.util.*;
 import java.util.function.Function;
 
-import io.zeebe.client.clustering.Topology;
+import io.zeebe.client.api.commands.Topology;
 import io.zeebe.transport.RemoteAddress;
 import io.zeebe.transport.SocketAddress;
 import org.agrona.collections.*;
@@ -27,20 +27,20 @@ import org.agrona.collections.*;
  * Immutable; Important because we hand this between actors. If this is supposed to become mutable, make sure
  * to make copies in the right places.
  */
-public class TopologyImpl implements Topology
+public class ClusterStateImpl implements ClusterState
 {
-    protected final Int2ObjectHashMap<RemoteAddress> topicLeaders = new Int2ObjectHashMap<>();
-    protected final List<RemoteAddress> brokers = new ArrayList<>();
-    protected final Map<String, IntArrayList> partitionsByTopic = new HashMap<>();
+    private final Int2ObjectHashMap<RemoteAddress> topicLeaders = new Int2ObjectHashMap<>();
+    private final List<RemoteAddress> brokers = new ArrayList<>();
+    private final Map<String, IntArrayList> partitionsByTopic = new HashMap<>();
 
-    protected final Random randomBroker = new Random();
+    private final Random randomBroker = new Random();
 
-    public TopologyImpl(RemoteAddress endpoint)
+    public ClusterStateImpl(RemoteAddress endpoint)
     {
         brokers.add(endpoint);
     }
 
-    public TopologyImpl(io.zeebe.client.api.commands.Topology topologyDto, Function<SocketAddress, RemoteAddress> remoteAddressProvider)
+    public ClusterStateImpl(Topology topologyDto, Function<SocketAddress, RemoteAddress> remoteAddressProvider)
     {
         final Map<String, IntHashSet> partitions = new HashMap<>();
 
@@ -123,10 +123,13 @@ public class TopologyImpl implements Topology
     @Override
     public String toString()
     {
-        return "Topology{" +
-            "topicLeaders=" + topicLeaders +
-            ", brokers=" + brokers +
-            '}';
+        final StringBuilder builder = new StringBuilder();
+        builder.append("ClusterState [topicLeaders=");
+        builder.append(topicLeaders);
+        builder.append(", brokers=");
+        builder.append(brokers);
+        builder.append("]");
+        return builder.toString();
     }
 
 }

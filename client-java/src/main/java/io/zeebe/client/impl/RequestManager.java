@@ -22,9 +22,7 @@ import java.util.function.Supplier;
 
 import io.zeebe.client.api.ZeebeFuture;
 import io.zeebe.client.api.record.Record;
-import io.zeebe.client.clustering.Topology;
-import io.zeebe.client.clustering.impl.ClientTopologyManager;
-import io.zeebe.client.clustering.impl.TopologyImpl;
+import io.zeebe.client.clustering.*;
 import io.zeebe.client.cmd.*;
 import io.zeebe.client.impl.cmd.CommandImpl;
 import io.zeebe.client.impl.cmd.ReceiverAwareResponseResult;
@@ -139,7 +137,7 @@ public class RequestManager extends Actor
 
     private void updateTopologyAndDeterminePartition(String topic, CompletableActorFuture<Integer> future, long timeout)
     {
-        final ActorFuture<Topology> topologyFuture = topologyManager.requestTopology();
+        final ActorFuture<ClusterState> topologyFuture = topologyManager.requestTopology();
         actor.runOnCompletion(topologyFuture, (topology, throwable) ->
         {
             final int partition = dispatchStrategy.determinePartition(topic);
@@ -250,9 +248,9 @@ public class RequestManager extends Actor
     {
         private int attempt = 0;
 
-        private final Function<TopologyImpl, RemoteAddress> addressStrategy;
+        private final Function<ClusterStateImpl, RemoteAddress> addressStrategy;
 
-        BrokerProvider(Function<TopologyImpl, RemoteAddress> addressStrategy)
+        BrokerProvider(Function<ClusterStateImpl, RemoteAddress> addressStrategy)
         {
             this.addressStrategy = addressStrategy;
         }
@@ -267,7 +265,7 @@ public class RequestManager extends Actor
 
                 actor.call(() ->
                 {
-                    final ActorFuture<Topology> topologyFuture = topologyManager.requestTopology();
+                    final ActorFuture<ClusterState> topologyFuture = topologyManager.requestTopology();
 
                     actor.runOnCompletion(topologyFuture, (r, t) ->
                     {
@@ -288,7 +286,7 @@ public class RequestManager extends Actor
 
         private RemoteAddress determineRemoteWithCurrentTopology()
         {
-            final TopologyImpl topology = topologyManager.getTopology();
+            final ClusterStateImpl topology = topologyManager.getTopology();
             return addressStrategy.apply(topology);
 
         }

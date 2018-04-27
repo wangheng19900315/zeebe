@@ -35,8 +35,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.rules.TestName;
-
-import io.zeebe.client.clustering.impl.ClientTopologyManager;
+import io.zeebe.client.clustering.ClientTopologyManager;
 import io.zeebe.client.cmd.ClientCommandRejectedException;
 import io.zeebe.client.cmd.ClientException;
 import io.zeebe.client.event.TaskEvent;

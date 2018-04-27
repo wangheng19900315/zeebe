@@ -19,7 +19,7 @@ import java.util.List;
 
 import io.zeebe.transport.RemoteAddress;
 
-public interface Topology
+public interface ClusterState
 {
     RemoteAddress getLeaderForPartition(int partition);
 
