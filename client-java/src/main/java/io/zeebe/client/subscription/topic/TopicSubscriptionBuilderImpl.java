@@ -20,10 +20,10 @@ public class TopicSubscriptionBuilderImpl implements TopicSubscriptionBuilderSte
     }
 
     @Override
-    public PollableEventSubscriptionBuilderStep2 pollable()
+    public PollableTopicSubscriptionBuilderStep2 pollable()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return new PollableTopicSubscriptionBuilderImpl(client.getTopic(), client.getSubscriptionManager(),
+                client.getConfiguration().getTopicSubscriptionPrefetchCapacity());
     }
 
 }

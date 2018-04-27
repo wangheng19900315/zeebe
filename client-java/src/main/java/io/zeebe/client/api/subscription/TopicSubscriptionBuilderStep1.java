@@ -44,7 +44,7 @@ public interface TopicSubscriptionBuilderStep1
      *
      * @return the builder for a pollable subscription
      */
-    PollableEventSubscriptionBuilderStep2 pollable();
+    PollableTopicSubscriptionBuilderStep2 pollable();
 
     interface ManagedTopicSubscriptionBuilderStep2
     {
@@ -254,7 +254,7 @@ public interface TopicSubscriptionBuilderStep1
         TopicSubscription open();
     }
 
-    interface PollableEventSubscriptionBuilderStep2
+    interface PollableTopicSubscriptionBuilderStep2
     {
         /**
          * Set the name of the subscription.
@@ -292,10 +292,10 @@ public interface TopicSubscriptionBuilderStep1
          *            the (unique) name of the subscription
          * @return the builder for this subscription
          */
-        PollableEventSubscriptionBuilderStep3 name(String name);
+        PollableTopicSubscriptionBuilderStep3 name(String name);
     }
 
-    interface PollableEventSubscriptionBuilderStep3
+    interface PollableTopicSubscriptionBuilderStep3
     {
         /**
          * Set the initial position of a partition to start publishing from. Can
@@ -319,7 +319,7 @@ public interface TopicSubscriptionBuilderStep1
          *            events from
          * @return the builder for this subscription
          */
-        PollableEventSubscriptionBuilderStep3 startAtPosition(int partitionId, long position);
+        PollableTopicSubscriptionBuilderStep3 startAtPosition(int partitionId, long position);
 
         /**
          * Start publishing at the current tails of all of the partitions. Can
@@ -335,7 +335,7 @@ public interface TopicSubscriptionBuilderStep1
          *
          * @return the builder for this subscription
          */
-        PollableEventSubscriptionBuilderStep3 startAtTailOfTopic();
+        PollableTopicSubscriptionBuilderStep3 startAtTailOfTopic();
 
         /**
          * Start publishing at the head (i.e. the begin) of all of the
@@ -348,7 +348,7 @@ public interface TopicSubscriptionBuilderStep1
          *
          * @return the builder for this subscription
          */
-        PollableEventSubscriptionBuilderStep3 startAtHeadOfTopic();
+        PollableTopicSubscriptionBuilderStep3 startAtHeadOfTopic();
 
         /**
          * Force the subscription to start at the given position.
@@ -358,7 +358,7 @@ public interface TopicSubscriptionBuilderStep1
          *
          * @return the builder for this subscription
          */
-        PollableEventSubscriptionBuilderStep3 forcedStart();
+        PollableTopicSubscriptionBuilderStep3 forcedStart();
 
         /**
          * Open the subscription. Call

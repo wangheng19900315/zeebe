@@ -18,30 +18,28 @@ package io.zeebe.client.subscription.topic;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
+import io.zeebe.client.api.subscription.PollableTopicSubscription;
+import io.zeebe.client.api.subscription.TopicSubscriptionBuilderStep1.PollableTopicSubscriptionBuilderStep2;
+import io.zeebe.client.api.subscription.TopicSubscriptionBuilderStep1.PollableTopicSubscriptionBuilderStep3;
 import io.zeebe.client.cmd.ClientException;
-import io.zeebe.client.event.PollableTopicSubscription;
-import io.zeebe.client.event.PollableTopicSubscriptionBuilder;
 import io.zeebe.client.subscription.SubscriptionManager;
-import io.zeebe.util.EnsureUtil;
 
-public class PollableTopicSubscriptionBuilderImpl implements PollableTopicSubscriptionBuilder
+public class PollableTopicSubscriptionBuilderImpl implements PollableTopicSubscriptionBuilderStep2, PollableTopicSubscriptionBuilderStep3
 {
-    protected TopicSubscriberGroupBuilder implBuilder;
+    private TopicSubscriberGroupBuilder builder;
 
     public PollableTopicSubscriptionBuilderImpl(
             String topic,
-            SubscriptionManager acquisition,
+            SubscriptionManager subscriptionManager,
             int prefetchCapacity)
     {
-        implBuilder = new TopicSubscriberGroupBuilder(topic, acquisition, prefetchCapacity);
+        builder = new TopicSubscriberGroupBuilder(topic, subscriptionManager, prefetchCapacity);
     }
 
     @Override
     public PollableTopicSubscription open()
     {
-        EnsureUtil.ensureNotNull("name", implBuilder.getName());
-
-        final Future<TopicSubscriberGroup> subscription = implBuilder.build();
+        final Future<TopicSubscriberGroup> subscription = builder.build();
 
         try
         {
@@ -54,37 +52,37 @@ public class PollableTopicSubscriptionBuilderImpl implements PollableTopicSubscr
     }
 
     @Override
-    public PollableTopicSubscriptionBuilder startAtPosition(int partitionId, long position)
+    public PollableTopicSubscriptionBuilderStep3 startAtPosition(int partitionId, long position)
     {
-        implBuilder.startPosition(partitionId, position);
+        builder.startPosition(partitionId, position);
         return this;
     }
 
     @Override
-    public PollableTopicSubscriptionBuilder startAtTailOfTopic()
+    public PollableTopicSubscriptionBuilderStep3 startAtTailOfTopic()
     {
-        implBuilder.startAtTailOfTopic();
+        builder.startAtTailOfTopic();
         return this;
     }
 
     @Override
-    public PollableTopicSubscriptionBuilder startAtHeadOfTopic()
+    public PollableTopicSubscriptionBuilderStep3 startAtHeadOfTopic()
     {
-        implBuilder.startAtHeadOfTopic();
+        builder.startAtHeadOfTopic();
         return this;
     }
 
     @Override
-    public PollableTopicSubscriptionBuilder name(String subscriptionName)
+    public PollableTopicSubscriptionBuilderStep3 name(String subscriptionName)
     {
-        implBuilder.name(subscriptionName);
+        builder.name(subscriptionName);
         return this;
     }
 
     @Override
-    public PollableTopicSubscriptionBuilder forcedStart()
+    public PollableTopicSubscriptionBuilderStep3 forcedStart()
     {
-        implBuilder.forceStart();
+        builder.forceStart();
         return this;
     }
 

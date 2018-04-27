@@ -4,6 +4,7 @@ import io.zeebe.client.api.clients.SubscriptionClient;
 import io.zeebe.client.api.subscription.JobSubscriptionBuilderStep1;
 import io.zeebe.client.api.subscription.TopicSubscriptionBuilderStep1;
 import io.zeebe.client.subscription.job.JobSubcriptionBuilder;
+import io.zeebe.client.subscription.topic.TopicSubscriptionBuilderImpl;
 
 public class SubscriptionClientImpl implements SubscriptionClient
 {
@@ -17,8 +18,7 @@ public class SubscriptionClientImpl implements SubscriptionClient
     @Override
     public TopicSubscriptionBuilderStep1 newTopicSubscription()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return new TopicSubscriptionBuilderImpl(client);
     }
 
     @Override
