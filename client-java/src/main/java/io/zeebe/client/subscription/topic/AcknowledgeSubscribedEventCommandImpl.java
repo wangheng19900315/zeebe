@@ -15,39 +15,41 @@
  */
 package io.zeebe.client.subscription.topic;
 
-import io.zeebe.client.event.impl.SubscriptionEventType;
+import io.zeebe.client.api.commands.TopicSubscriptionCommand.TopicSubscriptionCommandName;
+import io.zeebe.client.api.events.TopicSubscriptionEvent;
 import io.zeebe.client.impl.RequestManager;
 import io.zeebe.client.impl.cmd.CommandImpl;
-import io.zeebe.client.impl.event.TopicSubscriptionEvent;
+import io.zeebe.client.impl.command.TopicSubscriptionCommandImpl;
 import io.zeebe.client.impl.record.RecordImpl;
 
 public class AcknowledgeSubscribedEventCommandImpl extends CommandImpl<TopicSubscriptionEvent>
 {
-    protected final TopicSubscriptionEvent ack = new TopicSubscriptionEvent(SubscriptionEventType.ACKNOWLEDGE.name());
+    private final TopicSubscriptionCommandImpl command = new TopicSubscriptionCommandImpl(TopicSubscriptionCommandName.ACKNOWLEDGE);
 
     public AcknowledgeSubscribedEventCommandImpl(final RequestManager commandManager, String topicName, int partitionId)
     {
         super(commandManager);
-        ack.setTopicName(topicName);
-        ack.setPartitionId(partitionId);
+
+        command.setTopicName(topicName);
+        command.setPartitionId(partitionId);
     }
 
     public AcknowledgeSubscribedEventCommandImpl subscriptionName(String subscriptionName)
     {
-        ack.setName(subscriptionName);
+        command.setName(subscriptionName);
         return this;
     }
 
     public AcknowledgeSubscribedEventCommandImpl ackPosition(long position)
     {
-        this.ack.setAckPosition(position);
+        this.command.setAckPosition(position);
         return this;
     }
 
     @Override
     public RecordImpl getCommand()
     {
-        return ack;
+        return command;
     }
 
 }

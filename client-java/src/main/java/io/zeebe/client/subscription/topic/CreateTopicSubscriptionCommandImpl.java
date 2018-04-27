@@ -15,57 +15,53 @@
  */
 package io.zeebe.client.subscription.topic;
 
-import io.zeebe.client.event.impl.SubscriberEventType;
+import io.zeebe.client.api.commands.TopicSubscriberCommand.TopicSubscriberCommandName;
 import io.zeebe.client.impl.RequestManager;
 import io.zeebe.client.impl.cmd.CommandImpl;
-import io.zeebe.client.impl.event.TopicSubscriberEvent;
+import io.zeebe.client.impl.command.TopicSubscriberCommandImpl;
+import io.zeebe.client.impl.event.TopicSubscriberEventImpl;
 import io.zeebe.client.impl.record.RecordImpl;
 
-public class CreateTopicSubscriptionCommandImpl extends CommandImpl<TopicSubscriberEvent>
+public class CreateTopicSubscriptionCommandImpl extends CommandImpl<TopicSubscriberEventImpl>
 {
-    protected final TopicSubscriberEvent subscription = new TopicSubscriberEvent(SubscriberEventType.SUBSCRIBE.name());
+    private  final TopicSubscriberCommandImpl command = new TopicSubscriberCommandImpl(TopicSubscriberCommandName.SUBSCRIBE);
 
     public CreateTopicSubscriptionCommandImpl(final RequestManager commandManager, final String topicName, final int partitionId)
     {
         super(commandManager);
-        this.subscription.setTopicName(topicName);
-        this.subscription.setPartitionId(partitionId);
+
+        this.command.setTopicName(topicName);
+        this.command.setPartitionId(partitionId);
     }
 
     public CreateTopicSubscriptionCommandImpl startPosition(long startPosition)
     {
-        this.subscription.setStartPosition(startPosition);
+        this.command.setStartPosition(startPosition);
         return this;
     }
 
     public CreateTopicSubscriptionCommandImpl name(String name)
     {
-        this.subscription.setName(name);
+        this.command.setName(name);
         return this;
     }
 
     public CreateTopicSubscriptionCommandImpl prefetchCapacity(int prefetchCapacity)
     {
-        this.subscription.setPrefetchCapacity(prefetchCapacity);
+        this.command.setPrefetchCapacity(prefetchCapacity);
         return this;
     }
 
     public CreateTopicSubscriptionCommandImpl forceStart(boolean forceStart)
     {
-        this.subscription.setForceStart(forceStart);
+        this.command.setForceStart(forceStart);
         return this;
     }
 
     @Override
     public RecordImpl getCommand()
     {
-        return subscription;
-    }
-
-    @Override
-    public String getExpectedStatus()
-    {
-        return SubscriberEventType.SUBSCRIBED.name();
+        return command;
     }
 
 }

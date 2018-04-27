@@ -21,8 +21,7 @@ import io.zeebe.protocol.clientapi.ControlMessageType;
 
 public class CloseTopicSubscriptionCommandImpl extends ControlMessageRequest<Void>
 {
-
-    protected CloseSubscriptionRequest request = new CloseSubscriptionRequest();
+    private CloseSubscriptionRequest request = new CloseSubscriptionRequest();
 
     public CloseTopicSubscriptionCommandImpl(final RequestManager commandManager, int partitionId, long subscriberKey)
     {

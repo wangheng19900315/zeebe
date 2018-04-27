@@ -13,25 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.zeebe.client.impl.event;
+package io.zeebe.client.impl.record;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import io.zeebe.client.api.record.*;
 
-import io.zeebe.client.event.TopicEventType;
-import io.zeebe.client.impl.record.RecordImpl;
-
-public class TopicSubscriptionEvent extends RecordImpl
+public abstract class TopicSubscriptionRecordImpl extends RecordImpl implements TopicSubscriptionRecord
 {
-    protected String name;
-    protected long ackPosition = -1L;
+    private String name;
+    private long ackPosition = -1L;
 
-    @JsonCreator
-    public TopicSubscriptionEvent(@JsonProperty("state") String state)
+    public TopicSubscriptionRecordImpl(ZeebeObjectMapper objectMapper, RecordMetadata.RecordType recordType)
     {
-        super(TopicEventType.SUBSCRIPTION, state);
+        super(objectMapper, recordType, RecordMetadata.ValueType.SUBSCRIPTION);
     }
 
+    @Override
     public String getName()
     {
         return name;
@@ -42,6 +38,7 @@ public class TopicSubscriptionEvent extends RecordImpl
         this.name = subscriptionName;
     }
 
+    @Override
     public long getAckPosition()
     {
         return ackPosition;

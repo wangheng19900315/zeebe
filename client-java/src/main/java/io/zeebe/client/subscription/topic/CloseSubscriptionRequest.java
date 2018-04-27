@@ -17,8 +17,7 @@ package io.zeebe.client.subscription.topic;
 
 public class CloseSubscriptionRequest
 {
-
-    protected long subscriberKey;
+    private long subscriberKey;
 
     public long getSubscriberKey()
     {
