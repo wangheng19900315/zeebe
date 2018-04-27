@@ -13,13 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.zeebe.client.event.impl;
+package io.zeebe.client.impl.record;
 
 import io.zeebe.client.api.record.RecordMetadata;
 import io.zeebe.client.api.record.ZeebeObjectMapper;
 import io.zeebe.client.impl.data.MsgPackConverter;
-import io.zeebe.client.impl.record.MsgPackField;
-import io.zeebe.client.impl.record.RecordImpl;
 
 public class GeneralRecordImpl extends RecordImpl
 {

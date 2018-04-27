@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.zeebe.client.event.impl;
+package io.zeebe.client.impl.record;
 
 import io.zeebe.client.api.record.RecordMetadata;
 import io.zeebe.protocol.clientapi.ValueType;

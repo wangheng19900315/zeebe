@@ -19,10 +19,10 @@ import static io.zeebe.util.VarDataUtil.readBytes;
 
 import io.zeebe.client.api.record.RecordMetadata;
 import io.zeebe.client.api.record.ZeebeObjectMapper;
-import io.zeebe.client.event.impl.EventTypeMapping;
-import io.zeebe.client.event.impl.GeneralRecordImpl;
 import io.zeebe.client.impl.Loggers;
 import io.zeebe.client.impl.data.MsgPackConverter;
+import io.zeebe.client.impl.record.EventTypeMapping;
+import io.zeebe.client.impl.record.GeneralRecordImpl;
 import io.zeebe.protocol.clientapi.*;
 import io.zeebe.transport.*;
 import org.agrona.DirectBuffer;

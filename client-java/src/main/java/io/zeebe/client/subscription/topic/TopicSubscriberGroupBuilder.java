@@ -18,7 +18,7 @@ package io.zeebe.client.subscription.topic;
 import java.util.concurrent.Future;
 
 import org.agrona.collections.Long2LongHashMap;
-import io.zeebe.client.event.impl.GeneralRecordImpl;
+import io.zeebe.client.impl.record.GeneralRecordImpl;
 import io.zeebe.client.subscription.SubscriptionManager;
 import io.zeebe.util.CheckedConsumer;
 import io.zeebe.util.EnsureUtil;

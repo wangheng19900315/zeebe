@@ -23,10 +23,10 @@ import io.zeebe.client.api.record.RecordMetadata.ValueType;
 import io.zeebe.client.api.subscription.*;
 import io.zeebe.client.api.subscription.TopicSubscriptionBuilderStep1.*;
 import io.zeebe.client.cmd.ClientException;
-import io.zeebe.client.event.impl.GeneralRecordImpl;
 import io.zeebe.client.impl.ZeebeObjectMapperImpl;
 import io.zeebe.client.impl.command.*;
 import io.zeebe.client.impl.event.*;
+import io.zeebe.client.impl.record.GeneralRecordImpl;
 import io.zeebe.client.impl.record.RecordMetadataImpl;
 import io.zeebe.client.subscription.SubscriptionManager;
 

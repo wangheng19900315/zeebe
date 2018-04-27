@@ -19,9 +19,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import io.zeebe.client.event.impl.*;
 import io.zeebe.client.impl.Loggers;
 import io.zeebe.client.impl.ZeebeClientImpl;
+import io.zeebe.client.impl.record.GeneralRecordImpl;
 import io.zeebe.client.impl.record.RecordMetadataImpl;
 import io.zeebe.client.subscription.job.JobSubscriberGroup;
 import io.zeebe.client.subscription.job.JobSubscriptionSpec;

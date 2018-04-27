@@ -15,7 +15,7 @@
  */
 package io.zeebe.client.subscription;
 
-import io.zeebe.client.event.impl.GeneralRecordImpl;
+import io.zeebe.client.impl.record.GeneralRecordImpl;
 import io.zeebe.protocol.clientapi.SubscriptionType;
 
 public interface SubscribedEventHandler

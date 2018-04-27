@@ -18,9 +18,9 @@ package io.zeebe.client.subscription.topic;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import io.zeebe.client.api.subscription.*;
-import io.zeebe.client.event.impl.GeneralRecordImpl;
 import io.zeebe.client.impl.Loggers;
 import io.zeebe.client.impl.ZeebeClientImpl;
+import io.zeebe.client.impl.record.GeneralRecordImpl;
 import io.zeebe.client.subscription.*;
 import io.zeebe.util.CheckedConsumer;
 import io.zeebe.util.sched.ActorControl;

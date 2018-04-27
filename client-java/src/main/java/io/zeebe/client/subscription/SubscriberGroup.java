@@ -21,9 +21,9 @@ import java.util.function.Predicate;
 
 import io.zeebe.client.api.commands.*;
 import io.zeebe.client.cmd.ClientException;
-import io.zeebe.client.event.impl.GeneralRecordImpl;
 import io.zeebe.client.impl.Loggers;
 import io.zeebe.client.impl.ZeebeClientImpl;
+import io.zeebe.client.impl.record.GeneralRecordImpl;
 import io.zeebe.transport.RemoteAddress;
 import io.zeebe.util.CheckedConsumer;
 import io.zeebe.util.sched.ActorCondition;

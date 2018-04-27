@@ -19,9 +19,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.agrona.concurrent.ManyToManyConcurrentArrayQueue;
 import org.slf4j.Logger;
-
-import io.zeebe.client.event.impl.GeneralRecordImpl;
 import io.zeebe.client.impl.Loggers;
+import io.zeebe.client.impl.record.GeneralRecordImpl;
 import io.zeebe.transport.RemoteAddress;
 import io.zeebe.util.CheckedConsumer;
 import io.zeebe.util.sched.ActorCondition;
