@@ -13,32 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.zeebe.client.clustering.impl;
+package io.zeebe.client.clustering;
 
 import java.util.HashMap;
 
+import io.zeebe.client.api.commands.Topology;
+import io.zeebe.client.api.commands.TopologyRequestStep1;
+import io.zeebe.client.clustering.impl.ClientTopologyManager;
 import io.zeebe.client.impl.ControlMessageRequest;
 import io.zeebe.client.impl.RequestManager;
 import io.zeebe.protocol.clientapi.ControlMessageType;
 
-public class RequestTopologyCmdImpl extends ControlMessageRequest<TopologyResponse>
+public class TopologyRequestImpl extends ControlMessageRequest<Topology> implements TopologyRequestStep1
 {
-    protected static final Object EMPTY_REQUEST = new HashMap<>();
+    private static final Object EMPTY_REQUEST = new HashMap<>();
 
-    protected final ClientTopologyManager topologyListener;
+    private final ClientTopologyManager topologyManager;
 
-    public RequestTopologyCmdImpl(RequestManager commandManager, ClientTopologyManager topologyListener)
+    public TopologyRequestImpl(RequestManager commandManager, ClientTopologyManager topologyManager)
     {
-        super(commandManager, ControlMessageType.REQUEST_TOPOLOGY, TopologyResponse.class);
-        this.topologyListener = topologyListener;
+        super(commandManager, ControlMessageType.REQUEST_TOPOLOGY, TopologyImpl.class);
+        this.topologyManager = topologyManager;
     }
 
     @Override
-    public void onResponse(TopologyResponse response)
+    public void onResponse(Topology response)
     {
-        if (topologyListener != null)
+        if (topologyManager != null)
         {
-            topologyListener.provideTopology(response);
+            topologyManager.provideTopology(response);
         }
     }
 

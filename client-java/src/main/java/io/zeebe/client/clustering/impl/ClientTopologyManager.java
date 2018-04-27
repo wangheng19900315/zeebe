@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 import io.zeebe.client.clustering.Topology;
+import io.zeebe.client.clustering.TopologyRequestImpl;
 import io.zeebe.client.cmd.BrokerErrorException;
 import io.zeebe.client.impl.ControlMessageRequestHandler;
 import io.zeebe.client.impl.ZeebeObjectMapperImpl;
@@ -65,7 +66,7 @@ public class ClientTopologyManager extends Actor
         this.output = transport.getOutput();
 
         this.topology = new AtomicReference<>(new TopologyImpl(initialContact));
-        this.requestWriter = new ControlMessageRequestHandler(objectMapper, new RequestTopologyCmdImpl(null, null));
+        this.requestWriter = new ControlMessageRequestHandler(objectMapper, new TopologyRequestImpl(null, null));
     }
 
     @Override
@@ -118,13 +119,13 @@ public class ClientTopologyManager extends Actor
         }
     }
 
-    public void provideTopology(TopologyResponse topology)
+    public void provideTopology(io.zeebe.client.api.commands.Topology response)
     {
         actor.call(() ->
         {
             // TODO: not sure we should complete the refresh futures in this case,
             //   as the response could be older than the time when the future was submitted
-            onNewTopology(topology);
+            onNewTopology(response);
         });
     }
 
@@ -162,7 +163,7 @@ public class ClientTopologyManager extends Actor
         {
             try
             {
-                final TopologyResponse topologyResponse = decodeTopology(response.getResponseBuffer());
+                final io.zeebe.client.clustering.TopologyImpl topologyResponse = decodeTopology(response.getResponseBuffer());
                 onNewTopology(topologyResponse);
             }
             finally
@@ -176,9 +177,9 @@ public class ClientTopologyManager extends Actor
         }
     }
 
-    private void onNewTopology(TopologyResponse topologyResponse)
+    private void onNewTopology(io.zeebe.client.api.commands.Topology response)
     {
-        this.topology.set(new TopologyImpl(topologyResponse, transport::registerRemoteAddress));
+        this.topology.set(new TopologyImpl(response, transport::registerRemoteAddress));
         completeRefreshFutures();
     }
 
@@ -194,7 +195,7 @@ public class ClientTopologyManager extends Actor
         nextTopologyFutures.clear();
     }
 
-    private TopologyResponse decodeTopology(DirectBuffer encodedTopology)
+    private io.zeebe.client.clustering.TopologyImpl decodeTopology(DirectBuffer encodedTopology)
     {
         messageHeaderDecoder.wrap(encodedTopology, 0);
 
@@ -207,7 +208,7 @@ public class ClientTopologyManager extends Actor
         {
             try
             {
-                return (TopologyResponse) requestWriter.getResult(encodedTopology, responseMessageOffset, blockLength, version);
+                return (io.zeebe.client.clustering.TopologyImpl) requestWriter.getResult(encodedTopology, responseMessageOffset, blockLength, version);
             }
             catch (final Exception e)
             {

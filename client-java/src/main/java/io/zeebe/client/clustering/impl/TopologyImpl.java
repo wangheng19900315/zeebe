@@ -15,20 +15,13 @@
  */
 package io.zeebe.client.clustering.impl;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 import java.util.function.Function;
-
-import org.agrona.collections.Int2ObjectHashMap;
-import org.agrona.collections.IntArrayList;
-import org.agrona.collections.IntHashSet;
 
 import io.zeebe.client.clustering.Topology;
 import io.zeebe.transport.RemoteAddress;
 import io.zeebe.transport.SocketAddress;
+import org.agrona.collections.*;
 
 /**
  * Immutable; Important because we hand this between actors. If this is supposed to become mutable, make sure
@@ -47,7 +40,7 @@ public class TopologyImpl implements Topology
         brokers.add(endpoint);
     }
 
-    public TopologyImpl(TopologyResponse topologyDto, Function<SocketAddress, RemoteAddress> remoteAddressProvider)
+    public TopologyImpl(io.zeebe.client.api.commands.Topology topologyDto, Function<SocketAddress, RemoteAddress> remoteAddressProvider)
     {
         final Map<String, IntHashSet> partitions = new HashMap<>();
 

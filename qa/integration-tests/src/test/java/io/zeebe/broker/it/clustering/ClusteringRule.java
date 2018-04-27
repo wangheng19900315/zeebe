@@ -18,8 +18,8 @@ package io.zeebe.broker.it.clustering;
 import io.zeebe.broker.Broker;
 import io.zeebe.broker.it.ClientRule;
 import io.zeebe.client.ZeebeClient;
-import io.zeebe.client.clustering.impl.BrokerPartitionState;
-import io.zeebe.client.clustering.impl.TopologyBroker;
+import io.zeebe.client.clustering.PartitionInfoImpl;
+import io.zeebe.client.clustering.BrokerInfoImpl;
 import io.zeebe.client.event.Event;
 import io.zeebe.client.topic.Topic;
 import io.zeebe.client.topic.Topics;
@@ -108,18 +108,18 @@ public class ClusteringRule extends ExternalResource
      * @param partition
      * @return
      */
-    public TopologyBroker getLeaderForPartition(int partition)
+    public BrokerInfoImpl getLeaderForPartition(int partition)
     {
         return
             doRepeatedly(() -> {
-                final List<TopologyBroker> brokers = zeebeClient.requestTopology().execute().getBrokers();
+                final List<BrokerInfoImpl> brokers = zeebeClient.requestTopology().execute().getBrokers();
                 return extractPartitionLeader(brokers, partition);
             })
                 .until(Optional::isPresent)
                 .get();
     }
 
-    private Optional<TopologyBroker> extractPartitionLeader(List<TopologyBroker> topologyBrokers, int partition)
+    private Optional<BrokerInfoImpl> extractPartitionLeader(List<BrokerInfoImpl> topologyBrokers, int partition)
     {
         return topologyBrokers.stream()
             .filter(b -> b.getPartitions()
@@ -155,9 +155,9 @@ public class ClusteringRule extends ExternalResource
         return waitForSpreading(() -> waitForTopicAvailability(topicName));
     }
 
-    private boolean hasPartitionsWithReplicationFactor(List<TopologyBroker> brokers, String topicName, int partitionCount, int replicationFactor)
+    private boolean hasPartitionsWithReplicationFactor(List<BrokerInfoImpl> brokers, String topicName, int partitionCount, int replicationFactor)
     {
-        final Map<Integer, List<BrokerPartitionState>> brokersPerPartition = brokers.stream()
+        final Map<Integer, List<PartitionInfoImpl>> brokersPerPartition = brokers.stream()
                 .flatMap(b -> b.getPartitions().stream())
                 .filter(p -> topicName.equals(p.getTopicName()))
                 .collect(Collectors.groupingBy(p -> p.getPartitionId()));
@@ -254,8 +254,8 @@ public class ClusteringRule extends ExternalResource
                           .stream()
                           .filter(broker -> broker.getSocketAddress().equals(socketAddress))
                           .flatMap(broker -> broker.getPartitions().stream())
-                          .filter(BrokerPartitionState::isLeader)
-                          .map(BrokerPartitionState::getPartitionId)
+                          .filter(PartitionInfoImpl::isLeader)
+                          .map(PartitionInfoImpl::getPartitionId)
                           .collect(Collectors.toList());
     }
 
@@ -269,7 +269,7 @@ public class ClusteringRule extends ExternalResource
                           .execute()
                           .getBrokers()
                           .stream()
-                          .map(TopologyBroker::getSocketAddress)
+                          .map(BrokerInfoImpl::getSocketAddress)
                           .collect(Collectors.toList());
 
     }
@@ -335,8 +335,8 @@ public class ClusteringRule extends ExternalResource
                     topologyBrokers != null && topologyBrokers.stream()
                         .filter(broker -> !broker.getSocketAddress().equals(oldLeader))
                         .flatMap(broker -> broker.getPartitions().stream())
-                        .filter(BrokerPartitionState::isLeader)
-                        .map(BrokerPartitionState::getPartitionId)
+                        .filter(PartitionInfoImpl::isLeader)
+                        .map(PartitionInfoImpl::getPartitionId)
                         .collect(Collectors.toSet())
                         .containsAll(partitions));
         });

@@ -18,7 +18,7 @@ package io.zeebe.broker.it.clustering;
 import io.zeebe.broker.it.ClientRule;
 import io.zeebe.client.TasksClient;
 import io.zeebe.client.TopicsClient;
-import io.zeebe.client.clustering.impl.TopologyBroker;
+import io.zeebe.client.clustering.BrokerInfoImpl;
 import io.zeebe.client.event.TaskEvent;
 import io.zeebe.client.event.TopicSubscription;
 import io.zeebe.client.job.TaskSubscription;
@@ -71,7 +71,7 @@ public class BrokerLeaderChangeTest
         // given
         clusteringRule.createTopic(clientRule.getDefaultTopic(), 2);
 
-        final TopologyBroker leaderForPartition = clusteringRule.getLeaderForPartition(1);
+        final BrokerInfoImpl leaderForPartition = clusteringRule.getLeaderForPartition(1);
         final SocketAddress leaderAddress = leaderForPartition.getSocketAddress();
 
         final TaskEvent taskEvent = taskClient.create(clientRule.getDefaultTopic(), TASK_TYPE)

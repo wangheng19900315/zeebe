@@ -13,37 +13,46 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.zeebe.client.clustering.impl;
+package io.zeebe.client.clustering;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import io.zeebe.client.api.commands.BrokerInfo;
+import io.zeebe.client.api.commands.PartitionInfo;
 import io.zeebe.transport.SocketAddress;
 
-
-public class TopologyBroker
+public class BrokerInfoImpl implements BrokerInfo
 {
-    protected String host;
-    protected int port;
-    private List<BrokerPartitionState> partitions = new ArrayList<>();
+    private String host;
+    private int port;
 
-    public TopologyBroker setHost(final String host)
+    private List<PartitionInfo> partitions = new ArrayList<>();
+
+    public BrokerInfoImpl setHost(final String host)
     {
         this.host = host;
         return this;
     }
 
-    public TopologyBroker setPort(final int port)
+    public BrokerInfoImpl setPort(final int port)
     {
         this.port = port;
         return this;
     }
 
-    public List<BrokerPartitionState> getPartitions()
+    @Override
+    public List<PartitionInfo> getPartitions()
     {
         return partitions;
     }
 
+    public void setPartitions(List<PartitionInfo> partitions)
+    {
+        this.partitions = partitions;
+    }
+
+    @Override
     public SocketAddress getSocketAddress()
     {
         return new SocketAddress(host, port);
@@ -52,6 +61,15 @@ public class TopologyBroker
     @Override
     public String toString()
     {
-        return "Broker{" + "host='" + host + '\'' + ", port=" + port + ", partitions='" + partitions + '}';
+        final StringBuilder builder = new StringBuilder();
+        builder.append("BrokerInfo [host=");
+        builder.append(host);
+        builder.append(", port=");
+        builder.append(port);
+        builder.append(", partitions=");
+        builder.append(partitions);
+        builder.append("]");
+        return builder.toString();
     }
+
 }

@@ -13,20 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.zeebe.client.clustering.impl;
+package io.zeebe.client.clustering;
 
 import java.util.List;
 
-public class TopologyResponse
-{
-    private List<TopologyBroker> brokers;
+import io.zeebe.client.api.commands.BrokerInfo;
+import io.zeebe.client.api.commands.Topology;
 
-    public List<TopologyBroker> getBrokers()
+public class TopologyImpl implements Topology
+{
+    private List<BrokerInfo> brokers;
+
+    @Override
+    public List<BrokerInfo> getBrokers()
     {
         return brokers;
     }
 
-    public void setBrokers(List<TopologyBroker> brokers)
+    public void setBrokers(List<BrokerInfo> brokers)
     {
         this.brokers = brokers;
     }
@@ -34,7 +38,11 @@ public class TopologyResponse
     @Override
     public String toString()
     {
-        return "TopologyResponse{" + "brokers=" + brokers + '}';
+        final StringBuilder builder = new StringBuilder();
+        builder.append("Topology [brokers=");
+        builder.append(brokers);
+        builder.append("]");
+        return builder.toString();
     }
 
 }

@@ -33,9 +33,7 @@ import io.zeebe.broker.it.EmbeddedBrokerRule;
 import io.zeebe.broker.it.util.RecordingTaskHandler;
 import io.zeebe.broker.it.util.TopicEventRecorder;
 import io.zeebe.client.ZeebeClient;
-import io.zeebe.client.clustering.impl.BrokerPartitionState;
-import io.zeebe.client.clustering.impl.TopologyBroker;
-import io.zeebe.client.clustering.impl.TopologyResponse;
+import io.zeebe.client.clustering.*;
 import io.zeebe.client.cmd.ClientCommandRejectedException;
 import io.zeebe.client.event.DeploymentEvent;
 import io.zeebe.client.event.TaskEvent;
@@ -524,12 +522,12 @@ public class BrokerRestartTest
         client.topics().create("bar", 2).execute();
 
         // then
-        final TopologyResponse topology = client.requestTopology().execute();
-        final List<TopologyBroker> brokers = topology.getBrokers();
+        final TopologyImpl topology = client.requestTopology().execute();
+        final List<BrokerInfoImpl> brokers = topology.getBrokers();
         assertThat(brokers).hasSize(1);
 
-        final TopologyBroker topologyBroker = brokers.get(0);
-        final List<BrokerPartitionState> partitions = topologyBroker.getPartitions();
+        final BrokerInfoImpl topologyBroker = brokers.get(0);
+        final List<PartitionInfoImpl> partitions = topologyBroker.getPartitions();
 
         assertThat(partitions).hasSize(6); // default partition + system partition + 4 partitions we create here
         assertThat(partitions).extracting("partitionId").doesNotHaveDuplicates();
