@@ -28,9 +28,9 @@ import org.junit.Test;
 import org.junit.rules.RuleChain;
 
 import io.zeebe.client.ZeebeClient;
-import io.zeebe.client.job.PollableTaskSubscription;
-import io.zeebe.client.job.TaskSubscription;
-import io.zeebe.client.subscription.SubscriberGroup;
+import io.zeebe.client.impl.job.PollableTaskSubscription;
+import io.zeebe.client.impl.job.TaskSubscription;
+import io.zeebe.client.impl.subscription.SubscriberGroup;
 import io.zeebe.client.util.ClientRule;
 import io.zeebe.protocol.Protocol;
 import io.zeebe.protocol.clientapi.ControlMessageType;

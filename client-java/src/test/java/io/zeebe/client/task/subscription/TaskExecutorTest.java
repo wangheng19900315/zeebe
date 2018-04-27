@@ -20,9 +20,9 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import io.zeebe.client.job.impl.subscription.*;
-import io.zeebe.client.subscription.*;
-import io.zeebe.client.subscription.job.JobSubscriberGroup;
+import io.zeebe.client.impl.job.impl.subscription.*;
+import io.zeebe.client.impl.subscription.*;
+import io.zeebe.client.impl.subscription.job.JobSubscriberGroup;
 import org.junit.Test;
 
 public class TaskExecutorTest

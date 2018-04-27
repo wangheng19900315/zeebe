@@ -22,10 +22,8 @@ import java.util.function.Supplier;
 
 import io.zeebe.client.api.ZeebeFuture;
 import io.zeebe.client.api.record.Record;
-import io.zeebe.client.clustering.*;
 import io.zeebe.client.cmd.*;
-import io.zeebe.client.impl.cmd.CommandImpl;
-import io.zeebe.client.impl.cmd.ReceiverAwareResponseResult;
+import io.zeebe.client.impl.clustering.*;
 import io.zeebe.protocol.clientapi.ErrorCode;
 import io.zeebe.protocol.clientapi.MessageHeaderDecoder;
 import io.zeebe.transport.*;

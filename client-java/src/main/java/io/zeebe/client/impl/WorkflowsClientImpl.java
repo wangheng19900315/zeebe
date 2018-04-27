@@ -18,7 +18,7 @@ package io.zeebe.client.impl;
 import io.zeebe.client.api.clients.WorkflowClient;
 import io.zeebe.client.api.commands.*;
 import io.zeebe.client.api.events.WorkflowInstanceEvent;
-import io.zeebe.client.workflow.*;
+import io.zeebe.client.impl.workflow.*;
 
 public class WorkflowsClientImpl implements WorkflowClient
 {

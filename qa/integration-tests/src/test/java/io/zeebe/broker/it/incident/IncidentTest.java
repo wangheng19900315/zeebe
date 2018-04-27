@@ -27,7 +27,7 @@ import io.zeebe.broker.it.util.TopicEventRecorder;
 import io.zeebe.client.TasksClient;
 import io.zeebe.client.event.TaskEvent;
 import io.zeebe.client.event.WorkflowInstanceEvent;
-import io.zeebe.client.job.JobHandler;
+import io.zeebe.client.impl.job.JobHandler;
 import io.zeebe.model.bpmn.Bpmn;
 import io.zeebe.model.bpmn.instance.WorkflowDefinition;
 import org.junit.Rule;

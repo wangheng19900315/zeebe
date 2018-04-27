@@ -34,9 +34,7 @@ import io.zeebe.broker.it.EmbeddedBrokerRule;
 import io.zeebe.client.TopicsClient;
 import io.zeebe.client.event.Event;
 import io.zeebe.client.event.TaskEvent;
-import io.zeebe.client.topic.Partition;
-import io.zeebe.client.topic.Topic;
-import io.zeebe.client.topic.Topics;
+import io.zeebe.client.impl.topic.*;
 
 public class CreateTopicTest
 {

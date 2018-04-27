@@ -34,9 +34,9 @@ import org.junit.rules.RuleChain;
 
 import io.zeebe.client.ZeebeClient;
 import io.zeebe.client.cmd.ClientException;
-import io.zeebe.client.subscription.SubscriberGroup;
-import io.zeebe.client.subscription.topic.TopicSubscriberGroup;
-import io.zeebe.client.subscription.topic.ManagedTopicSubscriptionBuilderImpl;
+import io.zeebe.client.impl.subscription.SubscriberGroup;
+import io.zeebe.client.impl.subscription.topic.ManagedTopicSubscriptionBuilderImpl;
+import io.zeebe.client.impl.subscription.topic.TopicSubscriberGroup;
 import io.zeebe.client.util.ClientRule;
 import io.zeebe.protocol.Protocol;
 import io.zeebe.protocol.clientapi.ControlMessageType;

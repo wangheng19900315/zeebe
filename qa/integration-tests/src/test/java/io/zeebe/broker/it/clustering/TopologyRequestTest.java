@@ -17,7 +17,7 @@ package io.zeebe.broker.it.clustering;
 
 import io.zeebe.broker.it.ClientRule;
 import io.zeebe.client.ZeebeClient;
-import io.zeebe.client.clustering.*;
+import io.zeebe.client.impl.clustering.*;
 import io.zeebe.test.util.AutoCloseableRule;
 import io.zeebe.transport.SocketAddress;
 import org.junit.Before;

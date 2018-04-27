@@ -19,7 +19,7 @@ import java.util.Properties;
 
 import io.zeebe.client.ClientProperties;
 import io.zeebe.client.ZeebeClient;
-import io.zeebe.client.clustering.TopologyImpl;
+import io.zeebe.client.impl.clustering.TopologyImpl;
 
 public class TopologyViewer
 {

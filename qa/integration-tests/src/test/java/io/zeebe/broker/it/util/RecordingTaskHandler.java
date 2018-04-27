@@ -21,7 +21,7 @@ import java.util.List;
 
 import io.zeebe.client.TasksClient;
 import io.zeebe.client.event.TaskEvent;
-import io.zeebe.client.job.JobHandler;
+import io.zeebe.client.impl.job.JobHandler;
 
 public class RecordingTaskHandler implements JobHandler
 {

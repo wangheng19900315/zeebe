@@ -20,7 +20,6 @@ import java.util.function.BiFunction;
 import io.zeebe.client.api.record.Record;
 import io.zeebe.client.api.record.RecordMetadata;
 import io.zeebe.client.cmd.ClientCommandRejectedException;
-import io.zeebe.client.impl.cmd.CommandImpl;
 import io.zeebe.client.impl.record.*;
 import io.zeebe.protocol.clientapi.*;
 import org.agrona.*;

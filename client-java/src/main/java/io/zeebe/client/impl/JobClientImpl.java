@@ -3,7 +3,7 @@ package io.zeebe.client.impl;
 import io.zeebe.client.api.clients.JobClient;
 import io.zeebe.client.api.commands.*;
 import io.zeebe.client.api.events.JobEvent;
-import io.zeebe.client.job.*;
+import io.zeebe.client.impl.job.*;
 
 public class JobClientImpl implements JobClient
 {

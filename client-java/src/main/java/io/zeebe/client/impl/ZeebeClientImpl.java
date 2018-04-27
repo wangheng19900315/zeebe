@@ -22,11 +22,12 @@ import io.zeebe.client.ZeebeClientConfiguration;
 import io.zeebe.client.api.clients.TopicClient;
 import io.zeebe.client.api.commands.*;
 import io.zeebe.client.api.record.ZeebeObjectMapper;
-import io.zeebe.client.clustering.ClientTopologyManager;
+import io.zeebe.client.impl.clustering.ClientTopologyManager;
+import io.zeebe.client.impl.clustering.TopologyRequestImpl;
 import io.zeebe.client.impl.data.MsgPackConverter;
-import io.zeebe.client.subscription.SubscriptionManager;
-import io.zeebe.client.topic.CreateTopicCommandImpl;
-import io.zeebe.client.topic.TopicsRequestImpl;
+import io.zeebe.client.impl.subscription.SubscriptionManager;
+import io.zeebe.client.impl.topic.CreateTopicCommandImpl;
+import io.zeebe.client.impl.topic.TopicsRequestImpl;
 import io.zeebe.dispatcher.Dispatcher;
 import io.zeebe.dispatcher.Dispatchers;
 import io.zeebe.transport.*;
@@ -266,7 +267,6 @@ public class ZeebeClientImpl implements ZeebeClient
     @Override
     public TopologyRequestStep1 newTopologyRequest()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return new TopologyRequestImpl(getCommandManager(), topologyManager);
     }
 }

@@ -19,8 +19,8 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import io.zeebe.client.clustering.ClientTopologyManager;
-import io.zeebe.client.clustering.ClusterStateImpl;
+import io.zeebe.client.impl.clustering.ClientTopologyManager;
+import io.zeebe.client.impl.clustering.ClusterStateImpl;
 
 public class RoundRobinDispatchStrategy implements RequestDispatchStrategy
 {

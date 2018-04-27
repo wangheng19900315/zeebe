@@ -32,7 +32,7 @@ import org.junit.rules.RuleChain;
 import io.zeebe.client.ZeebeClient;
 import io.zeebe.client.event.TaskEvent;
 import io.zeebe.client.impl.data.MsgPackConverter;
-import io.zeebe.client.job.cmd.CreateTaskCommand;
+import io.zeebe.client.impl.job.cmd.CreateTaskCommand;
 import io.zeebe.client.util.ClientRule;
 import io.zeebe.protocol.Protocol;
 import io.zeebe.protocol.clientapi.EventType;

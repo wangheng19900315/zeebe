@@ -19,9 +19,9 @@ import com.fasterxml.jackson.annotation.*;
 import io.zeebe.client.api.events.TopicSubscriberEvent;
 import io.zeebe.client.api.record.RecordMetadata;
 import io.zeebe.client.api.record.ZeebeObjectMapper;
-import io.zeebe.client.impl.cmd.ReceiverAwareResponseResult;
+import io.zeebe.client.impl.ReceiverAwareResponseResult;
 import io.zeebe.client.impl.record.TopicSubscriberRecordImpl;
-import io.zeebe.client.subscription.EventSubscriptionCreationResult;
+import io.zeebe.client.impl.subscription.EventSubscriptionCreationResult;
 import io.zeebe.transport.RemoteAddress;
 
 public class TopicSubscriberEventImpl extends TopicSubscriberRecordImpl implements TopicSubscriberEvent, EventSubscriptionCreationResult, ReceiverAwareResponseResult

@@ -17,7 +17,7 @@ package io.zeebe.client.util;
 
 import io.zeebe.client.event.impl.TaskEventImpl;
 import io.zeebe.client.impl.data.MsgPackConverter;
-import io.zeebe.client.workflow.impl.WorkflowInstanceEventImpl;
+import io.zeebe.client.impl.workflow.impl.WorkflowInstanceEventImpl;
 import io.zeebe.test.broker.protocol.brokerapi.StubBrokerRule;
 import io.zeebe.test.broker.protocol.clientapi.ClientApiRule;
 import org.assertj.core.util.Maps;

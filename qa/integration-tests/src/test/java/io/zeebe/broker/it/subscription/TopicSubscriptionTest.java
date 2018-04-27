@@ -45,10 +45,10 @@ import io.zeebe.client.event.TaskEvent;
 import io.zeebe.client.event.TopicEventType;
 import io.zeebe.client.event.TopicSubscription;
 import io.zeebe.client.event.UniversalEventHandler;
-import io.zeebe.client.job.impl.CreateTaskCommandImpl;
-import io.zeebe.client.topic.Topic;
-import io.zeebe.client.topic.Topics;
-import io.zeebe.client.topic.impl.TopicEventImpl;
+import io.zeebe.client.impl.job.impl.CreateTaskCommandImpl;
+import io.zeebe.client.impl.topic.Topic;
+import io.zeebe.client.impl.topic.Topics;
+import io.zeebe.client.impl.topic.impl.TopicEventImpl;
 import io.zeebe.test.util.TestUtil;
 
 public class TopicSubscriptionTest
