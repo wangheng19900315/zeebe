@@ -21,9 +21,12 @@ import io.zeebe.client.ZeebeClient;
 import io.zeebe.client.ZeebeClientConfiguration;
 import io.zeebe.client.api.clients.TopicClient;
 import io.zeebe.client.api.commands.*;
+import io.zeebe.client.api.record.ZeebeObjectMapper;
 import io.zeebe.client.clustering.impl.ClientTopologyManager;
 import io.zeebe.client.impl.data.MsgPackConverter;
 import io.zeebe.client.subscription.SubscriptionManager;
+import io.zeebe.client.topic.CreateTopicCommandImpl;
+import io.zeebe.client.topic.TopicsRequestImpl;
 import io.zeebe.dispatcher.Dispatcher;
 import io.zeebe.dispatcher.Dispatchers;
 import io.zeebe.transport.*;
@@ -232,35 +235,32 @@ public class ZeebeClientImpl implements ZeebeClient
     @Override
     public TopicClient topicClient(String topicName)
     {
-        return new io.zeebe.client.impl.TopicClientImpl(this, topicName);
+        return new TopicClientImpl(this, topicName);
     }
 
     @Override
     public TopicClient topicClient()
     {
-        // TODO Auto-generated method stub
-        return null;
+        // TODO resolve the default topic
+        return new TopicClientImpl(this, "default-topic");
     }
 
     @Override
-    public io.zeebe.client.api.record.ZeebeObjectMapper objectMapper()
+    public ZeebeObjectMapper objectMapper()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return objectMapper;
     }
 
     @Override
     public CreateTopicCommandStep1 newCreateTopicCommand()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return new CreateTopicCommandImpl(getCommandManager());
     }
 
     @Override
     public TopicsRequestStep1 newTopicsRequest()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return new TopicsRequestImpl(getCommandManager());
     }
 
     @Override

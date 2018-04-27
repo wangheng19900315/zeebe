@@ -13,38 +13,40 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.zeebe.client.topic.impl;
+package io.zeebe.client.impl.record;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import io.zeebe.client.api.record.*;
 
-import io.zeebe.client.event.TopicEventType;
-import io.zeebe.client.impl.record.RecordImpl;
-
-public class TopicEventImpl extends RecordImpl
+public abstract class TopicRecordImpl extends RecordImpl implements TopicRecord
 {
-    protected final String name;
-    protected final int partitions;
+    private String name;
+    private int partitions;
 
-    @JsonCreator
-    public TopicEventImpl(
-            @JsonProperty("state") String state,
-            @JsonProperty("name") String name,
-            @JsonProperty("partitions") int partitions)
+    public TopicRecordImpl(ZeebeObjectMapper objectMapper, RecordMetadata.RecordType recordType)
     {
-        super(TopicEventType.TOPIC, state);
-        this.name = name;
-        this.partitions = partitions;
+        super(objectMapper, recordType, RecordMetadata.ValueType.TOPIC);
     }
 
+    @Override
     public String getName()
     {
         return name;
     }
 
+    public void setName(String subscriptionName)
+    {
+        this.name = subscriptionName;
+    }
+
+    @Override
     public int getPartitions()
     {
         return partitions;
+    }
+
+    public void setPartitions(int partitions)
+    {
+        this.partitions = partitions;
     }
 
 }

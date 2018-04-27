@@ -13,22 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.zeebe.client.topic.impl;
+package io.zeebe.client.topic;
 
 import java.util.Collections;
 
+import io.zeebe.client.api.commands.Topics;
+import io.zeebe.client.api.commands.TopicsRequestStep1;
 import io.zeebe.client.impl.ControlMessageRequest;
 import io.zeebe.client.impl.RequestManager;
-import io.zeebe.client.topic.Topics;
 import io.zeebe.protocol.Protocol;
 import io.zeebe.protocol.clientapi.ControlMessageType;
 
-public class GetPartitionsRequestImpl extends ControlMessageRequest<Topics>
+public class TopicsRequestImpl extends ControlMessageRequest<Topics> implements TopicsRequestStep1
 {
 
-    public GetPartitionsRequestImpl(RequestManager client)
+    public TopicsRequestImpl(RequestManager client)
     {
         super(client, ControlMessageType.REQUEST_PARTITIONS, TopicsImpl.class);
+
         setTargetPartition(Protocol.SYSTEM_PARTITION);
     }
 

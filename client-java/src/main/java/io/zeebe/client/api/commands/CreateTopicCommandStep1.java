@@ -1,5 +1,7 @@
 package io.zeebe.client.api.commands;
 
+import io.zeebe.client.api.events.TopicEvent;
+
 public interface CreateTopicCommandStep1
 {
     /**
@@ -27,7 +29,7 @@ public interface CreateTopicCommandStep1
         CreateTopicCommandStep3 partitions(int partitions);
     }
 
-    interface CreateTopicCommandStep3 extends FinalCommandStep<Void>
+    interface CreateTopicCommandStep3 extends FinalCommandStep<TopicEvent>
     {
         // the place for new optional parameters
     }

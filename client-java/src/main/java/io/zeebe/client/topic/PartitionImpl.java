@@ -13,39 +13,46 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.zeebe.client.topic.impl;
+package io.zeebe.client.topic;
 
-import java.util.List;
+import io.zeebe.client.api.commands.Partition;
 
-import io.zeebe.client.topic.Partition;
-import io.zeebe.client.topic.Topic;
-
-public class TopicImpl implements Topic
+public class PartitionImpl implements Partition
 {
-    protected String name;
-    protected List<Partition> partitions;
+    private int id;
+    private String topic;
 
-    public TopicImpl(String name, List<Partition> partitions)
+    @Override
+    public int getId()
     {
-        this.name = name;
-        this.partitions = partitions;
+        return id;
+    }
+
+    public void setId(int id)
+    {
+        this.id = id;
     }
 
     @Override
-    public String getName()
+    public String getTopicName()
     {
-        return name;
+        return topic;
     }
 
-    @Override
-    public List<Partition> getPartitions()
+    public void setTopic(String topic)
     {
-        return partitions;
+        this.topic = topic;
     }
 
     @Override
     public String toString()
     {
-        return "Topic{" + "name='" + name + '\'' + ", partitions=" + partitions + '}';
+        final StringBuilder builder = new StringBuilder();
+        builder.append("Partition [id=");
+        builder.append(id);
+        builder.append(", topic=");
+        builder.append(topic);
+        builder.append("]");
+        return builder.toString();
     }
 }

@@ -13,26 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.zeebe.client.topic.impl;
+package io.zeebe.client.topic;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import io.zeebe.client.topic.Topic;
-import io.zeebe.client.topic.Topics;
+import io.zeebe.client.api.commands.*;
 
 public class TopicsImpl implements Topics
 {
-    protected List<Topic> topics;
+    private List<Topic> topics;
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
     public void setPartitions(List<PartitionImpl> partitions)
     {
         topics = new ArrayList<>();
-        partitions.stream()
-            .collect(Collectors.groupingBy(PartitionImpl::getTopicName, Collectors.toList()))
-            .forEach((t, p) -> topics.add(new TopicImpl(t, (List) p)));
+        partitions
+                .stream()
+                .collect(Collectors.groupingBy(PartitionImpl::getTopicName, Collectors.<Partition> toList()))
+                .forEach((t, p) -> topics.add(new TopicImpl(t, p)));
     }
 
     @Override
@@ -44,7 +43,11 @@ public class TopicsImpl implements Topics
     @Override
     public String toString()
     {
-        return "Topics{" + "topics=" + topics + '}';
+        final StringBuilder builder = new StringBuilder();
+        builder.append("Topics [");
+        builder.append(topics);
+        builder.append("]");
+        return builder.toString();
     }
 
 }
