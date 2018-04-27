@@ -6,5 +6,5 @@ import io.zeebe.client.api.events.JobEvent;
 public interface JobEventHandler
 {
 
-    void onJobEvent(JobEvent workItemEvent);
+    void onJobEvent(JobEvent jobEvent);
 }

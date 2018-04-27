@@ -38,8 +38,8 @@ public interface IncidentRecord extends Record
     Long getActivityInstanceKey();
 
     /**
-     * @return the key of the task this incident belongs to. Can be <code>null</code> if the
+     * @return the key of the job this incident belongs to. Can be <code>null</code> if the
      *         incident belongs to no task.
      */
-    Long getTaskKey();
+    Long getJobKey();
 }

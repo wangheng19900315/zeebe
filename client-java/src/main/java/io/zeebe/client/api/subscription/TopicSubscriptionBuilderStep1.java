@@ -26,7 +26,7 @@ public interface TopicSubscriptionBuilderStep1
 
     /**
      * This is a <i>pollable</i> subscription. Call
-     * {@link PollableTopicSubscription#poll(TopicRecordHandler)} repeatedly to
+     * {@link PollableTopicSubscription#poll(RecordHandler)} repeatedly to
      * manually trigger the invocation for available events/command. Choose a
      * pollable subscription when you need control in which thread the handler
      * is invoked.
@@ -97,7 +97,7 @@ public interface TopicSubscriptionBuilderStep1
          *            the handler to process all types of topic records
          * @return the builder for this subscription
          */
-        ManagedTopicSubscriptionBuilderStep4 topicRecordHandler(TopicRecordHandler handler);
+        ManagedTopicSubscriptionBuilderStep4 recordHandler(RecordHandler handler);
 
         /**
          * Register a handler that processes all job events.
@@ -362,7 +362,7 @@ public interface TopicSubscriptionBuilderStep1
 
         /**
          * Open the subscription. Call
-         * {@link PollableTopicSubscription#poll(TopicRecordHandler)} to process
+         * {@link PollableTopicSubscription#poll(RecordHandler)} to process
          * available events/commands.
          *
          * @return the subscription

@@ -22,11 +22,11 @@ import io.zeebe.client.api.commands.CreateWorkflowInstanceCommandStep1.CreateWor
 import io.zeebe.client.api.commands.CreateWorkflowInstanceCommandStep1.CreateWorkflowInstanceCommandStep3;
 import io.zeebe.client.api.commands.WorkflowInstanceCommand.WorkflowInstanceCommandName;
 import io.zeebe.client.api.events.WorkflowInstanceEvent;
-import io.zeebe.client.event.impl.RecordImpl;
 import io.zeebe.client.impl.RequestManager;
 import io.zeebe.client.impl.cmd.CommandImpl;
 import io.zeebe.client.impl.command.WorkflowInstanceCommandImpl;
 import io.zeebe.client.impl.data.MsgPackConverter;
+import io.zeebe.client.impl.record.RecordImpl;
 
 public class CreateWorkflowInstanceCommandImpl extends CommandImpl<WorkflowInstanceEvent>
         implements CreateWorkflowInstanceCommandStep1, CreateWorkflowInstanceCommandStep2, CreateWorkflowInstanceCommandStep3

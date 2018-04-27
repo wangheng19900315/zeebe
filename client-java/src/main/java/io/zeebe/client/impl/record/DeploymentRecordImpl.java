@@ -21,7 +21,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import io.zeebe.client.api.commands.DeploymentResource;
 import io.zeebe.client.api.record.*;
-import io.zeebe.client.event.impl.RecordImpl;
 
 public abstract class DeploymentRecordImpl extends RecordImpl implements DeploymentRecord
 {

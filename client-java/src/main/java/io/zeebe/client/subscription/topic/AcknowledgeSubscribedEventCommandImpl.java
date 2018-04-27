@@ -13,10 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.zeebe.client.event.impl;
+package io.zeebe.client.subscription.topic;
 
+import io.zeebe.client.event.impl.SubscriptionEventType;
 import io.zeebe.client.impl.RequestManager;
 import io.zeebe.client.impl.cmd.CommandImpl;
+import io.zeebe.client.impl.event.TopicSubscriptionEvent;
+import io.zeebe.client.impl.record.RecordImpl;
 
 public class AcknowledgeSubscribedEventCommandImpl extends CommandImpl<TopicSubscriptionEvent>
 {
@@ -45,12 +48,6 @@ public class AcknowledgeSubscribedEventCommandImpl extends CommandImpl<TopicSubs
     public RecordImpl getCommand()
     {
         return ack;
-    }
-
-    @Override
-    public String getExpectedStatus()
-    {
-        return SubscriptionEventType.ACKNOWLEDGED.name();
     }
 
 }

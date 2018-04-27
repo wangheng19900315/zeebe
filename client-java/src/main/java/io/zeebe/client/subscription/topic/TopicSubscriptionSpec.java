@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.zeebe.client.event.impl;
+package io.zeebe.client.subscription.topic;
 
 import org.agrona.collections.Long2LongHashMap;
-
+import io.zeebe.client.event.impl.GeneralRecordImpl;
 import io.zeebe.util.CheckedConsumer;
 
 public class TopicSubscriptionSpec

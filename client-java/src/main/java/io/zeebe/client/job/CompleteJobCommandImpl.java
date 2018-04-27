@@ -20,11 +20,11 @@ import java.io.InputStream;
 import io.zeebe.client.api.commands.CompleteJobCommandStep1;
 import io.zeebe.client.api.commands.JobCommand.JobCommandName;
 import io.zeebe.client.api.events.JobEvent;
-import io.zeebe.client.event.impl.RecordImpl;
 import io.zeebe.client.impl.RequestManager;
 import io.zeebe.client.impl.cmd.CommandImpl;
-import io.zeebe.client.impl.command.JobEventImpl;
-import io.zeebe.client.impl.event.JobCommandImpl;
+import io.zeebe.client.impl.command.JobCommandImpl;
+import io.zeebe.client.impl.event.JobEventImpl;
+import io.zeebe.client.impl.record.RecordImpl;
 import io.zeebe.util.EnsureUtil;
 
 public class CompleteJobCommandImpl extends CommandImpl<JobEvent> implements CompleteJobCommandStep1

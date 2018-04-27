@@ -13,16 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.zeebe.client.event.impl;
+package io.zeebe.client.impl.record;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import io.zeebe.client.event.IncidentEvent;
-import io.zeebe.client.event.TopicEventType;
+import io.zeebe.client.api.record.*;
 
-public class IncidentEventImpl extends RecordImpl implements IncidentEvent
+public abstract class IncidentRecordImpl extends RecordImpl implements IncidentRecord
 {
-
     private String errorType;
     private String errorMessage;
 
@@ -31,12 +27,11 @@ public class IncidentEventImpl extends RecordImpl implements IncidentEvent
     private String activityId;
     private Long activityInstanceKey;
 
-    private Long taskKey;
+    private Long jobKey;
 
-    @JsonCreator
-    public IncidentEventImpl(@JsonProperty("state") String state)
+    public IncidentRecordImpl(ZeebeObjectMapper objectMapper, RecordMetadata.RecordType recordType)
     {
-        super(TopicEventType.INCIDENT, state);
+        super(objectMapper, recordType, RecordMetadata.ValueType.INCIDENT);
     }
 
     @Override
@@ -95,14 +90,14 @@ public class IncidentEventImpl extends RecordImpl implements IncidentEvent
     }
 
     @Override
-    public Long getTaskKey()
+    public Long getJobKey()
     {
-        return taskKey > 0 ? taskKey : null;
+        return jobKey > 0 ? jobKey : null;
     }
 
-    public void setTaskKey(long taskKey)
+    public void setJobKey(long jobKey)
     {
-        this.taskKey = taskKey;
+        this.jobKey = jobKey;
     }
 
     @Override
@@ -114,30 +109,6 @@ public class IncidentEventImpl extends RecordImpl implements IncidentEvent
     public void setWorkflowInstanceKey(long workflowInstanceKey)
     {
         this.workflowInstanceKey = workflowInstanceKey;
-    }
-
-    @Override
-    public String toString()
-    {
-        final StringBuilder builder = new StringBuilder();
-        builder.append("IncidentEvent [state=");
-        builder.append(state);
-        builder.append(", errorType=");
-        builder.append(errorType);
-        builder.append(", errorMessage=");
-        builder.append(errorMessage);
-        builder.append(", bpmnProcessId=");
-        builder.append(bpmnProcessId);
-        builder.append(", workflowInstanceKey=");
-        builder.append(workflowInstanceKey);
-        builder.append(", activityId=");
-        builder.append(activityId);
-        builder.append(", activityInstanceKey=");
-        builder.append(activityInstanceKey);
-        builder.append(", taskKey=");
-        builder.append(taskKey);
-        builder.append("]");
-        return builder.toString();
     }
 
 }

@@ -1,7 +1,7 @@
 package io.zeebe.client.impl;
 
+import io.zeebe.client.ZeebeClientConfiguration;
 import io.zeebe.client.api.clients.*;
-import io.zeebe.client.api.record.ZeebeObjectMapper;
 import io.zeebe.client.impl.data.MsgPackConverter;
 import io.zeebe.client.subscription.SubscriptionManager;
 
@@ -44,7 +44,7 @@ public class TopicClientImpl implements TopicClient
         return client.getCommandManager();
     }
 
-    public ZeebeObjectMapper getObjectMapper()
+    public ZeebeObjectMapperImpl getObjectMapper()
     {
         return client.getObjectMapper();
     }
@@ -57,6 +57,11 @@ public class TopicClientImpl implements TopicClient
     public SubscriptionManager getSubscriptionManager()
     {
         return client.getSubscriptionManager();
+    }
+
+    public ZeebeClientConfiguration getConfiguration()
+    {
+        return client.getConfiguration();
     }
 
 }

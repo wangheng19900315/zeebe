@@ -16,9 +16,9 @@
 package io.zeebe.client.topic.impl;
 
 import io.zeebe.client.event.Event;
-import io.zeebe.client.event.impl.RecordImpl;
 import io.zeebe.client.impl.RequestManager;
 import io.zeebe.client.impl.cmd.CommandImpl;
+import io.zeebe.client.impl.record.RecordImpl;
 import io.zeebe.protocol.Protocol;
 import io.zeebe.util.EnsureUtil;
 

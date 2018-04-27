@@ -13,12 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.zeebe.client.event.impl;
+package io.zeebe.client.subscription.topic;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
 
-import io.zeebe.client.job.impl.subscription.*;
+import io.zeebe.client.event.impl.GeneralRecordImpl;
+import io.zeebe.client.impl.ZeebeClientImpl;
+import io.zeebe.client.impl.event.TopicSubscriptionEvent;
 import io.zeebe.client.subscription.*;
 import io.zeebe.transport.RemoteAddress;
 import io.zeebe.util.CheckedConsumer;
@@ -27,21 +29,20 @@ import io.zeebe.util.sched.future.CompletableActorFuture;
 
 public class TopicSubscriber extends Subscriber
 {
+    private static final int MAX_HANDLING_RETRIES = 2;
 
-    protected static final int MAX_HANDLING_RETRIES = 2;
+    private final ZeebeClientImpl client;
 
-    protected final TopicClientImpl client;
+    private AtomicBoolean processingFlag = new AtomicBoolean(false);
+    private volatile long lastProcessedEventPosition;
+    private long lastAcknowledgedPosition;
 
-    protected AtomicBoolean processingFlag = new AtomicBoolean(false);
-    protected volatile long lastProcessedEventPosition;
-    protected long lastAcknowledgedPosition;
+    private final TopicSubscriptionSpec subscription;
 
-    protected final TopicSubscriptionSpec subscription;
-
-    protected final Function<CheckedConsumer<GeneralRecordImpl>, CheckedConsumer<GeneralRecordImpl>> eventHandlerAdapter;
+    private final Function<CheckedConsumer<GeneralRecordImpl>, CheckedConsumer<GeneralRecordImpl>> eventHandlerAdapter;
 
     public TopicSubscriber(
-            TopicClientImpl client,
+            ZeebeClientImpl client,
             TopicSubscriptionSpec subscription,
             long subscriberKey,
             RemoteAddress eventSource,
@@ -71,6 +72,7 @@ public class TopicSubscriber extends Subscriber
 
     }
 
+    @Override
     public int pollEvents(CheckedConsumer<GeneralRecordImpl> consumer)
     {
         return super.pollEvents(eventHandlerAdapter.apply(consumer));
@@ -98,8 +100,10 @@ public class TopicSubscriber extends Subscriber
     @Override
     protected ActorFuture<Void> requestSubscriptionClose()
     {
-        System.out.println("Closing subscriber at partition " + partitionId);
-        return client.closeTopicSubscription(partitionId, subscriberKey).send();
+        LOGGER.debug("Closing subscriber at partition {}", partitionId);
+
+        return new CloseTopicSubscriptionCommandImpl(client.getCommandManager(), partitionId, subscriberKey)
+                .executeAsync();
     }
 
     @Override
@@ -118,10 +122,10 @@ public class TopicSubscriber extends Subscriber
         if (positionToAck > lastAcknowledgedPosition)
         {
             // TODO: what to do on error here? close the group (but only if it is not already closing)
-            final ActorFuture<TopicSubscriptionEvent> future = client.acknowledgeEvent(subscription.getTopic(), partitionId)
+            final ActorFuture<TopicSubscriptionEvent> future = new AcknowledgeSubscribedEventCommandImpl(client.getCommandManager(), subscription.getTopic(), partitionId)
                 .subscriptionName(subscription.getName())
                 .ackPosition(positionToAck)
-                .send();
+                .executeAsync();
 
             // record this immediately to avoid repeated requests for the same position
             lastAcknowledgedPosition = positionToAck;

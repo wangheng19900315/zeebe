@@ -21,11 +21,11 @@ import io.zeebe.client.api.commands.UpdatePayloadWorkflowInstanceCommandStep1;
 import io.zeebe.client.api.commands.UpdatePayloadWorkflowInstanceCommandStep1.UpdatePayloadWorkflowInstanceCommandStep2;
 import io.zeebe.client.api.commands.WorkflowInstanceCommand.WorkflowInstanceCommandName;
 import io.zeebe.client.api.events.WorkflowInstanceEvent;
-import io.zeebe.client.event.impl.RecordImpl;
 import io.zeebe.client.impl.RequestManager;
 import io.zeebe.client.impl.cmd.CommandImpl;
 import io.zeebe.client.impl.command.WorkflowInstanceCommandImpl;
 import io.zeebe.client.impl.event.WorkflowInstanceEventImpl;
+import io.zeebe.client.impl.record.RecordImpl;
 import io.zeebe.util.EnsureUtil;
 
 public class UpdatePayloadCommandImpl extends CommandImpl<WorkflowInstanceEvent>

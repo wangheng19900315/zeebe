@@ -22,6 +22,7 @@ import io.zeebe.client.event.PollableTopicSubscriptionBuilder;
 import io.zeebe.client.event.TopicSubscriptionBuilder;
 import io.zeebe.client.impl.ControlMessageRequest;
 import io.zeebe.client.impl.ZeebeClientImpl;
+import io.zeebe.client.subscription.topic.*;
 import io.zeebe.client.topic.Topics;
 import io.zeebe.client.topic.impl.CreateTopicCommandImpl;
 import io.zeebe.client.topic.impl.GetPartitionsRequestImpl;
@@ -39,7 +40,7 @@ public class TopicClientImpl implements TopicsClient
     @Override
     public TopicSubscriptionBuilder newSubscription(String topicName)
     {
-        return new TopicSubscriptionBuilderImpl(
+        return new ManagedTopicSubscriptionBuilderImpl(
                 topicName,
                 client.getSubscriptionManager(),
                 client.getMsgPackMapper(),

@@ -18,8 +18,8 @@ package io.zeebe.client.impl.cmd;
 import io.zeebe.client.api.ZeebeFuture;
 import io.zeebe.client.api.record.Record;
 import io.zeebe.client.cmd.Request;
-import io.zeebe.client.event.impl.RecordImpl;
 import io.zeebe.client.impl.RequestManager;
+import io.zeebe.client.impl.record.RecordImpl;
 import io.zeebe.util.sched.future.ActorFuture;
 
 public abstract class CommandImpl<R extends Record> implements Request<R>

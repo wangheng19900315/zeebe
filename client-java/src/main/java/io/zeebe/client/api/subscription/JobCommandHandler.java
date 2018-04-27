@@ -6,9 +6,9 @@ import io.zeebe.client.api.commands.JobCommand;
 public interface JobCommandHandler
 {
 
-    void onJobCommand(JobCommand workItemCommand);
+    void onJobCommand(JobCommand jobCommand);
 
-    default void onJobCommandRejection(JobCommand workItemCommand)
+    default void onJobCommandRejection(JobCommand jobCommand)
     {
     };
 }

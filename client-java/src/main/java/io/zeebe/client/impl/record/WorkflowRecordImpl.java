@@ -13,28 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.zeebe.client.event.impl;
+package io.zeebe.client.impl.record;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import io.zeebe.client.api.record.*;
 
-import io.zeebe.client.event.TopicEventType;
-import io.zeebe.client.event.WorkflowEvent;
-
-public class WorkflowEventImpl extends RecordImpl implements WorkflowEvent
+public abstract class WorkflowRecordImpl extends RecordImpl implements WorkflowRecord
 {
-
     private String bpmnProcessId;
     private int version;
     private byte[] bpmnXml;
     private long deploymentKey;
 
-    @JsonCreator
-    public WorkflowEventImpl(@JsonProperty("state") String state)
+    public WorkflowRecordImpl(ZeebeObjectMapper objectMapper, RecordMetadata.RecordType recordType)
     {
-        super(TopicEventType.WORKFLOW, state);
+        super(objectMapper, recordType, RecordMetadata.ValueType.WORKFLOW);
     }
 
     @Override
@@ -80,24 +74,5 @@ public class WorkflowEventImpl extends RecordImpl implements WorkflowEvent
     {
         this.bpmnXml = bpmnXml;
     }
-
-    @Override
-    public String toString()
-    {
-        final StringBuilder builder = new StringBuilder();
-        builder.append("WorkflowEvent [state=");
-        builder.append(state);
-        builder.append(", bpmnProcessId=");
-        builder.append(bpmnProcessId);
-        builder.append(", version=");
-        builder.append(version);
-        builder.append(", deploymentKey=");
-        builder.append(deploymentKey);
-        builder.append(", bpmnXml=");
-        builder.append(getBpmnXml());
-        builder.append("]");
-        return builder.toString();
-    }
-
 
 }

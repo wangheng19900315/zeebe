@@ -34,9 +34,9 @@ import org.junit.rules.RuleChain;
 
 import io.zeebe.client.ZeebeClient;
 import io.zeebe.client.cmd.ClientException;
-import io.zeebe.client.event.impl.TopicSubscriberGroup;
-import io.zeebe.client.event.impl.TopicSubscriptionBuilderImpl;
 import io.zeebe.client.subscription.SubscriberGroup;
+import io.zeebe.client.subscription.topic.TopicSubscriberGroup;
+import io.zeebe.client.subscription.topic.ManagedTopicSubscriptionBuilderImpl;
 import io.zeebe.client.util.ClientRule;
 import io.zeebe.protocol.Protocol;
 import io.zeebe.protocol.clientapi.ControlMessageType;
@@ -217,7 +217,7 @@ public class PartitionedTopicSubscriptionTest
             .registerControlled();
 
         // assuming that subscription to broker 1 is successful
-        final TopicSubscriptionBuilderImpl builder = (TopicSubscriptionBuilderImpl) client.topics().newSubscription(TOPIC)
+        final ManagedTopicSubscriptionBuilderImpl builder = (ManagedTopicSubscriptionBuilderImpl) client.topics().newSubscription(TOPIC)
             .handler(new RecordingEventHandler())
             .name("hohoho");
 

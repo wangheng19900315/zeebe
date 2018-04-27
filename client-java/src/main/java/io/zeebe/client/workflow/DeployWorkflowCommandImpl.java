@@ -28,11 +28,11 @@ import io.zeebe.client.api.commands.DeployWorkflowCommandStep1.DeployWorkflowCom
 import io.zeebe.client.api.commands.DeploymentCommand.DeploymentCommandName;
 import io.zeebe.client.api.events.DeploymentEvent;
 import io.zeebe.client.cmd.ClientException;
-import io.zeebe.client.event.impl.RecordImpl;
 import io.zeebe.client.impl.RequestManager;
 import io.zeebe.client.impl.cmd.CommandImpl;
 import io.zeebe.client.impl.command.DeploymentCommandImpl;
 import io.zeebe.client.impl.command.DeploymentResourceImpl;
+import io.zeebe.client.impl.record.RecordImpl;
 import io.zeebe.model.bpmn.BpmnModelApi;
 import io.zeebe.model.bpmn.instance.WorkflowDefinition;
 import io.zeebe.protocol.Protocol;

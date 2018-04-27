@@ -20,7 +20,6 @@ import java.io.InputStream;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.zeebe.client.api.record.*;
-import io.zeebe.client.event.impl.RecordImpl;
 import io.zeebe.client.impl.data.MsgPackConverter;
 
 public abstract class WorkflowInstanceRecordImpl extends RecordImpl implements WorkflowInstanceRecord

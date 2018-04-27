@@ -24,5 +24,5 @@ public interface PollableTopicSubscription
      * @param entryHandler the handler that is invoked for each entry on the topic
      * @return number of handled entries
      */
-    int poll(TopicRecordHandler entryHandler);
+    int poll(RecordHandler entryHandler);
 }

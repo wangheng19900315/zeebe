@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.zeebe.client.event.impl;
+package io.zeebe.client.subscription.topic;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;

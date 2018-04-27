@@ -13,43 +13,43 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.zeebe.client.event.impl;
-
-import java.util.List;
+package io.zeebe.client.impl.event;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-import io.zeebe.client.event.RaftEvent;
 import io.zeebe.client.event.TopicEventType;
-import io.zeebe.transport.SocketAddress;
+import io.zeebe.client.impl.record.RecordImpl;
 
-public class RaftEventImpl extends RecordImpl implements RaftEvent
+public class TopicSubscriptionEvent extends RecordImpl
 {
+    protected String name;
+    protected long ackPosition = -1L;
 
     @JsonCreator
-    public RaftEventImpl()
+    public TopicSubscriptionEvent(@JsonProperty("state") String state)
     {
-        super(TopicEventType.RAFT, null); // raft events have currently no state
+        super(TopicEventType.SUBSCRIPTION, state);
     }
 
-    protected List<SocketAddress> members;
-
-    @Override
-    public List<SocketAddress> getMembers()
+    public String getName()
     {
-        return members;
+        return name;
     }
 
-    public void setMembers(final List<SocketAddress> members)
+    public void setName(String subscriptionName)
     {
-        this.members = members;
+        this.name = subscriptionName;
     }
 
-    @Override
-    public String toString()
+    public long getAckPosition()
     {
-        return "RaftEventImpl{" +
-            "members=" + members +
-            '}';
+        return ackPosition;
     }
+
+    public void setAckPosition(long ackPosition)
+    {
+        this.ackPosition = ackPosition;
+    }
+
 }

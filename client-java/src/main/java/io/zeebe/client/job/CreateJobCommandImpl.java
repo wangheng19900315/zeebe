@@ -22,11 +22,11 @@ import io.zeebe.client.api.commands.CreateJobCommandStep1;
 import io.zeebe.client.api.commands.CreateJobCommandStep1.CreateJobCommandStep2;
 import io.zeebe.client.api.commands.JobCommand.JobCommandName;
 import io.zeebe.client.api.events.JobEvent;
-import io.zeebe.client.event.impl.RecordImpl;
 import io.zeebe.client.impl.RequestManager;
 import io.zeebe.client.impl.cmd.CommandImpl;
+import io.zeebe.client.impl.command.JobCommandImpl;
 import io.zeebe.client.impl.data.MsgPackConverter;
-import io.zeebe.client.impl.event.JobCommandImpl;
+import io.zeebe.client.impl.record.RecordImpl;
 
 public class CreateJobCommandImpl extends CommandImpl<JobEvent> implements CreateJobCommandStep1, CreateJobCommandStep2
 {

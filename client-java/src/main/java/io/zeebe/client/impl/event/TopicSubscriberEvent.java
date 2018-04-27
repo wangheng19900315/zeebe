@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.zeebe.client.event.impl;
+package io.zeebe.client.impl.event;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -21,6 +21,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.zeebe.client.event.TopicEventType;
 import io.zeebe.client.impl.cmd.ReceiverAwareResponseResult;
+import io.zeebe.client.impl.record.RecordImpl;
 import io.zeebe.client.subscription.EventSubscriptionCreationResult;
 import io.zeebe.transport.RemoteAddress;
 

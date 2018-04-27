@@ -13,30 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.zeebe.client.event.impl;
+package io.zeebe.client.subscription.topic;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import io.zeebe.client.event.PollableTopicSubscription;
-import io.zeebe.client.event.TopicSubscription;
-import io.zeebe.client.event.UniversalEventHandler;
+import io.zeebe.client.api.subscription.*;
+import io.zeebe.client.event.impl.GeneralRecordImpl;
 import io.zeebe.client.impl.Loggers;
 import io.zeebe.client.impl.ZeebeClientImpl;
-import io.zeebe.client.job.impl.subscription.*;
 import io.zeebe.client.subscription.*;
 import io.zeebe.util.CheckedConsumer;
 import io.zeebe.util.sched.ActorControl;
 import io.zeebe.util.sched.future.ActorFuture;
 import io.zeebe.util.sched.future.CompletableActorFuture;
 
-public class TopicSubscriberGroup extends SubscriberGroup<TopicSubscriber>
-    implements TopicSubscription, PollableTopicSubscription
+public class TopicSubscriberGroup extends SubscriberGroup<TopicSubscriber> implements TopicSubscription, PollableTopicSubscription
 {
+    private static final int MAX_HANDLING_RETRIES = 2;
 
-    protected static final int MAX_HANDLING_RETRIES = 2;
-
-    protected AtomicBoolean processingFlag = new AtomicBoolean(false);
-    protected final TopicSubscriptionSpec subscription;
+    private AtomicBoolean processingFlag = new AtomicBoolean(false);
+    private final TopicSubscriptionSpec subscription;
 
     public TopicSubscriberGroup(
             ActorControl actor,
@@ -55,9 +51,9 @@ public class TopicSubscriberGroup extends SubscriberGroup<TopicSubscriber>
     }
 
     @Override
-    public int poll(UniversalEventHandler taskHandler)
+    public int poll(RecordHandler recordHandler)
     {
-        return pollEvents((e) -> taskHandler.handle(e));
+        return pollEvents((e) -> recordHandler.onRecord(e));
     }
 
     @Override
@@ -92,19 +88,19 @@ public class TopicSubscriberGroup extends SubscriberGroup<TopicSubscriber>
     @Override
     protected ActorFuture<? extends EventSubscriptionCreationResult> requestNewSubscriber(int partitionId)
     {
-        return client.topics().createTopicSubscription(subscription.getTopic(), partitionId)
+        return new CreateTopicSubscriptionCommandImpl(client.getCommandManager(), subscription.getTopic(), partitionId)
             .startPosition(subscription.getStartPosition(partitionId))
             .prefetchCapacity(subscription.getPrefetchCapacity())
             .name(subscription.getName())
             .forceStart(subscription.isForceStart())
-            .send();
+            .executeAsync();
     }
 
     @Override
     protected TopicSubscriber buildSubscriber(EventSubscriptionCreationResult result)
     {
         return new TopicSubscriber(
-                client.topics(),
+                client,
                 subscription,
                 result.getSubscriberKey(),
                 result.getEventPublisher(),

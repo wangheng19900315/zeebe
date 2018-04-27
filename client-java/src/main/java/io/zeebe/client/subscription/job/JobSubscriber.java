@@ -18,7 +18,7 @@ package io.zeebe.client.subscription.job;
 import io.zeebe.client.api.clients.JobClient;
 import io.zeebe.client.api.subscription.JobHandler;
 import io.zeebe.client.impl.*;
-import io.zeebe.client.impl.command.JobEventImpl;
+import io.zeebe.client.impl.event.JobEventImpl;
 import io.zeebe.client.subscription.*;
 import io.zeebe.transport.RemoteAddress;
 import io.zeebe.util.sched.future.ActorFuture;

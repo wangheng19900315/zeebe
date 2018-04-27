@@ -13,10 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.zeebe.client.event.impl;
+package io.zeebe.client.subscription.topic;
 
+import io.zeebe.client.event.impl.SubscriberEventType;
 import io.zeebe.client.impl.RequestManager;
 import io.zeebe.client.impl.cmd.CommandImpl;
+import io.zeebe.client.impl.event.TopicSubscriberEvent;
+import io.zeebe.client.impl.record.RecordImpl;
 
 public class CreateTopicSubscriptionCommandImpl extends CommandImpl<TopicSubscriberEvent>
 {
