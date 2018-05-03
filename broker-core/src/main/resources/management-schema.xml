@@ -73,5 +73,25 @@
         <data name="bpmnProcessId" id="4" type="varDataEncoding"/>
         <data name="bpmnXml" id="5" type="varDataEncoding" />
     </sbe:message>
+        
+    <sbe:message name="RequestSnapshotMessage" id="6">
+        <field name="partitionId" id="0" type="uint16"/>
+        <field name="position" id="1" type="uint64"/>        
+    </sbe:message>
+    
+    <sbe:message name="BeginSnapshotMessage" id="7">        
+        <field name="partitionId" id="0" type="uint16"/>
+        <field name="position" id="1" type="uint64"/>
+        <field name="snapshotLength" id="2" type="uint32"/>
+        <data name="snapshotName" id="3" type="varDataEncoding" />        
+        <data name="checksum" id="4" type="varDataEncoding" />
+    </sbe:message>
+    
+    <sbe:message name="SnapshotFragment" id="8">
+        <field name="partitionId" id="0" type="uint16"/>
+        <field name="position" id="1" type="uint64"/>
+        <field name="offset" id="2" type="uint64"/>                
+        <data name="data" id="3" type="varDataEncoding" />
+    </sbe:message>
 
 </sbe:messageSchema>

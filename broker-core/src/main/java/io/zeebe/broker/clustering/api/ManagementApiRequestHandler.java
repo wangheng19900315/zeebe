@@ -28,6 +28,7 @@ import io.zeebe.broker.Loggers;
 import io.zeebe.broker.clustering.base.partitions.PartitionInstallService;
 import io.zeebe.broker.clustering.base.raft.RaftPersistentConfiguration;
 import io.zeebe.broker.clustering.base.raft.RaftPersistentConfigurationManager;
+import io.zeebe.broker.clustering.base.snapshotrepl.SnapshotReplicationManager;
 import io.zeebe.broker.system.configuration.BrokerCfg;
 import io.zeebe.broker.system.deployment.handler.WorkflowRequestMessageHandler;
 import io.zeebe.clustering.management.*;
@@ -56,6 +57,7 @@ public class ManagementApiRequestHandler implements ServerMessageHandler, Server
     private final RaftPersistentConfigurationManager raftPersistentConfigurationManager;
     private final ActorControl actor;
     private final ServiceStartContext serviceStartContext;
+    private final SnapshotReplicationManager snapshotReplicationManager;
 
     private final BrokerCfg brokerCfg;
 
@@ -63,12 +65,14 @@ public class ManagementApiRequestHandler implements ServerMessageHandler, Server
         RaftPersistentConfigurationManager raftPersistentConfigurationManager,
         ActorControl actor,
         ServiceStartContext serviceStartContext,
+        SnapshotReplicationManager snapshotReplicationManager,
         BrokerCfg brokerCfg)
     {
         this.workflowRequestMessageHandler = workflowRequestMessageHandler;
         this.raftPersistentConfigurationManager = raftPersistentConfigurationManager;
         this.actor = actor;
         this.serviceStartContext = serviceStartContext;
+        this.snapshotReplicationManager = snapshotReplicationManager;
         this.brokerCfg = brokerCfg;
     }
 
@@ -220,14 +224,25 @@ public class ManagementApiRequestHandler implements ServerMessageHandler, Server
             switch (templateId)
             {
                 case DeleteWorkflowMessageDecoder.TEMPLATE_ID:
-                {
                     workflowRequestMessageHandler.onDeleteWorkflowMessage(buffer, offset, length);
                     break;
-                }
+
+                case RequestSnapshotMessageDecoder.TEMPLATE_ID:
+                    snapshotReplicationManager.onSnapshotRequested(remoteAddress, buffer, offset, length);
+                    break;
+
+                case BeginSnapshotMessageDecoder.TEMPLATE_ID:
+                    snapshotReplicationManager.onBeginSnapshotMessage(remoteAddress, buffer, offset, length);
+                    break;
+
+                case SnapshotFragmentDecoder.TEMPLATE_ID:
+                    snapshotReplicationManager.onSnapshotFragment(remoteAddress, buffer, offset, length);
+                    break;
+
                 default:
-                {
+                    LOG.debug("dropping unknown message with template id {}", templateId);
                     // ignore
-                }
+                    break;
             }
         }
         return true;

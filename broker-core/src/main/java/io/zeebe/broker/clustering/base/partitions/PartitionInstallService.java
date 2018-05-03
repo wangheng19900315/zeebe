@@ -20,7 +20,7 @@ package io.zeebe.broker.clustering.base.partitions;
 import static io.zeebe.broker.clustering.base.ClusterBaseLayerServiceNames.*;
 import static io.zeebe.broker.logstreams.LogStreamServiceNames.snapshotStorageServiceName;
 import static io.zeebe.raft.RaftServiceNames.leaderInitialEventCommittedServiceName;
-import static io.zeebe.raft.RaftServiceNames.raftServiceName;
+import static io.zeebe.raft.RaftServiceNames.*;
 
 import java.util.Collection;
 
@@ -173,10 +173,35 @@ public class PartitionInstallService implements Service<Void>, RaftStateListener
     @Override
     public void onStateChange(Raft raft, RaftState raftState)
     {
-        if (raftState == RaftState.LEADER)
+        switch (raftState)
         {
-            installLeaderPartition(raft);
+            case LEADER:
+                installLeaderPartition(raft);
+                break;
+
+            case FOLLOWER:
+                installFollowerPartition(raft);
+                break;
+
+            case CANDIDATE:
+                // ignore
+                break;
         }
+
+    }
+
+    private void installFollowerPartition(Raft raft)
+    {
+        final Partition partition = new Partition(partitionInfo, RaftState.FOLLOWER);
+
+        final ServiceName<Partition> partitionServiceName = followerPartitionServiceName(raft.getName());
+
+        startContext.createService(partitionServiceName, partition)
+            .dependency(followerServiceName(raft.getName(), raft.getTerm()))
+            .dependency(logStreamServiceName, partition.getLogStreamInjector())
+            .dependency(snapshotStorageServiceName, partition.getSnapshotStorageInjector())
+            .group(isInternalSystemPartition ? FOLLOWER_PARTITION_SYSTEM_GROUP_NAME : FOLLOWER_PARTITION_GROUP_NAME)
+            .install();
     }
 
     private void installLeaderPartition(Raft raft)
